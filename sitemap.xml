@@ -2,7 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/24/nodejs-2015-12-04-leak-analysis/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/10/nodejs-cluster-2/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/12/28/anim-train/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -12,17 +17,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/30/animation-bone/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/auto-layout-in-h5-project/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/02/22/canvas-performance/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/04/cpu-allocation-profiler/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -32,17 +27,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/04/cpu-allocation-profiler/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/disaster-recovery-at-taobao-home-page/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -52,12 +37,27 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/10/28/disaster-recovery-at-taobao-home-page/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/10/29/deep-into-node-1/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/11/30/animation-bone/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/12/03/deep-into-node-2/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/10/27/enter-the-door-of-nodejs/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -72,12 +72,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/10/27/enter-the-door-of-nodejs/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/28/fe-engineering-width-cloud-build/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/28/fe-engineering-width-cloud-build/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/02/22/canvas-performance/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -92,11 +97,6 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/01/21/feders-should-kown-some-docker-2/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
@@ -107,7 +107,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/04/font-end-tech-inventory/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/11/flexbox-in-mobile-web/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -117,12 +117,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/11/flexbox-in-mobile-web/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/04/font-end-tech-inventory/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/10/graphql-in-depth/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -132,12 +132,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/16/h5-performance-optimization-and-domain-convergence/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/03/10/graphql-in-depth/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -157,12 +152,17 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/03/04/join-taobaofed/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2016/01/25/jsonschema/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/04/join-taobaofed/</loc>
+    <loc>http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -172,7 +172,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/16/h5-performance-optimization-and-domain-convergence/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -187,7 +187,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/11/khorium-bullet/</loc>
+    <loc>http://taobaofed.org/blog/2016/04/01/lose-statistics/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -197,22 +197,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/04/01/lose-statistics/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/04/mobile-rem-problem/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/01/13/measuring-fps/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/20/mobile-wpo-pageshow-async/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/04/mobile-rem-problem/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -232,17 +222,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/22/node-subway-ep1/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/10/27/node-subway/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/28/anim-train/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/22/node-subway-ep1/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -252,17 +237,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/10/nodejs-cluster-2/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/24/nodejs-2015-12-04-leak-analysis/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/</loc>
+    <loc>http://taobaofed.org/blog/2015/10/28/auto-layout-in-h5-project/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/03/nodejs-cluster/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/20/mobile-wpo-pageshow-async/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -277,12 +262,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/24/nodejs-php-process-manager/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/03/nodejs-cluster/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/28/nodejs-stream/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -297,7 +282,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/17/nvm-or-n/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/24/nodejs-php-process-manager/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/01/28/nodejs-stream/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -307,17 +297,27 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/10/nodejs-unit-tests/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/12/29/nodejs-unit-tests-workflow/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/12/10/nodejs-unit-tests/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/17/nvm-or-n/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -332,12 +332,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/18/react-native-for-android-hello-world/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/25/react-native-android-debug/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -347,7 +342,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/25/react-native-android-debug/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/18/react-native-for-android-hello-world/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -357,17 +352,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/09/server-in-front-end/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/12/17/seller-bigpipe/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/30/the-communication-scheme-of-react-native-in-ios/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -377,12 +362,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/09/server-in-front-end/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/try-catch-runing-problem/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/30/the-communication-scheme-of-react-native-in-ios/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -397,17 +387,12 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/10/28/try-catch-runing-problem/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/12/09/using-js-to-build-an-crossplatform-native-app-an-introduction-to-listview/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/05/23/video-player/</loc>
-    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/02/waterfall-analyze/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -417,12 +402,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/13/web-debug-in-ios/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/02/waterfall-analyze/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/04/12/webfont-practice/</loc>
+    <loc>http://taobaofed.org/blog/2016/05/23/video-player/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/13/web-debug-in-ios/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -432,17 +422,22 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/04/12/webfont-practice/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/12/21/webgl-handbook/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/27/webkit-remote-debug-action/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/20/webkit-remote-debug-test/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/20/webkit-remote-debug-test/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/27/webkit-remote-debug-action/</loc>
     <lastmod>2016-07-15T03:42:52.000Z</lastmod>
   </url>
   
@@ -457,17 +452,22 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/01/11/khorium-bullet/</loc>
+    <lastmod>2016-07-15T03:42:52.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/404.html</loc>
     <lastmod>2016-06-28T06:55:35.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/baidu_verify_OTHOW5vFFG.html</loc>
+    <loc>http://taobaofed.org/google155be79d7690060c.html</loc>
     <lastmod>2016-06-28T06:55:35.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/google155be79d7690060c.html</loc>
+    <loc>http://taobaofed.org/baidu_verify_OTHOW5vFFG.html</loc>
     <lastmod>2016-06-28T06:55:35.000Z</lastmod>
   </url>
   
