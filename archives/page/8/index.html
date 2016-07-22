@@ -143,6 +143,41 @@
   <article class="article article-summary">
     <div class="article-summary-inner">
       
+<a href="/blog/2015/11/19/yield-and-delegating-yield/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB10eFhKFXXXXccXpXXXXXXXXXX-900-500.jpg
+)" alt="yield 和 yield*" class="thumbnail-image"></span>
+  
+</a>
+
+      <div class="article-meta">
+        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+        <p class="date"><time datetime="2015-11-19T03:05:32.000Z" itemprop="datePublished">2015-11-19</time></p>
+      </div>
+      <h2 class="article-title">
+        <a href="/blog/2015/11/19/yield-and-delegating-yield/" class="title">yield 和 yield*</a>
+      </h2>
+      <p class="article-excerpt">
+        
+        
+最近在看 koa 的中间件实现时，总是看到 yield* next 这种用法，觉得很困惑。下面是学习成果。
+代理 yield我们先来看看原生语法中，代理 yield（delegating yield）的含义和用法。
+首先是下面的代码（普通的 yield）：
+123456789101112131415161718192021function* outer() &#123;    yield 'be
+      </p>
+    </div>
+  </article>
+
+    
+  
+    
+    
+    
+    
+        
+  <article class="article article-summary">
+    <div class="article-summary-inner">
+      
 <a href="/blog/2015/11/18/react-native-for-android-hello-world/" class="thumbnail">
   
     <span style="background-image:url(https://img.alicdn.com/tps/TB1tInYKpXXXXbtXFXXXXXXXXXX-900-500.jpg
@@ -167,10 +202,14 @@ Facebook 于 2015 年 9 月 15 日推出 React Native for Android 版本。相�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -203,14 +242,10 @@ Facebook 于 2015 年 9 月 15 日推出 React Native for Android 版本。相�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -243,10 +278,14 @@ Facebook 于 2015 年 9 月 15 日推出 React Native for Android 版本。相�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -276,14 +315,10 @@ Facebook 于 2015 年 9 月 15 日推出 React Native for Android 版本。相�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -314,10 +349,14 @@ Facebook 于 2015 年 9 月 15 日推出 React Native for Android 版本。相�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -350,14 +389,10 @@ CSS 2.1 定义了四种布局模式 ― 由一个盒与其兄弟、祖先盒的�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -387,10 +422,14 @@ CSS 2.1 定义了四种布局模式 ― 由一个盒与其兄弟、祖先盒的�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -424,14 +463,10 @@ CSS 2.1 定义了四种布局模式 ― 由一个盒与其兄弟、祖先盒的�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -467,38 +502,6 @@ JSTracker的系统流程图：
 
 服务端如何接受数据日志上报需要服务端提供一个 http 接口，将前端采集到的数据统一的发回服务端。
 需要注意的是如果你用
-      </p>
-    </div>
-  </article>
-
-    
-  
-    
-    
-    
-    
-        
-  <article class="article article-summary">
-    <div class="article-summary-inner">
-      
-<a href="/blog/2015/11/05/nodejs-errors/" class="thumbnail">
-  
-    <span style="background-image:url(//gtms03.alicdn.com/tps/i3/TB16M4LKpXXXXcEXFXX2AXZ8pXX-900-500.png
-)" alt="Node.js 常见网络错误信息" class="thumbnail-image"></span>
-  
-</a>
-
-      <div class="article-meta">
-        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
-        <p class="date"><time datetime="2015-11-05T02:24:01.000Z" itemprop="datePublished">2015-11-05</time></p>
-      </div>
-      <h2 class="article-title">
-        <a href="/blog/2015/11/05/nodejs-errors/" class="title">Node.js 常见网络错误信息</a>
-      </h2>
-      <p class="article-excerpt">
-        
-        
-1.介绍熟悉 Node.js 的同学一定见过 ETIMEDOUT、EADDRINUSE 等错误提示，那么这些错误信息到底是什么呢？答案其实很简单，因为 Node.js 底层使用的是 glibc 库，这些错误信息都是 glibc 库在 socket 连接时使用的 connect 函数中定义的错误类型，当然，v8在使用glibc库时也会加入一些自定义的错误类型，但许多错误情况还是和glibc中的定义
       </p>
     </div>
   </article>
@@ -548,6 +551,29 @@ JSTracker的系统流程图：
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/07/22/es6-basics/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg
+)" alt="ES6 你可能不知道的事 - 基础篇" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/07/22/es6-basics/" class="title">ES6 你可能不知道的事 - 基础篇</a></p>
+              
+              <p class="item-author">by 化辰</p>
+              
+              <p class="item-date">at <time datetime="2016-07-22T03:32:30.000Z" itemprop="datePublished">2016-07-22</time></p>
+            </div>
+          </li>
         
           <li>
             
@@ -641,29 +667,6 @@ JSTracker的系统流程图：
             </div>
           </li>
         
-          <li>
-            
-            <div class="item-thumbnail">
-              
-<a href="/blog/2016/05/05/new-compiler-for-android/" class="thumbnail">
-  
-    <span style="background-image:url(http://img.alicdn.com/tfs/TB1brqAJFXXXXaGXVXXXXXXXXXX-900-500.jpg
-)" alt="Android 新一代编译 toolchain Jack &amp; Jill 简介" class="thumbnail-image"></span>
-  
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/无线开发/">无线开发</a></p>
-              <p class="item-title"><a href="/blog/2016/05/05/new-compiler-for-android/" class="title">Android 新一代编译 toolchain Jack &amp; Jill 简介</a></p>
-              
-              <p class="item-author">by 凯冯</p>
-              
-              <p class="item-date">at <time datetime="2016-05-05T07:03:37.000Z" itemprop="datePublished">2016-05-05</time></p>
-            </div>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -673,7 +676,7 @@ JSTracker的系统流程图：
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">25</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
     </div>
   </div>
 
@@ -683,7 +686,7 @@ JSTracker的系统流程图：
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
     </div>
   </div>
 
