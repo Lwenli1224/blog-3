@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2016-07-22T06:19:00.000Z</updated>
+  <updated>2016-07-29T03:55:29.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,108 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[纠结的链接：ln、ln -s、fs.symlink、require]]></title>
+    <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
+    <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
+    <published>2016-07-29T03:50:30.000Z</published>
+    <updated>2016-07-29T03:55:29.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
+<p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
+<a id="more"></a>
+<h2 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h2><p>我们首先来看看 Linux 系统里面的一个重要概念：inode。</p>
+<p>我们知道，文件存储在硬盘上，硬盘存储的最小单位是扇区（sector，每个扇区 512 B）。而操作系统读取文件时，按块读取（连续的多个扇区），也就是说文件存取的最小单位是块（block，块通常是 4 KB）。</p>
+<p>除了文件数据，我们还必须存储文件的元信息（如：文件大小、文件创建者、文件数据的块位置、文件读/写/执行权限、文件时间戳等等），这种存储文件元信息的结构就称为 inode。我们可以使用 <code>stat</code> 命令查看文件的 inode 信息。在 Node.js 中，调用 <code>fs.stat</code> 后返回的结果中也有相关信息</p>
+<p><img src="http://img.alicdn.com/tps/TB1IUOkKXXXXXX2aXXXXXXXXXXX-1126-980.png" alt="stat"></p>
+<p>每个 inode 都有一个唯一的号码标志，Linux 系统内部使用 inode 的号码来识别文件，并不使用文件名。我们打开一个文件时，系统首先找到文件名对应的 inode 号码，然后通过 inode 号码获取 inode 信息，最后根据 inode 信息中的文件数据所在的 block 读出数据。</p>
+<p>实际上，在 Linux 系统中，目录也是一种文件。目录文件包含一系列目录项，每个目录项由两部分组成：所包含文件的文件名，以及该文件名对应的 inode 号码。我们可以使用 <code>ls -i</code> 来列出目录中的文件以及它们的 inode 号码。这其实也解释了仅更改目录的读权限，并不能实现读取目录下所有文件内容的原因，通常需要 <code>chmod -R</code> 来进行递归更改。</p>
+<p>总结下：</p>
+<ul>
+<li>硬盘存取的最小单位是扇区，文件存取的最小单位是块（连续的扇区）</li>
+<li>存储文件元信息（文件大小、创建者、块位置、时间戳、权限等非数据信息）的结构称为 inode</li>
+<li>每个 inode 拥有一个唯一号码，系统内部通过它来识别文件</li>
+<li>目录也是一种文件，其内容包含一系列目录项（每个目录项由文件的文件名和文件对应的 inode 号码组成）</li>
+</ul>
+<h2 id="硬链接和软链接"><a href="#硬链接和软链接" class="headerlink" title="硬链接和软链接"></a>硬链接和软链接</h2><h3 id="硬链接"><a href="#硬链接" class="headerlink" title="硬链接"></a>硬链接</h3><p>一般情况，一个文件名“唯一”对应一个 inode。但是，Linux 允许多个文件名都指向同一个 inode。这表示我们可以使用不同的文件名访问同样的内容；对文件内容进行修改将“反映”到所有文件；删除一个文件不影响另一个文件的访问  。这种机制就被称为“硬链接”。</p>
+<p>我们可以使用 <code>ln source target</code> 来建立硬链接（注意：<code>source</code> 是本身已存在的文件，<code>target</code> 是将要建立的链接）。</p>
+<p><img src="http://img.alicdn.com/tps/TB1Q31gKXXXXXbLaXXXXXXXXXXX-912-438.png" alt="hard link"></p>
+<p>形象化的表示为下图：</p>
+<p><img src="http://img.alicdn.com/tps/TB1mYuqKXXXXXbGXVXXXXXXXXXX-300-361.png" alt="hard link graph"></p>
+<p>需要注意的是，只能给文件建立硬链接，而不能给目录建立硬链接。另外，<code>source</code> 文件必须存在，否则将会报错。</p>
+<p>删除一个文件为什么不影响另一个文件的访问呢？实际上，文件 inode 中还有一个链接数的信息，每多一个文件指向这个 inode，该数字就会加 1，每少一个文件指向这个 inode，该数字就会减 1，当值减到 0，系统就自动回收 inode 及其对应的 block 区域。很像是一种引用计数的垃圾回收机制。</p>
+<p>当我们对某个文件建立了硬链接后，对应的 inode 的链接数会是 2（原文件本身已经有一个指向），当删除一个文件时，链接数变成 1，并没达到回收的条件，所以我们还是可以访问文件。</p>
+<h3 id="软链接"><a href="#软链接" class="headerlink" title="软链接"></a>软链接</h3><p>软链接类似于 Windows 中的”快捷方式“。两个文件虽然 inode 号码不一样，但是文件 A 内部会指向文件 B 的 inode。当我们读取文件 A 时，系统就自动导向文件 B，文件 A 就是文件 B 的软链接（或者叫符号链接）。这表示我们同样可以使用不同的文件名访问同样的内容；对文件内容修改将”反映“到所有文件。但是当我们删除掉源文件 B 时，再访问文件 A 时会报错 “No such file or directory”。</p>
+<p>我们可以使用 <code>ln -s source target</code> 来建立软链接（注意：表示让 <code>target</code> “指向” <code>source</code>）。</p>
+<p><img src="http://img.alicdn.com/tps/TB1xOeTKXXXXXabXXXXXXXXXXXX-994-488.png" alt="soft link"></p>
+<p>形象化的表示为下图：</p>
+<p><img src="http://img.alicdn.com/tps/TB1PhakKXXXXXaSaXXXXXXXXXXX-300-366.png" alt="soft link graph"></p>
+<p>和硬链接不同，我们可以给目录建立软链接，这带来许多便利。比如我们有一个模块有很多个版本，分别存放在 1.0.0、2.0.0 这样的目录下面，当更新模块时，只需要建立一个软链接指向最新版本号的目录就能很方便的切换版本。</p>
+<p>另外，建立软链接时，<code>source</code> 是可以不存在的。这很像一种”运行时“机制，而不是“编译时”机制，建立的时候不报错，等执行的时候发现找不到就报错了。</p>
+<p><img src="http://img.alicdn.com/tps/TB1UrifKXXXXXXjapXXXXXXXXXX-994-618.png" alt="danggling soft link"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>使用 <code>ln source target</code> 建立硬链接；使用 <code>ln -s source target</code> 建立软链接</li>
+<li>硬链接不会创建额外 inode，和源文件共用同一个 inode；软链接会创建额外一个文件（额外 inode），指向源文件的 inode</li>
+<li>建立硬链接时，<code>source</code> 必须存在且只能是文件；建立软链接时，<code>source</code> 可以不存在而且可以是目录</li>
+<li>删除源文件不会影响硬链接文件的访问（因为 inode 还在）；删除源文件会影响软链接文件的访问（因为指向的 inode 已经不存在了）</li>
+<li>对于已经建立的同名链接，不能再次建立，除非删掉或者使用 <code>-f</code> 参数</li>
+</ul>
+<h3 id="关于软链接的补充"><a href="#关于软链接的补充" class="headerlink" title="关于软链接的补充"></a>关于软链接的补充</h3><p>上面的例子 <code>ln -s file file-soft</code> 给我们的感觉像是 <code>file-soft</code> 是“凭空”出现的。当我们跨目录来创建软链接时，可能会“幻想”这样的命令也是可以生效的：<code>ln -s ~/development/mod ~/production/dir-not-exits/mod</code>。</p>
+<p>这里并没有 <code>~/production/dir-not-exits/</code> 这个目录，而软链接本质上是一个新的“文件”，所以，我们不可能正确建立软链接（会报错说 “no such file or directory”）。</p>
+<p>如果我们先通过 <code>mkdir</code> 建立好目录 <code>~/production/dir-not-exits/</code>，再进行软链接，即可达到预期效果。</p>
+<h2 id="fs-symlink"><a href="#fs-symlink" class="headerlink" title="fs.symlink"></a>fs.symlink</h2><p>在 Node.js 中，我们可以使用方法 <code>fs.symink(target, path)</code> 建立软链接（符号链接），没有直接的方法建立硬链接（就算通过子进程的方式直接指向 shell 命令也不能跨平台）。</p>
+<p>如果是对目录建立链接，请总是传递第三个参数 <code>dir</code>（虽然第三个参数只在 Windows 下生效，这可以保证代码跨平台）：<code>fs.symlink(target, path, &#39;dir&#39;)</code>。</p>
+<p>为啥这个接口的参数会是 <code>target</code> 和 <code>path</code>。实际上这是一个 Linux 的 API，<a href="http://man7.org/linux/man-pages/man2/symlink.2.html" target="_blank" rel="external">symlink(target, linkpath)</a>。它是这样描述的：建立一个名为 <code>linkpath</code> 的符号链接并且含有内容 <code>target</code>。其实就是让 <code>linkpath</code> 指向 <code>target</code>，和 <code>ln -s source target</code> 功能一样，让 <code>target</code> 指向 <code>source</code>。</p>
+<p>是不是有点晕？其实我们只需要明白 <code>ln -s</code> 和 <code>fs.symlink</code> 后面传递的两个参数顺序是一致的，只是叫法不一样，使用起来也就没那么纠结了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln <span class="_">-s</span> file file-soft <span class="comment"># file-soft -&gt; file</span></span><br><span class="line">ln <span class="_">-s</span> dir dir-soft <span class="comment"># dir-soft -&gt; dir</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fs.symlinkSync(<span class="string">'file'</span>, <span class="string">'file-soft'</span>); <span class="comment">// file-soft -&gt; file</span></span><br><span class="line">fs.symlinkSync(<span class="string">'dir'</span>, <span class="string">'dir-soft'</span>, <span class="string">'dir'</span>); <span class="comment">// dir-soft -&gt; dir</span></span><br></pre></td></tr></table></figure>
+<h2 id="require"><a href="#require" class="headerlink" title="require"></a>require</h2><p>在 Node.js 中，我们经常通过 <code>require</code> 来引用模块。非常有趣的是，<code>require</code> 引用模块时，会“考虑”符号链接，但是却使用模块的真实路径作为 <code>__filename</code>、<code>__dirname</code>，而不是符号链接的路径。</p>
+<p>考虑下面的目录结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- app</span><br><span class="line">  - index.js // require(<span class="string">'dep1'</span>)</span><br><span class="line">  - node_modules</span><br><span class="line">    - dep1 -&gt; ../../mods/dep1 //符号链接</span><br><span class="line">- mods</span><br><span class="line">  - dep1</span><br><span class="line">    - index.js</span><br></pre></td></tr></table></figure>
+<p>以及下面的文件内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'index.js'</span>, __dirname, __filename);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'dep1'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// dep1/index.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'dep1'</span>, __dirname, __filename);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">module</span>.paths);</span><br></pre></td></tr></table></figure>
+<p>执行 <code>node index.js</code> 后输出是下面这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">index.js /Users/kohpoll/Workspace/<span class="built_in">test</span>/app /Users/kohpoll/Workspace/<span class="built_in">test</span>/app/index.js</span><br><span class="line"></span><br><span class="line">dep1 /Users/kohpoll/Workspace/<span class="built_in">test</span>/mods/dep1 /Users/kohpoll/Workspace/<span class="built_in">test</span>/mods/dep1/index.js</span><br><span class="line">[ <span class="string">'/Users/kohpoll/Workspace/test/mods/dep1/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/test/mods/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/test/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/node_modules'</span>,</span><br><span class="line">  <span class="string">'/node_modules'</span> ]</span><br></pre></td></tr></table></figure>
+<p>我们发现，<code>index.js</code> 可以成功的 <code>require(&#39;dep1&#39;)</code>。这很好啊，这让我们调试本地开发中的 npm 模块很方便。我们只需要去 <code>require</code> 模块的文件所在的 <code>node_modules</code> 下面建立一个符号链接就行了。</p>
+<p>但是在模块 <code>dep1</code> 中，<code>__dirname</code>、<code>__filename</code> 都变成了模块实际的路径，更要命的是模块查找路径 <code>module.paths</code> 也变成了从实际路径开始查找。</p>
+<p>这会带来什么问题？</p>
+<p>再考虑下面的目录结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- app</span><br><span class="line">  - index.js // require(<span class="string">'dep1'</span>)</span><br><span class="line">  - node_modules</span><br><span class="line">    - dep1 -&gt; ../../mods/dep1 // require(<span class="string">'dep2'</span>)</span><br><span class="line">    - dep2 -&gt; ../../mods/dep2 // 符号连接</span><br><span class="line">- mods</span><br><span class="line">  - dep1</span><br><span class="line">    - index.js</span><br><span class="line">  - dep2</span><br><span class="line">    - index.js</span><br></pre></td></tr></table></figure>
+<p>以及下面的文件内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'index.js'</span>, __dirname, __filename);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'dep1'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// dep1/index.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'dep1'</span>, __dirname, __filename);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">module</span>.paths);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'dep2'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// dep2/index.js</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'dep2'</span>, __dirname, __filename);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">module</span>.paths);</span><br></pre></td></tr></table></figure>
+<p>当我们再执行 <code>node index.js</code> 时，输出是下面这样：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">index.js /Users/kohpoll/Workspace/<span class="built_in">test</span>/app /Users/kohpoll/Workspace/<span class="built_in">test</span>/app/index.js</span><br><span class="line"></span><br><span class="line">dep1 /Users/kohpoll/Workspace/<span class="built_in">test</span>/mods/dep1 /Users/kohpoll/Workspace/<span class="built_in">test</span>/mods/dep1/index.js</span><br><span class="line">[ <span class="string">'/Users/kohpoll/Workspace/test/mods/dep1/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/test/mods/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/test/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/Workspace/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/kohpoll/node_modules'</span>,</span><br><span class="line">  <span class="string">'/Users/node_modules'</span>,</span><br><span class="line">  <span class="string">'/node_modules'</span> ]</span><br><span class="line">  </span><br><span class="line">module.js:339</span><br><span class="line">    throw err;</span><br><span class="line">    ^</span><br><span class="line">Error: Cannot find module <span class="string">'dep2'</span></span><br><span class="line">    at Function.Module._resolveFilename (module.js:337:15)</span><br><span class="line">    at Function.Module._load (module.js:287:25)</span><br><span class="line">    at Module.require (module.js:366:17)</span><br><span class="line">    at require (module.js:385:17)</span><br><span class="line">    at Object.&lt;anonymous&gt; (/Users/kohpoll/Workspace/<span class="built_in">test</span>/mods/dep1/index.js:6:1)</span><br><span class="line">    at Module._compile (module.js:435:26)</span><br><span class="line">    at Object.Module._extensions..js (module.js:442:10)</span><br><span class="line">    at Module.load (module.js:356:32)</span><br><span class="line">    at Function.Module._load (module.js:311:12)</span><br><span class="line">    at Module.require (module.js:366:17)</span><br></pre></td></tr></table></figure>
+<p>发现了吗？<code>dep1</code> 根本就 <code>require</code> 不到 <code>dep2</code>，因为 <code>dep2</code> 不在它的查找路径里面！</p>
+<p>关于这个问题，github 上有一个冗长的 issue 在讨论。问题解决起来确实很麻烦，而且会 break 掉一大堆已有功能，所以，最终的结论是在找到更好的方法前给 Node.js v6 增加了一个 <code>--preserve-symlinks</code> 选项来禁止这种 <code>require</code> 的行为，而是使用全新的 <code>require</code> 逻辑。有兴趣和闲情的可以去围观：<a href="https://github.com/nodejs/node/issues/3402" target="_blank" rel="external">https://github.com/nodejs/node/issues/3402</a>（真的好长……）。</p>
+<p>至于全新的 <code>require</code> 逻辑会不会有新的坑，在没有具体实践前，我也不知道。</p>
+<p>那我们上面的情况有办法解决吗？其实也有，那就是将目录结构调整成下面这样，从而让 <code>dep2</code> 能在 <code>dep1</code> 的查找路径里面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- app</span><br><span class="line">  - index.js // require(<span class="string">'dep1'</span>)</span><br><span class="line">  - node_modules</span><br><span class="line">    - dep1 -&gt; ../../mods/node_modules/dep1 // 软链接</span><br><span class="line">    - dep2 -&gt; ../../mods/node_modules/dep2 // 软连接</span><br><span class="line">- mods</span><br><span class="line">  - node_modules</span><br><span class="line">    - dep1</span><br><span class="line">      - index.js</span><br><span class="line">    - dep2</span><br><span class="line">      - index.js</span><br></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2011/12/inode.html" target="_blank" rel="external">http://www.ruanyifeng.com/blog/2011/12/inode.html</a></li>
+<li><a href="http://www.geekride.com/hard-link-vs-soft-link/" target="_blank" rel="external">http://www.geekride.com/hard-link-vs-soft-link/</a></li>
+<li><a href="http://man7.org/linux/man-pages/man2/symlink.2.html" target="_blank" rel="external">http://man7.org/linux/man-pages/man2/symlink.2.html</a></li>
+<li><a href="https://nodejs.org/api/fs.html" target="_blank" rel="external">https://nodejs.org/api/fs.html</a></li>
+<li><a href="https://github.com/nodejs/node/issues/3402" target="_blank" rel="external">https://github.com/nodejs/node/issues/3402</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
+<p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>]]>
+    
+    </summary>
+    
+      <category term="链接" scheme="http://taobaofed.org/tags/%E9%93%BE%E6%8E%A5/"/>
+    
+      <category term="require" scheme="http://taobaofed.org/tags/require/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[ES6 你可能不知道的事 - 基础篇]]></title>
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -100,7 +197,7 @@
     <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
     <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
     <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
 <p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
@@ -203,7 +300,7 @@
     <link href="http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/"/>
     <id>http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/</id>
     <published>2016-06-02T06:45:32.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1dcfNKXXXXXXcXVXXXXXXXXXX-900-500.png" alt="聊一聊淘宝首页和它背后的一套"></p>
 <p>从 14 年双十二结束开始接手淘宝首页，到如今差不多 1 年半时间了，不久前完成了首页相关工作的交接。经历了两次改版和一次从 PHP 到 Node 的迁移，还是颇有感受，下面给大家分享下。</p>
 <h3 id="一、相关背景介绍"><a href="#一、相关背景介绍" class="headerlink" title="一、相关背景介绍"></a>一、相关背景介绍</h3><p>淘宝首页是淘宝的门面，承载着几乎淘系所有业务的入口，流量很大，量级单位为亿。近几年无线端崛起，业务重点开始向无线终端偏移（目前不能叫偏移，基本以无线为主了），所以淘宝 PC 端首页的流量也有削减，不过即便如此，它的日均 PV 依然相当高。</p>
@@ -353,7 +450,7 @@
     <link href="http://taobaofed.org/blog/2016/05/23/video-player/"/>
     <id>http://taobaofed.org/blog/2016/05/23/video-player/</id>
     <published>2016-05-23T03:26:29.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
 <ul>
 <li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
@@ -1061,7 +1158,7 @@
     <link href="http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/"/>
     <id>http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/</id>
     <published>2016-05-13T07:59:50.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1zithJVXXXXabXVXXXXXXXXXX-900-500.jpg" alt="无线端的弹幕实现方案"></p>
 <p>前段时间做了游戏的相关业务，其中弹幕相关的内容自成一块。弹幕已经不只是最初的视频弹幕了，战火已经烧到了评论区，烧到了手机淘宝的首页搜索结果。作为一种近几年迅速燃起的内容呈现形式，有必要适时引入，对于休闲化、娱乐化的业务更是如此。那么，要做出一个较为完整的弹幕效果来，需要哪几个部分呢？尤其是，在集团内部，怎么快速地搭建起一个可用的弹幕框架来？本文分3块来阐述。</p>
 <ol>
@@ -1116,7 +1213,7 @@
     <link href="http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/"/>
     <id>http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/</id>
     <published>2016-05-05T07:03:37.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1brqAJFXXXXaGXVXXXXXXXXXX-900-500.jpg" alt="Android 新一代编译 toolchain Jack &amp; Jill 简介"></p>
 <p>2016 年 3 月 10 日， Google 向外界发布了 Android N 的预览版，并宣布了 Android N 的 <a href="https://developer.android.com/intl/zh-cn/preview/overview.html" target="_blank" rel="external">Roadmap</a>，Android N 的最终版源代码将于今年 8 或 9 月份释出到 AOSP 项目。</p>
 <p>在众多的 Android N 新特性中，有一项新工具链的出现与 Android 生态圈的所有开发者息息相关，即 Jack &amp; Jill 编译器的引入。</p>
@@ -1307,7 +1404,7 @@
     <link href="http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/"/>
     <id>http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/</id>
     <published>2016-05-03T08:59:13.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms02.alicdn.com/tps/i2/TB1d9xhJFXXXXa8XFXX2AXZ8pXX-900-500.png" alt="Promise 反模式"></p>
 <p>Promises are about making asynchronous code retain most of the lost properties of synchronous code such as flat indentation and one exception channel. – Bluebird Wiki: Promise Anti Patterns</p>
 <p>Promises 是为了让异步代码也能保持这些同步代码的属性：扁平缩进和单异常管道。</p>
@@ -1397,7 +1494,7 @@
     <link href="http://taobaofed.org/blog/2016/04/25/performance-composite/"/>
     <id>http://taobaofed.org/blog/2016/04/25/performance-composite/</id>
     <published>2016-04-25T02:21:18.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1XT4kMFXXXXaBXXXXXXXXXXXX-900-500.png" alt="无线性能优化：Composite"></p>
 <p>一个 Web 页面的展示，简单来说可以认为经历了以下下几个步骤。</p>
 <p><img src="https://img.alicdn.com/tps/TB1eabOLpXXXXX3XFXXXXXXXXXX-1093-167.jpg_720x720.jpg" alt=""></p>
@@ -1650,7 +1747,7 @@
     <link href="http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/"/>
     <id>http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/</id>
     <published>2016-04-15T09:58:18.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tps/TB1Fs7jMpXXXXabXXXXXXXXXXXX-900-500.jpg" alt="如何定位 Node.js 的内存泄漏"></p>
 <p>在 <a href="http://taobaofed.org/blog/2016/01/14/nodejs-memory-leak-analyze/">《一次 Node.js 应用内存暴涨分析》</a>中，我们处理了一个 Node.js vm 引发的内存泄漏问题，处理过程也是比较艰辛。而在我们实际开发中，可能经常会碰到内存泄漏的问题，但很多情况下，我们对于这种问题的处理是有些迷茫的，没有一定的操作流程，效率比较低。虽然这种问题对于经验的要求比较高，但如果有一个简单的排查流程，还是会有一定帮助的。</p>
 <p>这里简单整理一个流程，欢迎一起探讨，补充。</p>
@@ -1731,7 +1828,7 @@
     <link href="http://taobaofed.org/blog/2016/04/12/webfont-practice/"/>
     <id>http://taobaofed.org/blog/2016/04/12/webfont-practice/</id>
     <published>2016-04-12T01:11:03.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1kaazMpXXXXacXFXXXXXXXXXX-900-500.jpg" alt="H5 页面高级字体应用实践"></p>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
 <li>最近在开发一个 H5 活动页快速搭建平台，可以通过拖拽编辑图片，文字等元素组件，快速搭建出一个移动端的活动页面，基本交互和成品效果类似 PPT 软件。这类活动大量在微信等平台上传播，其中会包含各种动画和特效，而各类高级艺术字体（如：方正兰亭黑，方正彩云，方正大草，方正剑体等）的应用也非常广泛。</li>
@@ -1801,7 +1898,7 @@
     <link href="http://taobaofed.org/blog/2016/04/08/node-web-framework-design/"/>
     <id>http://taobaofed.org/blog/2016/04/08/node-web-framework-design/</id>
     <published>2016-04-08T08:28:29.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms01.alicdn.com/tps/i1/TB146VMMpXXXXXqXXXXWPiOLXXX-900-500.jpeg" alt="企业级 Node.js Web 应用解决方案设计的零零总总"></p>
 <p>年前一直在忙着做新版 Midway 升级的事情，不少同学都知道 Midway 是淘宝的 Node.js Web 应用解决方案，目的是为了更好的做前后端分离，让前端同学开发更简单，生活更幸福（笑）。</p>
 <p>如今 Midway 5 正式发布了，横跨了几个月的开发个工作，期间带来的感慨，也算是史上最多。</p>
@@ -1938,7 +2035,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/"/>
     <id>http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/</id>
     <published>2016-04-05T08:17:53.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1QzViMpXXXXXZXXXXXXXXXXXX-900-500.jpg" alt="淘宝首页性能优化实践"></p>
 <p>想必很多人都已经看到了新版的淘宝首页，它与以往不太一样，这一版页面中四处弥散着个性化的味道，由于独特的个性化需求，前端也面临各方面的技术挑战：</p>
 <ul>
@@ -2047,7 +2144,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/"/>
     <id>http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/</id>
     <published>2016-04-01T03:41:23.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tps/TB1bA_SMXXXXXckXpXXXXXXXXXX-900-500.jpg" alt="「开往春天的 Node.js」 - Node 地下铁第二期线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>寒冬已逝，春之伊始。</p>
 <p>3 月 26 日下午，Node 地下铁第 2 次线下沙龙在上海世博展览馆万信酒店举行。本次沙龙邀请了四位在不同领域应用 Node.js 进行探索的大牛，带着我们在温暖的午后，感受 Node.js 的魅力。</p>
@@ -2127,7 +2224,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/01/lose-statistics/"/>
     <id>http://taobaofed.org/blog/2016/04/01/lose-statistics/</id>
     <published>2016-04-01T03:33:34.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1VF2YMXXXXXX2XpXXXXXXXXXX-900-500.png" alt="页面跳转时，统计数据丢失问题探讨"></p>
 <p>为了更好地了解用户对产品的使用情况，业务中，我们经常会收到埋点统计的需求，比如：</p>
 <ul>
@@ -2219,7 +2316,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/31/what-can-we-learn-from-left-pad-event/"/>
     <id>http://taobaofed.org/blog/2016/03/31/what-can-we-learn-from-left-pad-event/</id>
     <published>2016-03-31T08:35:09.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1XPPdMXXXXXc0XVXXXXXXXXXX-900-500.jpg" alt="从 left-pad 事件我们可以学到什么"></p>
 <p>最近 NPM 圈发生了“一个 17 行代码的模块引发的血案”。<a href="https://github.com/azer/left-pad/blob/master/index.js" target="_blank" rel="external">left-pad</a> 工具模块被作者从 NPM 上撤下，所有直接或者间接依赖这个模块的 NPM 包就忧伤的挂掉了，包括 babel 这样的热门项目。</p>
 <p>而其中的原因大概是这样：作者 Azer 写了一个叫 <a href="https://github.com/starters/kik" target="_blank" rel="external">kik</a> 的工具和某个公司同名了，这天公司的律师要求其删掉这个模块，把 kik 这个名字“让”给他们，作者不答应，律师就直接找 NPM 了，而 NPM 未经作者同意就把包的权限转移给了这家公司。于是，Azer 一怒冲冠，将他所有的 NPM 包全部删掉了。</p>
@@ -2316,7 +2413,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/"/>
     <id>http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/</id>
     <published>2016-03-25T02:54:04.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms04.alicdn.com/tps/i4/TB1w6tIMXXXXXcDaXXXlzJZ8pXX-900-500.jpg" alt="新版卖家中心 Bigpipe 实践（二）"></p>
 <p>自从上次通过 <a href="http://taobaofed.org/blog/2015/12/17/seller-bigpipe/">新版卖家中心 Bigpipe 实践（一）</a> 阐述了 Bigpipe 实现思路和原理之后，一转眼春天就来了。而整个实践过程，从开始冬天迎着冷风前行，到现在逐渐回暖。其中感受和收获良多，和大家分享下。代码偏多，请自带编译器。</p>
 <h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>一切技术的产生或者使用都是为了解决问题，所以开始前，看下要解决的问题：</p>
@@ -2537,7 +2634,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/"/>
     <id>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</id>
     <published>2016-03-23T04:30:27.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1x3hvMXXXXXcrXFXXXXXXXXXX-900-500.jpg" alt="一个前端的自我修养"></p>
 <p>今天给大家分享的主题是前端的自我成长，这是一个关于成长的话题。</p>
 <p>很多人都有这样的感觉：听了很多技术圈子的分享，有的有深度，有的循循善诱，深入浅出，但是呢，几年下来，到底哪些用上了，哪些对自己真的有帮助了?反而有些模糊。</p>
@@ -2642,7 +2739,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/21/internationalization/"/>
     <id>http://taobaofed.org/blog/2016/03/21/internationalization/</id>
     <published>2016-03-21T07:42:13.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1qZUTLVXXXXbMapXXXXXXXXXX-900-500.png" alt="淘宝前端国际化方案探索"></p>
 <p>全球化、农村、云计算大数据是我们目前集团非常明确的未来战略。全球化会让我们服务更多的人，服务全球范围内的人。落实到我们前端这块就需要有一套国际化的方案，能为海外用户提供非常好的体验，推进集团全球化进展。</p>
 <p>这段时间有幸交接了淘宝海外的业务，淘宝海外就是专门面向国外用户提供服务的，因此在国际化这边有一些尝试，但是还远远不够，之前主要面向的用户是海外华人和留学生等，所以国际化只是做了一些繁简体转换等。后面多语言还会面临更多更大的挑战。在这里我思考整理汇总一下国际化方案，希望与大家讨论完善，后续可以针对一些重要的点进行突破和落地，最终产出一整套国际化方案。</p>
@@ -2735,7 +2832,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/"/>
     <id>http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/</id>
     <published>2016-03-18T03:44:08.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
+    <updated>2016-07-29T03:55:29.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1WJcvLVXXXXX5XFXXXXXXXXXX-900-500.jpg" alt="如何优雅的在 koa 中处理错误"></p>
 <blockquote>
 <p>软件开发时，有 80% 的代码在处理各种错误。<br> </p><p style="text-align:right">——某著名开发者</p><p></p>
@@ -2823,99 +2920,6 @@ process.on(&apos;exit&apos;, function(code) {
       <category term="koa" scheme="http://taobaofed.org/tags/koa/"/>
     
       <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[店铺 KISSY 版本大乱斗]]></title>
-    <link href="http://taobaofed.org/blog/2016/03/17/kissy-version-solution/"/>
-    <id>http://taobaofed.org/blog/2016/03/17/kissy-version-solution/</id>
-    <published>2016-03-17T07:22:52.000Z</published>
-    <updated>2016-07-22T06:19:00.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1nHczLVXXXXX2XXXXXXXXXXXX-900-500.jpg" alt="店铺 KISSY 版本大乱斗"></p>
-<h2 id="店铺-KISSY-版本大乱斗"><a href="#店铺-KISSY-版本大乱斗" class="headerlink" title="店铺 KISSY 版本大乱斗"></a>店铺 KISSY 版本大乱斗</h2><p>可能你不知道，从去年（或者前年？）某个时候起，店铺开始着手将 KISSY 版本从 1.3 升级到 1.4, 期间因为业务或团队变动已经换了两波前端，然而还是没有升级彻底，即部分店铺是 1.4, 另一部分还停留在 1.3 上。不彻底的升级意味着根本就没有升级，因为所有的代码要同时兼容两个版本。</p>
-<p>我从 15 年 10 月接手店铺业务，前不久学长找我商量店铺升级 KISSY 6.0 的事情，那一刻我的内心是崩溃的、拒绝的、惨不忍睹的……然而痛苦归痛苦，坑终究是要填的，跟各位大大讨论方案后做了一些尝试，最后终于在上周把这个问题解决掉了。本文就来向大家简单介绍下这段历史以及最终的解决方案，最后附带个人对于开放脚本的一些思考。</p>
-<h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><blockquote>
-<p>对于第三方代码，安全问题自不用去提，在此基础上，对于官方代码和三方代码一定要做技术方案的隔离，否则当未来官方代码需要升级技术方案的时候就会步履维艰。</p>
-</blockquote>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在店铺体系里，装修系统是很重要的一部分，在整个体系建立之初，为了保证卖家可以在装修过程中有更多的选择，店铺开放了其模块体系：第三方开发者可以开发店铺的模块，然后上架到装修市场，然后卖家需要的时候去市场里订购。（第三方开放者开发的模块下文统一称为设计师模块）</p>
-<p>开放模块意外着第三方开发者可以写 HTML, 写 CSS, 而且可以写 JavaScript, 在当时（2010？）的技术条件下，主要使用了两个库：</p>
-<ul>
-<li>Caja: 负责三方代码的安全问题，出自于谷歌</li>
-<li>KISSY 1.3: 作用跟之于我们的业务类似，工具库</li>
-</ul>
-<p>KISSY 1.3 自不必多说，Caja 是什么呢，借用其官方介绍：</p>
-<blockquote>
-<p>Caja is a tool for safely embedding third party HTML, CSS and JavaScript in your website.</p>
-</blockquote>
-<p>值得一提的是，经过这套开发体系的编译，最终我们存储的设计师代码是这样的：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;  ___.loadModule(&#123;      </span><br><span class="line">  <span class="string">'instantiate'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">___, IMPORTS___</span>) </span>&#123;        </span><br><span class="line">    <span class="keyword">return</span> ___.prepareModule(&#123;            </span><br><span class="line">      <span class="string">'instantiate'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">___, IMPORTS___</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> dis___ = IMPORTS___;              </span><br><span class="line">        <span class="keyword">var</span> moduleResult___, x0___, x1___, x2___, x3___, x4___, x5___,              </span><br><span class="line">              x6___, x7___, x8___, x9___, x10___, x11___, x12___, x13___,              </span><br><span class="line">              x14___, x15___, x16___, x17___, x18___, x19___, x20___, x21___,              </span><br><span class="line">              x22___, x23___, x24___, x25___, x26___, x27___, x28___, x29___,              </span><br><span class="line">              x30___, x31___, x32___, x33___, x34___, x35___, x36___, x37___,              </span><br><span class="line">              x38___, x39___, x40___, x41___, x42___, x43___;              </span><br><span class="line">        moduleResult___ = ___.NO_RESULT;              </span><br><span class="line">        <span class="keyword">try</span> &#123;                </span><br><span class="line">          &#123;                  </span><br><span class="line">            &#123;                    </span><br><span class="line">              <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">x</span>) </span>&#123;                      </span><br><span class="line">                <span class="keyword">var</span> x0___;</span><br><span class="line">                <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
-<p><strong>压缩的、混淆的，同时更是不可控的。</strong></p>
-<p>另一方面，基于 Caja 我们定制了自己的 shop-caja, 其中在初始化设计师模块时会对 KISSY 做一些改写，负责这部分的代码是 Caja-adapter，因此，我猜测，选择这套方案的同学一定是考虑到未来 KISSY 版本的升级问题，而对应的策略就是在 Caja-adapter 这一层做文章：<strong>无论是 KISSY 哪个版本，在 adapter 里总会让其 API 兼容 KISSY 1.3.</strong></p>
-<p>以上只是个人猜测，因为人员的变动这些猜测很难去考证或者考证了也没什么意义。最终的结果就是：前任同学在接手了进行一半的升级工作之后，试图通过这样方式去实现，然而在一年之后还是把这个半成品交接到我这个现任手中。</p>
-<h3 id="多版本引发的问题"><a href="#多版本引发的问题" class="headerlink" title="多版本引发的问题"></a>多版本引发的问题</h3><p>因为上文说的 KISSY 版本问题，引发了一些不良后果：</p>
-<h4 id="1-凌晨的惊悚"><a href="#1-凌晨的惊悚" class="headerlink" title="1. 凌晨的惊悚"></a>1. 凌晨的惊悚</h4><p>大促活动有个超级顶通，各个业务方都要引入，店铺当然也不例外，之前作为日常需求接入，因为顶通开起来就是一个很简单的展示区块，因此和开发在预发上看了几个店铺没有什么问题于是就推到预发，然后这个顶通是凌晨才会推送上线的，因此这时候线上也自然不会有任何感知。</p>
-<p>直到凌晨一点左右，之前的缓存基本失效，预发环境超级顶通生效，使用 KISSY 1.3 的店铺脚本无法执行，很多模块初始化失败，排查之后才发现超级顶通里没有兼容 1.3 的语法，其中最为严重的一点是 <code>use</code> io 模块失效，这里不得不提两个点：</p>
-<ol>
-<li>KISSY 臭名昭著的核心模块改名事件：ajax(1.3) -&gt; io(1.4)</li>
-<li><code>KISSY.use</code> 失败之后会导致页面其他依赖 KISSY 的脚本都无法执行</li>
-</ol>
-<p>然后开发同学紧急下掉了超级顶通，我当时惊出了一身冷汗，然而负责超级顶通的然姐倒是很淡定 LOL…</p>
-<p>所以出现这个问题可能是因为很多因素：<strong>测试的时候没有回归 1.3 的店铺、超级顶通没有兼容 1.3 语法、<code>KISSY.use</code> 的机制太过脆弱</strong>……但是原罪还是店铺里竟然还存在 KISSY 1.3 版本这一事实。</p>
-<h4 id="2-难以升级的开发模式"><a href="#2-难以升级的开发模式" class="headerlink" title="2. 难以升级的开发模式"></a>2. 难以升级的开发模式</h4><p>店铺目前的整个开发模式很落后 + 繁琐：KISSY 1.3 的语法，自写的打包脚本 <code>Gruntfile</code>, 异常落后的模块组织体系……自我然不会将这些都归罪于 KISSY 版本，但是如果不解决 KISSY 版本的问题，我们未来无法升级到 KISSY 6.0, 无法升级到 cake, 无法重新梳理店铺的模块机制，无法切换到新版的发布系统，接下来就是一步一步的老死？NO!</p>
-<h4 id="3-时不时的线上问题"><a href="#3-时不时的线上问题" class="headerlink" title="3. 时不时的线上问题"></a>3. 时不时的线上问题</h4><p>因为两种版本同时存在，导致了线上的情况会变复杂，进而就是时不时的线上问题。是的，每次线上问题花两到三个小时都可以解决，然而这些付出几乎是毫无意义的，每次排查类似的线上问题我都会很头疼：</p>
-<ul>
-<li>技术提升了吗？No</li>
-<li>会更加了解业务吗？Maybe</li>
-<li>会帮助到业务成长吗？Very little</li>
-<li>所以，有意义吗？Who knows……</li>
-</ul>
-<p>所以，基于这些原因，必须要扛起担子解决问题，接着我们就来聊聊方案吧。</p>
-<h3 id="解决方案的探索"><a href="#解决方案的探索" class="headerlink" title="解决方案的探索"></a>解决方案的探索</h3><p>在这个问题上，大致的解决思路有两个：</p>
-<h4 id="1-利用-caja-adapter-保证-KISSY-代码兼容-1-3-的语法"><a href="#1-利用-caja-adapter-保证-KISSY-代码兼容-1-3-的语法" class="headerlink" title="1. 利用 caja-adapter 保证 KISSY 代码兼容 1.3 的语法"></a>1. 利用 caja-adapter 保证 KISSY 代码兼容 1.3 的语法</h4><p>这个方案，上文已经简单提过，并且店铺前任前端同学之前也有做一些尝试，但是因为 1.4 跟 1.3 的 <code>anim</code> 模块差别太大，一直没有进展，最终随着人员变动无疾而终。简单总结下优缺点：</p>
-<ul>
-<li>优点：比较优雅，始终只会加载一份 KISSY</li>
-<li>缺点：<ul>
-<li>可持续升级难度太大，1.4 到 1.3 的语法兼容已经停顿了一年多，更不用提 6.0 到 1.3</li>
-<li>方案相对复杂，需要熟悉 shop-caja 的整个机制，然而熟悉了还不一定能搞定</li>
-</ul>
-</li>
-</ul>
-<h4 id="2-隔离设计师模块和官方代码所依赖的-KISSY-版本"><a href="#2-隔离设计师模块和官方代码所依赖的-KISSY-版本" class="headerlink" title="2. 隔离设计师模块和官方代码所依赖的 KISSY 版本"></a>2. 隔离设计师模块和官方代码所依赖的 KISSY 版本</h4><p>这个方案是之前跟@展炎、@释然、@乔福、@林谦一起讨论出来的结果，大体思路：有设计师模块的店铺引入两份 KISSY，一份供官方代码依赖，另一份供 shop-caja 和设计师模块使用。同样优缺点：</p>
-<ul>
-<li>优点：一劳永逸，未来店铺官方代码做技术升级时基本不会影响到设计师模块</li>
-<li>缺点：稍稍有点粗暴，有设计师模块的页面会加载两份 KISSY 以及用到的核心模块，多多少少会影响性能</li>
-</ul>
-<p>对比了两种方案之后，最终选择了方案 2, 原因呢：一方面方案 1 已经有同学尝试未果，另一方面自身没有太多的精力去研究 shop-caja 以及 KISSY 的核心代码。 确定方案之后就是 step by step 的行动啦~</p>
-<h3 id="Just-Do-IT"><a href="#Just-Do-IT" class="headerlink" title="Just Do IT"></a>Just Do IT</h3><p>整个方案实施起来并没有花费太多精力，大体的步骤如下：</p>
-<ol>
-<li>基于 KISSY 1.3 迁出一个 kissy-caja 的仓库，其中包括 KISSY 所有的核心模块</li>
-<li>为了保证两个 KISSY 互不影响，将 kissy-caja 里所有的 KISSY 全局变量替换为 KISSY_CAJA</li>
-<li><p>同时将 shop-caja 里所有用到 KISSY 的地方替换为 KISSY_CAJA, 其中较为重要的是初始化设计师模块的地方：</p>
- <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">prepareEnv.run(&#123;</span><br><span class="line">  <span class="comment">// KISSY 就是从这里传进设计师模块脚本里的</span></span><br><span class="line">  KISSY: exposed_kissy,</span><br><span class="line">  GS: tameGlobalService,</span><br><span class="line">  onerror: onerror</span><br><span class="line"> &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">re, a</span>) </span>&#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在页面中 shop-caja 之前引入 kissy-caja</p>
-</li>
-<li>测试：或许这一步花费时间最多了吧，找了 N 多个有设计师的模块在预发上测试，中间遇到了一些小问题下文会提及</li>
-<li><p>线上验证：发布完成后，观察了 jstracker 的异常数据，每 PV 报错率跟之前差别不大，基本稳定在 10% 左右，基本确保问题解决。</p>
-<p> <img src="https://img.alicdn.com/tps/TB1g0VwLpXXXXahXFXXXXXXXXXX-1666-418.png" alt=""></p>
-</li>
-</ol>
-<h4 id="过程中遇到问题"><a href="#过程中遇到问题" class="headerlink" title="过程中遇到问题"></a>过程中遇到问题</h4><p>比较欣慰的是用了这个方案之后，预发上只出现了一个问题：<strong>jsonp 方法 callback 同名导致报错</strong>。KISSY 中 jsonp 的回调名是通过 <code>jsonp + S.guid()</code> 来生成的，而这个 guid 是挂载在 KISSY 下而非全局变量下，因此两个版本的 KISSY 很大几率会生成相同的 guid, 而多个 jsonp 回调名相同之后就会导致后面执行的方法出错，解决方案也很简单，因为 guid 是从 0 开始累加的，所以我直接将 kissy-caja 的 guid 基准值从 0 改为 12306, 别问我为什么是 12306, 任性！</p>
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>最后，虽然我对于开放第三方代码没有做过研究，但是因为这件事对开放三方代码有一点自己的认识：</p>
-<p><strong>对于第三方代码，安全问题自不用去提，在此基础上，对于官方代码和三方代码一定要做技术方案的隔离，否则当未来官方代码需要升级技术方案的时候就会步履维艰。</strong></p>
-<p>比如说，如果当时店铺的设计师模块直接基于 jQuery 某个指定版本去开发，现在也就不会遇到这些问题了，当然这只是个马后炮，希望对类似应用会有帮助吧。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1nHczLVXXXXX2XXXXXXXXXXXX-900-500.jpg" alt="店铺 KISSY 版本大乱斗"></p>
-<h2 id="店铺-KISSY-版本大乱斗"><a href="#]]>
-    </summary>
-    
-      <category term="第三方" scheme="http://taobaofed.org/tags/%E7%AC%AC%E4%B8%89%E6%96%B9/"/>
-    
-      <category term="代码安全" scheme="http://taobaofed.org/tags/%E4%BB%A3%E7%A0%81%E5%AE%89%E5%85%A8/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
