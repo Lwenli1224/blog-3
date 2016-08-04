@@ -143,42 +143,6 @@
   <article class="article article-summary">
     <div class="article-summary-inner">
       
-<a href="/blog/2016/08/04/instructions-of-semver/" class="thumbnail">
-  
-    <span style="background-image:url(https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png
-)" alt="论版本号的正确打开方式" class="thumbnail-image"></span>
-  
-</a>
-
-      <div class="article-meta">
-        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
-        <p class="date"><time datetime="2016-08-04T09:48:27.000Z" itemprop="datePublished">2016-08-04</time></p>
-      </div>
-      <h2 class="article-title">
-        <a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a>
-      </h2>
-      <p class="article-excerpt">
-        
-        
-版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……
-面对如此多的场景，版本号的命名却存在很大问题。举些例子：
-
-开始写一个新项目 / 模块时，不管三七二十一，都从 0.0.1 起版本，直到项目不再维护时，版本还停留在 0.0.48，前两位永远都是 0。
-API 变化巨大，而版本号雷打不动一步一个脚印。一个二方包从 0.
-      </p>
-    </div>
-  </article>
-
-    
-  
-    
-    
-    
-    
-        
-  <article class="article article-summary">
-    <div class="article-summary-inner">
-      
 <a href="/blog/2016/05/03/promise-anti-patterns/" class="thumbnail">
   
     <span style="background-image:url(http://gtms02.alicdn.com/tps/i2/TB1d9xhJFXXXXa8XFXX2AXZ8pXX-900-500.png
@@ -203,14 +167,10 @@ Promises
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -241,10 +201,14 @@ Promises
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -275,14 +239,10 @@ Midway 的诞生也有 2 年多的时间，我个人参与维护也有 1 年多�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -313,10 +273,14 @@ Midway 的诞生也有 2 年多的时间，我个人参与维护也有 1 年多�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -346,14 +310,10 @@ Midway 的诞生也有 2 年多的时间，我个人参与维护也有 1 年多�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -385,10 +345,14 @@ Midway 的诞生也有 2 年多的时间，我个人参与维护也有 1 年多�
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -424,14 +388,10 @@ callbac
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -460,10 +420,14 @@ callbac
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -492,6 +456,40 @@ callbac
 Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。程序要能处理文本流，因为这是最通用的接口。   – Douglas McIlroy
 
 还记得
+      </p>
+    </div>
+  </article>
+
+    
+  
+    
+    
+    
+    
+        
+  <article class="article article-summary">
+    <div class="article-summary-inner">
+      
+<a href="/blog/2016/01/26/nodejs-ipc/" class="thumbnail">
+  
+    <span style="background-image:url(http://gtms02.alicdn.com/tps/i2/TB1dzEoLpXXXXbXaXXX2AXZ8pXX-900-500.png
+)" alt="进程间通信的另类实现" class="thumbnail-image"></span>
+  
+</a>
+
+      <div class="article-meta">
+        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+        <p class="date"><time datetime="2016-01-26T08:25:49.000Z" itemprop="datePublished">2016-01-26</time></p>
+      </div>
+      <h2 class="article-title">
+        <a href="/blog/2016/01/26/nodejs-ipc/" class="title">进程间通信的另类实现</a>
+      </h2>
+      <p class="article-excerpt">
+        
+        
+背景Node.js 内置的进程间通信使用非常简单，但也有一定的局限性，只能在父子进程间通信。下面是官方文档给的一个例子。
+首先是父进程的 parent.js :
+12345678const cp = require('child_process');const n = cp.fork(`$&#123;__dirname&#125;/sub.js`);n.on('message', (m) =&g
       </p>
     </div>
   </article>
@@ -557,7 +555,7 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
             </div>
             
             <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
               <p class="item-title"><a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a></p>
               
               <p class="item-author">by 法海</p>
@@ -667,7 +665,7 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">37</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
     </div>
   </div>
 
