@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2016-07-29T03:55:29.000Z</updated>
+  <updated>2016-08-04T11:17:52.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,159 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[论版本号的正确打开方式]]></title>
+    <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
+    <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
+    <published>2016-08-04T09:48:27.000Z</published>
+    <updated>2016-08-04T11:17:52.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
+<p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
+<p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
+<ul>
+<li>开始写一个新项目 / 模块时，不管三七二十一，都从 <code>0.0.1</code> 起版本，直到项目不再维护时，版本还停留在 <code>0.0.48</code>，前两位永远都是 0。</li>
+<li>API 变化巨大，而版本号雷打不动一步一个脚印。一个二方包从 <code>0.0.8</code> 升级到 <code>0.0.9</code> 就引起了整个项目的崩溃。</li>
+<li>依赖二方 / 三方包时，不知道该依赖哪个版本，有时随便指定了一个，有时则直接依赖了 <code>*</code>。</li>
+</ul>
+<hr>
+<h2 id="版本号的命名"><a href="#版本号的命名" class="headerlink" title="版本号的命名"></a>版本号的命名</h2><h3 id="SemVer"><a href="#SemVer" class="headerlink" title="SemVer"></a>SemVer</h3><p>根据国际主流的惯例，我们使用「语义化版本（<a href="http://semver.org/" target="_blank" rel="external">Semantic Versioning</a>）」的命名方式，有时简称 SemVer。</p>
+<p>语义化版本号（以下简称「版本号」）的格式是：<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>。即使用三位非负整数，以点号 <code>.</code> 连接。</p>
+<p>如：<code>1.4.15</code>、<code>6.2.0</code>。</p>
+<h3 id="每一位版本号的含义"><a href="#每一位版本号的含义" class="headerlink" title="每一位版本号的含义"></a>每一位版本号的含义</h3><ol>
+<li><code>&lt;major&gt;</code> 即主版本号，俗称大版本升级。改动到主版本号时，标志着 API 发生了巨大变化，包括但不限于新增特性、修改机制、删除功能， <strong>一般不兼容上一个主版本号</strong>。</li>
+<li><code>&lt;minor&gt;</code> 即次版本号，俗称小版本升级。当我们进行常规的新增或修改功能时，改动次版本号，但是 <strong>必须是向前兼容的</strong>。这也意味着我们 <strong>不能直接删除某个功能</strong>。如若必要，我们可以在 <a href="http://guide.taobao.net/6.changelog.php" target="_blank" rel="external">changelog</a> 中标记某项功能为「即将删除（Deprecated）」，然后在下一个大版本中将其彻底删除。</li>
+<li><code>&lt;patch&gt;</code> 即修订号，俗称 bug 修复。顾名思义，如果仅仅为了修复或调整一些小问题，我们就只改动修订号。</li>
+</ol>
+<p>所以，当我们明确了每一位的含义和作用后，就不会陷入「每次只改最末位」的尴尬中了。</p>
+<p>那如何判断一个修改应该是改动修订号还是次版本号呢？视情况而定。比如对于「修改了 app 图标」这件事来说，如果只是调整了图标的间距位置，那么可以认作问题修复；如果把整个图标换了，配上了不同的标语，那么这应该是一次功能改动。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>版本号前不要加 <code>v</code>。</li>
+<li>不要在数字前补 <code>0</code>。错误示例：<code>01.12.03</code>。</li>
+<li>每一位版本号按照 +1 的速度递增，不要在版本号之间跳跃。</li>
+<li>主版本号停留在 <code>0</code> 的版本号，即 <code>0.x.x</code> 应当视作还在内部开发阶段的代码。如果代码有公共 API，此时不宜对外公开。</li>
+<li><code>1.0.0</code> 的版本号用于界定公共 API 的形成。</li>
+<li>当次版本号递增时，修订号归零；当主版本号递增时，次版本号、修订号归零。</li>
+<li>进行新的开发时，版本号从 <code>0.1.0</code> 开始。</li>
+<li>如果不小心把一个不兼容的改版当成了次版本号发行，应当发行一个新的次版本号来更正这个问题并且恢复向下兼容。注意 <strong>不能去修改已发行的版本</strong>。</li>
+</ul>
+<h3 id="一个典型的版本号发展示例"><a href="#一个典型的版本号发展示例" class="headerlink" title="一个典型的版本号发展示例"></a>一个典型的版本号发展示例</h3><ol>
+<li><code>0.1.0</code></li>
+<li><code>0.1.1</code></li>
+<li><code>0.1.2</code></li>
+<li><code>0.2.0</code></li>
+<li><code>1.0.0</code></li>
+<li><code>1.1.0</code></li>
+<li><code>1.1.1</code></li>
+<li>……</li>
+</ol>
+<h3 id="快速修改版本号"><a href="#快速修改版本号" class="headerlink" title="快速修改版本号"></a>快速修改版本号</h3><p>如果一个包发布在 NPM / TNPM 中，可以快速修改其版本号。会自动触发一个 git 提交。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 递增一个修订号</span><br><span class="line">npm version patch</span><br><span class="line"></span><br><span class="line"># 递增一个次版本号</span><br><span class="line">npm version minor</span><br><span class="line"></span><br><span class="line"># 递增一个主版本号</span><br><span class="line">npm version major</span><br></pre></td></tr></table></figure>
+<h2 id="预发版本号"><a href="#预发版本号" class="headerlink" title="预发版本号"></a>预发版本号</h2><p>在常规的版本号命名之上还有一个特殊类别，叫做预发版本号（prerelease version）。它表示当前版本是一个不稳定的版本，使用它时需要注意风险。</p>
+<p>预发版本号的格式是 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;tag&gt;</code>，即前半部分和常规版本号相同，然后跟上连接符 <code>-</code>，后面再跟上字母数字点号连接符（[0-9A-Za-z-.]）。</p>
+<p>一个典型的预发版本号形如 <code>1.0.0-beta.1</code>。建议使用这种 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;stage&gt;.&lt;num&gt;</code> 的形式。其中 <code>&lt;stage&gt;</code> 一般选用：<code>alpha</code>、<code>beta</code>、<code>rc</code>。</p>
+<p>预发版本号是常规版本号的附属，因此在版本的大小比较上，仍然先比较常规版本号部分；对于预发标记部分的比较，则是根据 ASCII 字母表中的顺序来进行。</p>
+<h3 id="一个典型的预发版本号发展示例"><a href="#一个典型的预发版本号发展示例" class="headerlink" title="一个典型的预发版本号发展示例"></a>一个典型的预发版本号发展示例</h3><ol>
+<li><code>0.9.0</code></li>
+<li><code>1.0.0-alpha.1</code></li>
+<li><code>1.0.0-alpha.2</code></li>
+<li><code>1.0.0-beta.1</code></li>
+<li><code>1.0.0-rc.1</code></li>
+<li><code>1.0.0</code></li>
+<li><code>1.0.1</code></li>
+<li>……</li>
+</ol>
+<h2 id="依赖的版本号标记法"><a href="#依赖的版本号标记法" class="headerlink" title="依赖的版本号标记法"></a>依赖的版本号标记法</h2><p>我们广泛使用的 NPM 本身也遵从 SemVer 版本号命名，除了包版本本身的定义之外，最重要的是对三方包依赖的版本号的定义，不当的写法将导致一系列潜在的问题。</p>
+<h3 id="指定可用的版本号范围"><a href="#指定可用的版本号范围" class="headerlink" title="指定可用的版本号范围"></a>指定可用的版本号范围</h3><p>在 NPM 包的 deps 系列字段中，经常出现形如 <code>~1.0.4</code>、<code>^2.1.1</code> 这样的标记法，这种标记法标记的是「版本号范围（version range）」，它表示依赖的三方包其版本号只要落在定义版本号范围内，即算合法。另外，当运行 <code>npm update</code> 时，依赖的包将升级到版本号范围支持的最高版本。</p>
+<p>版本号范围的标记符号有很多种，诸如比较符号 <code>&gt;=</code>、<code>&lt;</code> 等；连接符 <code>-</code>；通配符 <code>x</code>、<code>*</code>；模糊符 <code>^</code>、<code>~</code>。具体的用法可参考 <a href="https://docs.npmjs.com/misc/semver" target="_blank" rel="external">NPM 官方文档</a>，这里仅给出常用的标记方式。</p>
+<table>
+<thead>
+<tr>
+<th>含义</th>
+<th>最简写法</th>
+<th>使用通配符的写法</th>
+<th>使用模糊符的写法</th>
+<th>表达的版本号范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仅跟进修复版本</td>
+<td><code>1.0</code></td>
+<td><code>1.0.x</code></td>
+<td><code>~1.0.4</code></td>
+<td><code>&gt;=1.0.4 &lt;1.1.0</code></td>
+</tr>
+<tr>
+<td>跟进每个小版本更新</td>
+<td><code>1</code></td>
+<td><code>1.x</code>、<code>1.x.x</code></td>
+<td><code>^1.0.4</code></td>
+<td><code>&gt;=1.0.4 &lt;2.0.0</code></td>
+</tr>
+<tr>
+<td>始终升级到最新版</td>
+<td><code>*</code></td>
+<td><code>*</code></td>
+<td><code>*</code></td>
+<td><code>&gt;=0.0.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>我们建议在写法上采用 <strong>「使用通配符的写法」</strong>，并且一般情况下 <strong>「跟进每个小版本更新」</strong>，但 <strong>不「始终升级到最新版」</strong>，即书写为 <code>1.x</code>。由于 <code>&lt;major&gt;</code> 位版本是不向下兼容的，所以在大版本的控制上，仍然采用人为干预以保证安全。</p>
+<h3 id="不同的-deps-字段"><a href="#不同的-deps-字段" class="headerlink" title="不同的 deps 字段"></a>不同的 deps 字段</h3><p>NPM 包中的依赖有几种形式的字段：<code>dependencies</code>、<code>devDependencies</code>、<code>peerDependencies</code>。以下简要介绍下各字段的不同含义，以及使用场景。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+<th>依赖被安装的时机</th>
+<th>使用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dependencies</code></td>
+<td>运行时依赖，包的调用者需要使用到的依赖</td>
+<td>执行 <code>npm install</code> 后会把当前包的 <code>dependencies</code> 字段中的所有依赖项安装到 <code>./node_modules</code> 目录。<br> 执行 <code>npm install xxx</code> 后会把 xxx 安装到 <code>./node_modules</code> 下，同时会安装 xxx 的 <code>dependencies</code> 字段依赖项到 <code>./node_modules/xxx/node_modules</code> 目录。  <br> 执行 <code>npm install xxx --save</code> 后会额外把 xxx 作为依赖存到当前包的 <code>dependencies</code> 字段中。</td>
+<td>所有程序运行需要用到的依赖代码，如 lodash 等。</td>
+</tr>
+<tr>
+<td><code>devDependencies</code></td>
+<td>开发时依赖，包的开发维护者需要使用到的依赖</td>
+<td>执行 <code>npm install</code> 后也会把当前包的 <code>devDependencies</code> 字段中的所有依赖项安装到 <code>./node_modules</code> 目录。<br> 执行 <code>npm install xxx</code> 后会把 xxx 安装到 <code>./node_modules</code> 下，但不会安装 xxx 的 <code>devDependencies</code> 字段依赖项。 <br> 执行 <code>npm install xxx --save-dev</code> 后会额外把 xxx 作为开发时依赖存到当前包的 <code>devDependencies</code> 字段中。</td>
+<td>一般是一些开发调试的辅助工具，如测试工具 mocha、构建工具 gulp 等。</td>
+</tr>
+<tr>
+<td><code>peerDependencies</code></td>
+<td>略</td>
+<td>略</td>
+<td>仅在 <a href="https://nodejs.org/en/blog/npm/peer-dependencies/" target="_blank" rel="external">特定场景</a> 下有用，默认不使用此字段。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ol>
+<li><a href="http://semver.org/" target="_blank" rel="external">Semantic Versioning</a></li>
+<li><a href="https://docs.npmjs.com/misc/semver" target="_blank" rel="external">NPM SemVer</a></li>
+</ol>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
+<p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM ]]>
+    </summary>
+    
+      <category term="版本号" scheme="http://taobaofed.org/tags/%E7%89%88%E6%9C%AC%E5%8F%B7/"/>
+    
+      <category term="SemVer" scheme="http://taobaofed.org/tags/SemVer/"/>
+    
+      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[纠结的链接：ln、ln -s、fs.symlink、require]]></title>
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -116,7 +264,7 @@
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -197,7 +345,7 @@
     <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
     <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
     <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
 <p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
@@ -300,7 +448,7 @@
     <link href="http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/"/>
     <id>http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/</id>
     <published>2016-06-02T06:45:32.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1dcfNKXXXXXXcXVXXXXXXXXXX-900-500.png" alt="聊一聊淘宝首页和它背后的一套"></p>
 <p>从 14 年双十二结束开始接手淘宝首页，到如今差不多 1 年半时间了，不久前完成了首页相关工作的交接。经历了两次改版和一次从 PHP 到 Node 的迁移，还是颇有感受，下面给大家分享下。</p>
 <h3 id="一、相关背景介绍"><a href="#一、相关背景介绍" class="headerlink" title="一、相关背景介绍"></a>一、相关背景介绍</h3><p>淘宝首页是淘宝的门面，承载着几乎淘系所有业务的入口，流量很大，量级单位为亿。近几年无线端崛起，业务重点开始向无线终端偏移（目前不能叫偏移，基本以无线为主了），所以淘宝 PC 端首页的流量也有削减，不过即便如此，它的日均 PV 依然相当高。</p>
@@ -450,7 +598,7 @@
     <link href="http://taobaofed.org/blog/2016/05/23/video-player/"/>
     <id>http://taobaofed.org/blog/2016/05/23/video-player/</id>
     <published>2016-05-23T03:26:29.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
 <ul>
 <li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
@@ -1158,7 +1306,7 @@
     <link href="http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/"/>
     <id>http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/</id>
     <published>2016-05-13T07:59:50.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1zithJVXXXXabXVXXXXXXXXXX-900-500.jpg" alt="无线端的弹幕实现方案"></p>
 <p>前段时间做了游戏的相关业务，其中弹幕相关的内容自成一块。弹幕已经不只是最初的视频弹幕了，战火已经烧到了评论区，烧到了手机淘宝的首页搜索结果。作为一种近几年迅速燃起的内容呈现形式，有必要适时引入，对于休闲化、娱乐化的业务更是如此。那么，要做出一个较为完整的弹幕效果来，需要哪几个部分呢？尤其是，在集团内部，怎么快速地搭建起一个可用的弹幕框架来？本文分3块来阐述。</p>
 <ol>
@@ -1213,7 +1361,7 @@
     <link href="http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/"/>
     <id>http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/</id>
     <published>2016-05-05T07:03:37.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1brqAJFXXXXaGXVXXXXXXXXXX-900-500.jpg" alt="Android 新一代编译 toolchain Jack &amp; Jill 简介"></p>
 <p>2016 年 3 月 10 日， Google 向外界发布了 Android N 的预览版，并宣布了 Android N 的 <a href="https://developer.android.com/intl/zh-cn/preview/overview.html" target="_blank" rel="external">Roadmap</a>，Android N 的最终版源代码将于今年 8 或 9 月份释出到 AOSP 项目。</p>
 <p>在众多的 Android N 新特性中，有一项新工具链的出现与 Android 生态圈的所有开发者息息相关，即 Jack &amp; Jill 编译器的引入。</p>
@@ -1404,7 +1552,7 @@
     <link href="http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/"/>
     <id>http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/</id>
     <published>2016-05-03T08:59:13.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms02.alicdn.com/tps/i2/TB1d9xhJFXXXXa8XFXX2AXZ8pXX-900-500.png" alt="Promise 反模式"></p>
 <p>Promises are about making asynchronous code retain most of the lost properties of synchronous code such as flat indentation and one exception channel. – Bluebird Wiki: Promise Anti Patterns</p>
 <p>Promises 是为了让异步代码也能保持这些同步代码的属性：扁平缩进和单异常管道。</p>
@@ -1494,7 +1642,7 @@
     <link href="http://taobaofed.org/blog/2016/04/25/performance-composite/"/>
     <id>http://taobaofed.org/blog/2016/04/25/performance-composite/</id>
     <published>2016-04-25T02:21:18.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1XT4kMFXXXXaBXXXXXXXXXXXX-900-500.png" alt="无线性能优化：Composite"></p>
 <p>一个 Web 页面的展示，简单来说可以认为经历了以下下几个步骤。</p>
 <p><img src="https://img.alicdn.com/tps/TB1eabOLpXXXXX3XFXXXXXXXXXX-1093-167.jpg_720x720.jpg" alt=""></p>
@@ -1747,7 +1895,7 @@
     <link href="http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/"/>
     <id>http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/</id>
     <published>2016-04-15T09:58:18.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tps/TB1Fs7jMpXXXXabXXXXXXXXXXXX-900-500.jpg" alt="如何定位 Node.js 的内存泄漏"></p>
 <p>在 <a href="http://taobaofed.org/blog/2016/01/14/nodejs-memory-leak-analyze/">《一次 Node.js 应用内存暴涨分析》</a>中，我们处理了一个 Node.js vm 引发的内存泄漏问题，处理过程也是比较艰辛。而在我们实际开发中，可能经常会碰到内存泄漏的问题，但很多情况下，我们对于这种问题的处理是有些迷茫的，没有一定的操作流程，效率比较低。虽然这种问题对于经验的要求比较高，但如果有一个简单的排查流程，还是会有一定帮助的。</p>
 <p>这里简单整理一个流程，欢迎一起探讨，补充。</p>
@@ -1828,7 +1976,7 @@
     <link href="http://taobaofed.org/blog/2016/04/12/webfont-practice/"/>
     <id>http://taobaofed.org/blog/2016/04/12/webfont-practice/</id>
     <published>2016-04-12T01:11:03.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1kaazMpXXXXacXFXXXXXXXXXX-900-500.jpg" alt="H5 页面高级字体应用实践"></p>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
 <li>最近在开发一个 H5 活动页快速搭建平台，可以通过拖拽编辑图片，文字等元素组件，快速搭建出一个移动端的活动页面，基本交互和成品效果类似 PPT 软件。这类活动大量在微信等平台上传播，其中会包含各种动画和特效，而各类高级艺术字体（如：方正兰亭黑，方正彩云，方正大草，方正剑体等）的应用也非常广泛。</li>
@@ -1898,7 +2046,7 @@
     <link href="http://taobaofed.org/blog/2016/04/08/node-web-framework-design/"/>
     <id>http://taobaofed.org/blog/2016/04/08/node-web-framework-design/</id>
     <published>2016-04-08T08:28:29.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms01.alicdn.com/tps/i1/TB146VMMpXXXXXqXXXXWPiOLXXX-900-500.jpeg" alt="企业级 Node.js Web 应用解决方案设计的零零总总"></p>
 <p>年前一直在忙着做新版 Midway 升级的事情，不少同学都知道 Midway 是淘宝的 Node.js Web 应用解决方案，目的是为了更好的做前后端分离，让前端同学开发更简单，生活更幸福（笑）。</p>
 <p>如今 Midway 5 正式发布了，横跨了几个月的开发个工作，期间带来的感慨，也算是史上最多。</p>
@@ -2035,7 +2183,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/"/>
     <id>http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/</id>
     <published>2016-04-05T08:17:53.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1QzViMpXXXXXZXXXXXXXXXXXX-900-500.jpg" alt="淘宝首页性能优化实践"></p>
 <p>想必很多人都已经看到了新版的淘宝首页，它与以往不太一样，这一版页面中四处弥散着个性化的味道，由于独特的个性化需求，前端也面临各方面的技术挑战：</p>
 <ul>
@@ -2144,7 +2292,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/"/>
     <id>http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/</id>
     <published>2016-04-01T03:41:23.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tps/TB1bA_SMXXXXXckXpXXXXXXXXXX-900-500.jpg" alt="「开往春天的 Node.js」 - Node 地下铁第二期线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>寒冬已逝，春之伊始。</p>
 <p>3 月 26 日下午，Node 地下铁第 2 次线下沙龙在上海世博展览馆万信酒店举行。本次沙龙邀请了四位在不同领域应用 Node.js 进行探索的大牛，带着我们在温暖的午后，感受 Node.js 的魅力。</p>
@@ -2224,7 +2372,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/04/01/lose-statistics/"/>
     <id>http://taobaofed.org/blog/2016/04/01/lose-statistics/</id>
     <published>2016-04-01T03:33:34.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1VF2YMXXXXXX2XpXXXXXXXXXX-900-500.png" alt="页面跳转时，统计数据丢失问题探讨"></p>
 <p>为了更好地了解用户对产品的使用情况，业务中，我们经常会收到埋点统计的需求，比如：</p>
 <ul>
@@ -2316,7 +2464,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/31/what-can-we-learn-from-left-pad-event/"/>
     <id>http://taobaofed.org/blog/2016/03/31/what-can-we-learn-from-left-pad-event/</id>
     <published>2016-03-31T08:35:09.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1XPPdMXXXXXc0XVXXXXXXXXXX-900-500.jpg" alt="从 left-pad 事件我们可以学到什么"></p>
 <p>最近 NPM 圈发生了“一个 17 行代码的模块引发的血案”。<a href="https://github.com/azer/left-pad/blob/master/index.js" target="_blank" rel="external">left-pad</a> 工具模块被作者从 NPM 上撤下，所有直接或者间接依赖这个模块的 NPM 包就忧伤的挂掉了，包括 babel 这样的热门项目。</p>
 <p>而其中的原因大概是这样：作者 Azer 写了一个叫 <a href="https://github.com/starters/kik" target="_blank" rel="external">kik</a> 的工具和某个公司同名了，这天公司的律师要求其删掉这个模块，把 kik 这个名字“让”给他们，作者不答应，律师就直接找 NPM 了，而 NPM 未经作者同意就把包的权限转移给了这家公司。于是，Azer 一怒冲冠，将他所有的 NPM 包全部删掉了。</p>
@@ -2413,7 +2561,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/"/>
     <id>http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/</id>
     <published>2016-03-25T02:54:04.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms04.alicdn.com/tps/i4/TB1w6tIMXXXXXcDaXXXlzJZ8pXX-900-500.jpg" alt="新版卖家中心 Bigpipe 实践（二）"></p>
 <p>自从上次通过 <a href="http://taobaofed.org/blog/2015/12/17/seller-bigpipe/">新版卖家中心 Bigpipe 实践（一）</a> 阐述了 Bigpipe 实现思路和原理之后，一转眼春天就来了。而整个实践过程，从开始冬天迎着冷风前行，到现在逐渐回暖。其中感受和收获良多，和大家分享下。代码偏多，请自带编译器。</p>
 <h2 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h2><p>一切技术的产生或者使用都是为了解决问题，所以开始前，看下要解决的问题：</p>
@@ -2634,7 +2782,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/"/>
     <id>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</id>
     <published>2016-03-23T04:30:27.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1x3hvMXXXXXcrXFXXXXXXXXXX-900-500.jpg" alt="一个前端的自我修养"></p>
 <p>今天给大家分享的主题是前端的自我成长，这是一个关于成长的话题。</p>
 <p>很多人都有这样的感觉：听了很多技术圈子的分享，有的有深度，有的循循善诱，深入浅出，但是呢，几年下来，到底哪些用上了，哪些对自己真的有帮助了?反而有些模糊。</p>
@@ -2739,7 +2887,7 @@ process.on(&apos;exit&apos;, function(code) {
     <link href="http://taobaofed.org/blog/2016/03/21/internationalization/"/>
     <id>http://taobaofed.org/blog/2016/03/21/internationalization/</id>
     <published>2016-03-21T07:42:13.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
+    <updated>2016-08-04T11:17:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1qZUTLVXXXXbMapXXXXXXXXXX-900-500.png" alt="淘宝前端国际化方案探索"></p>
 <p>全球化、农村、云计算大数据是我们目前集团非常明确的未来战略。全球化会让我们服务更多的人，服务全球范围内的人。落实到我们前端这块就需要有一套国际化的方案，能为海外用户提供非常好的体验，推进集团全球化进展。</p>
 <p>这段时间有幸交接了淘宝海外的业务，淘宝海外就是专门面向国外用户提供服务的，因此在国际化这边有一些尝试，但是还远远不够，之前主要面向的用户是海外华人和留学生等，所以国际化只是做了一些繁简体转换等。后面多语言还会面临更多更大的挑战。在这里我思考整理汇总一下国际化方案，希望与大家讨论完善，后续可以针对一些重要的点进行突破和落地，最终产出一整套国际化方案。</p>
@@ -2824,102 +2972,6 @@ process.on(&apos;exit&apos;, function(code) {
       <category term="国际化" scheme="http://taobaofed.org/tags/%E5%9B%BD%E9%99%85%E5%8C%96/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[如何优雅的在 koa 中处理错误]]></title>
-    <link href="http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/"/>
-    <id>http://taobaofed.org/blog/2016/03/18/error-handling-in-koa/</id>
-    <published>2016-03-18T03:44:08.000Z</published>
-    <updated>2016-07-29T03:55:29.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1WJcvLVXXXXX5XFXXXXXXXXXX-900-500.jpg" alt="如何优雅的在 koa 中处理错误"></p>
-<blockquote>
-<p>软件开发时，有 80% 的代码在处理各种错误。<br> </p><p style="text-align:right">——某著名开发者</p><p></p>
-</blockquote>
-<p>想让自己的代码健壮，错误处理是必不可少的。这篇文章将主要介绍 koa 框架中错误处理的实现（其实主要是 co 的实现），使用 koa 框架开发 web 应用时进行错误处理的一些方法。</p>
-<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>在 Node.js 中，错误处理的方法主要有下面几种：</p>
-<ul>
-<li>和其他同步语言类似的 throw / try / catch 方法</li>
-<li>callback(err, data) 回调形式</li>
-<li>通过 EventEmitter 触发一个 error 事件</li>
-</ul>
-<p>第一种使用 catch 来捕获错误，十分易用，其他两种在捕获错误时多多少少都有些别扭。</p>
-<p>但是 koa 通过十分巧妙的”黑魔法“让我们可以使用 catch 来捕获异步代码中的错误。比如下面的例子：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> filename = <span class="string">'/nonexists'</span>;</span><br><span class="line"><span class="keyword">let</span> statAsync = <span class="built_in">Promise</span>.promisify(fs.stat);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="keyword">yield</span> statAsync(filename);</span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="comment">// error here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在 koa 中，推荐统一使用 throw / try / catch 的方式来进行错误的触发和捕获，这会让代码更加易读，防止被绕晕。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>上面我们说了 koa 中可以使用 try / catch，我们就来分析下它是如何做到的。koa 基于 co，所以，我们其实主要是分析 co 的实现。（注：这一部分比较偏原理，不关心的可以跳过。）</p>
-<p>首先，我们来看看什么是 generator。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="keyword">yield</span> <span class="string">'start'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">  <span class="keyword">var</span> b = <span class="keyword">yield</span> <span class="string">'end'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(b);</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'over'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> it = gen();</span><br><span class="line"><span class="built_in">console</span>.log(it.next()); <span class="comment">// &#123;value: 'start', done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(it.next(<span class="number">22</span>)); <span class="comment">// 22 &#123;value: 'end', done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(it.next(<span class="number">333</span>)); <span class="comment">// 333 &#123;value: 'over', done: true&#125;</span></span><br></pre></td></tr></table></figure>
-<p>带有 <code>*</code> 的函数声明表示是一个 generator 函数，当执行 <code>gen()</code> 时，函数体内的代码并没有执行，而是返回了一个 generator 对象。</p>
-<p>generator 函数通常和 yield 结合使用，函数执行到每个 yield 时都会暂停并返回 yield 的右值。下次调用 next 时，函数会从 yield 的下一个语句继续执行。等到整个函数执行完，next 方法返回的 done 字段会变成 true，并且将函数返回值作为 value 字段。</p>
-<p>第一次执行 <code>next()</code> 时，走到 <code>yield &#39;start&#39;</code> 后暂停并返回 <code>yield</code> 的右值 <code>&#39;start&#39;</code>。注意，此时<code>var a =</code> 这个赋值语句其实还没有执行。</p>
-<p>第二次执行 <code>next(22)</code> 时，从 <code>yield &#39;start&#39;</code> 下一个语句执行。于是执行 <code>var a =</code> 这个赋值语句，而表达式 <code>yield &#39;start&#39;</code> 的值就等于传递给 <code>next</code> 函数的参数值 <code>22</code>，所以，<code>a</code> 被赋值为 <code>22</code>。然后继续往下执行到 <code>yield &#39;end&#39;</code> 后暂停并返回 <code>yield</code> 的右值 <code>&#39;end&#39;</code>。</p>
-<p>第三次执行 <code>next(333)</code> 时，从 <code>yield &#39;end&#39;</code> 下一个语句执行。此时执行 <code>var b =</code> 这个赋值语句，表达式 <code>yield &#39;end&#39;</code> 的值等于传递给 <code>next</code> 函数的参数 <code>333</code>，<code>b</code> 被赋值为 <code>333</code>。继续往下执行到 <code>return</code> 语句，将 <code>return</code> 语句的返回值作为 <code>value</code> 返回，因为函数已经执行完毕，<code>done</code> 字段标记为 <code>true</code>。</p>
-<p>可以看到 generator 就是一种迭代机制，就像一只很懒的青蛙，戳一下（调用 <code>next</code>）动一下。</p>
-<p>generator 对象还有一个 <code>throw</code> 方法，可以在 generator 函数外面抛出异常，然后在 generator 函数里面捕获异常。有点绕？我们来看一个实例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> *<span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'a'</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">'b'</span>;</span><br><span class="line">  &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'inside：'</span>, e); <span class="comment">// inside： [Error: error from outside]</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> it = gen();</span><br><span class="line">it.next();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(it.throw(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'error from outside'</span>))); <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
-<p>我们执行一次 <code>next</code>，会运行到 <code>yield &#39;a&#39;</code> 这里然后暂停，这一句刚好在 try 的返回内，因此 <code>it.throw</code> 抛出的错误我们可以 catch 到。并且看到 <code>throw</code> 返回的 <code>done</code> 字段是 <code>true</code>，说明后面的 <code>yield &#39;b&#39;</code> 已经不会再执行了。</p>
-<p>如果我们不调用 <code>next</code>，或者连续调用三次 <code>next</code>，<code>yield</code> 代码不在 <code>try</code> 返回里面，会导致报错。co 的错误处理其实正是利用了这个 <code>throw</code> 方法。</p>
-<p>下面我们来看看 co 的核心代码：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">co</span>(<span class="params">gen</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> ctx = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">var</span> args = slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 统一返回一个整体的 promise</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 如果是函数，调用并取得 generator 对象</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> gen === <span class="string">'function'</span>) gen = gen.apply(ctx, args);</span><br><span class="line">    <span class="comment">// 如果根本不是 generator 对象（没有 next 方法），直接 resolve 掉并返回</span></span><br><span class="line">    <span class="keyword">if</span> (!gen || <span class="keyword">typeof</span> gen.next !== <span class="string">'function'</span>) <span class="keyword">return</span> resolve(gen);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 入口函数</span></span><br><span class="line">    onFulfilled();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">res</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> ret;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 拿到 yield 的返回值</span></span><br><span class="line">        ret = gen.next(res);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="comment">// 如果执行发生错误，直接将 promise reject 掉</span></span><br><span class="line">        <span class="keyword">return</span> reject(e);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 延续调用链</span></span><br><span class="line">      next(ret);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">var</span> ret;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 如果 promise 被 reject 了就直接抛出错误</span></span><br><span class="line">        ret = gen.throw(err);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="comment">// 如果执行发生错误，直接将 promise reject 掉</span></span><br><span class="line">        <span class="keyword">return</span> reject(e);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 延续调用链</span></span><br><span class="line">      next(ret);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">next</span>(<span class="params">ret</span>) </span>&#123;</span><br><span class="line">      <span class="comment">// generator 函数执行完毕，resolve 掉 promise</span></span><br><span class="line">      <span class="keyword">if</span> (ret.done) <span class="keyword">return</span> resolve(ret.value);</span><br><span class="line">      <span class="comment">// 将 value 统一转换为 promise</span></span><br><span class="line">      <span class="keyword">var</span> value = toPromise.call(ctx, ret.value);</span><br><span class="line">      <span class="comment">// 将 promise 添加 onFulfilled、onRejected，这样当新的promise 状态变成成功或失败，就会调用对应的回调。整个 next 链路就执行下去了</span></span><br><span class="line">      <span class="keyword">if</span> (value &amp;&amp; isPromise(value)) <span class="keyword">return</span> value.then(onFulfilled, onRejected);</span><br><span class="line">      <span class="comment">// 没法转换为 promise，直接 reject 掉 promise</span></span><br><span class="line">      <span class="keyword">return</span> onRejected(<span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'You may only yield a function, promise, generator, array, or object, '</span></span><br><span class="line">        + <span class="string">'but the following object was passed: "'</span> + <span class="built_in">String</span>(ret.value) + <span class="string">'"'</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>假设有下面的代码，让我们一起推演下执行流程：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">co(<span class="function"><span class="keyword">function</span>* <span class="title">gen</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="keyword">yield</span> <span class="built_in">Promise</span>.resolve(<span class="string">'a 值'</span>);</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="keyword">yield</span> <span class="built_in">Promise</span>.reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'b 错误'</span>));</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">yield</span> <span class="built_in">Promise</span>.resolve(<span class="string">'c 值'</span>);</span><br><span class="line">    <span class="built_in">console</span>.log(b, c);</span><br><span class="line">  &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'error'</span>, e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'over'</span>;</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(value);</span><br><span class="line">&#125;).catch(<span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.error(err.stack);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>约定：<code>Promise.resolve(&#39;a 值&#39;)</code> 生成的是 promiseA；<code>Promise.reject(new Error(&#39;b 错误&#39;))</code> 生成的是 promiseB。</p>
-<p>首先传入 co 的 gen 函数会被执行，获取到 generator 对象。对应代码：<code>if (typeof gen === &#39;function&#39;) gen = gen.apply(ctx, args);</code>。</p>
-<p>然后调用 <code>onFulfilled</code> 函数。开启整个执行过程。</p>
-<p>第一次执行 <code>ret = gen.next(res)</code>，走到 <code>yield Promise.resolve(&#39;a 值&#39;)</code> 后暂停并返回 <code>yield</code> 的右值，此时 <code>ret</code> 等于 <code>{value: PromiseA, done: false}</code>。</p>
-<p>然后执行 <code>next(ret)</code>，将 <code>ret.value</code> 转换为 Promise，执行 <code>value.then(onFulfilled, onRejected)</code>，也就是 <code>PromiseA.then(onFulfilled, onRejected)</code>。当我们的 PromiseA 被 resolve 后，又再次执行 <code>onFulfilled</code>，并传入 resvole 的值，也就是：<code>onFulfilled(&#39;a 值&#39;)</code>。</p>
-<p>于是第二次执行 <code>ret = gen.next(&#39;a 值&#39;)</code>（此时的 <code>res</code> 就等于 <code>a 值</code>），进入到 gen 函数，执行接下来的 <code>var a =</code> 赋值语句，<code>yield Promise.resolve(&#39;a 值&#39;)</code> 的返回值等于给 <code>next</code> 传递的参数 <code>&#39;a 值&#39;</code>，于是变量 <code>a</code> 被赋值为 <code>&#39;a 值&#39;</code>。继续执行到 <code>yield Promise.reject(new Error(&#39;b 错误&#39;))</code> 后暂停并返回 <code>yield</code> 的右值，此时 <code>ret</code> 等于 <code>{value: PromiseB, done: false}</code>。</p>
-<p>继续执行 <code>next(ret)</code>，延续调用链。执行 <code>value.then(onFulfilled, onRejected)</code>，也就是 <code>PromiseB.then(onFulfilled, onRejected)</code>。这次 PromiseB 被 reject 掉了，于是执行 <code>onRejected</code>，并传人 reject 的错误原因，也就是：<code>onRejected(new Error(&#39;b 错误&#39;))</code>。</p>
-<p>于是执行到 <code>ret = gen.throw(new Error(&#39;b 错误&#39;))</code>，而此时 <code>yield Promise.reject(new Error(&#39;b 错误&#39;))</code> 刚好在 try 的范围内，错误被 catch 住了！接着就执行 catch 里面的打印语句 <code>console.log(&#39;error&#39;, e);</code>，一路执行到函数结束（因为再也没有 <code>yield</code> 了），将返回值赋给 <code>value</code>。最后 <code>ret</code> 等于 <code>{value: &#39;over&#39;, done: true}</code>。</p>
-<p>继续执行 <code>next(ret)</code>，延续调用链。执行到 <code>if (ret.done) return resolve(ret.value);</code>，于是整体的 promise 被 resolve 掉，执行 <code>then</code> 里面的打印语句，打印出 <code>ret.value</code> 的值 <code>&#39;over&#39;</code>。整个流程结束。</p>
-<p>如果我们不 try / catch 会怎样？因为 <code>onRejected</code> 里面有是这样处理的：<code>try { ret = gen.throw(err); } catch (e) { return reject(e); }</code>。我们上面说如果 <code>yield</code> 没有在 <code>try</code>里会导致 <code>gen.throw</code> 报错，于是整体 promise 被 reject，执行其 <code>catch</code> 方法，打印出 <code>Error(&#39;b 错误&#39;)</code> 的堆栈。</p>
-<p>这就是“黑魔法”的神秘面纱！对 TJ 大神真是一个大写的“服”字。</p>
-<h2 id="什么错误该处理和怎么处理"><a href="#什么错误该处理和怎么处理" class="headerlink" title="什么错误该处理和怎么处理"></a>什么错误该处理和怎么处理</h2><p>接下来的问题是什么样的错误我们需要处理？怎么处理？我们可以将错误分个类：</p>
-<ul>
-<li>操作错误：不是程序 bug 导致的运行时错误。比如：连接数据库服务器失败、请求接口超时、系统内存用光等等。</li>
-<li>程序错误：程序 bug 导致的错误，只要修改代码就可以避免。比如：尝试读取未定义对象的属性、语法错误等等。</li>
-</ul>
-<p>很显然，我们真正需要处理的是操作错误，程序错误应该马上进行修复。</p>
-<p>那怎么处理操作错误呢？总结起来大概有下面这些方法：</p>
-<ul>
-<li>直接处理。这个简直是废话。举个例子：尝试向一个文件中写东西，但是这个文件不存在，那这个时候会报错吧？处理这个错误的方法就是先创建好要写入的文件。如果我们知道怎么处理错误，那直接处理就是。</li>
-<li>重试。有时候某些错误可能是偶发的（比如：连接的服务不稳定等），我们可以尝试对当前操作进行重试。但是一定要设置重试的超时时间、次数，避免长时间的等待卡死应用。</li>
-<li>直接将错误抛给调用方。如果我们不知道具体怎么处理错误，那最简单的就是将错误往上抛。比如：检查到用户没有权限访问某个资源，那我们直接 throw 一个 Error（并带上 status 是 403）比较好，上层代码可以 catch 这个错误，然后要么展示一个统一的无权限页面给用户，要么返回一个统一的错误 json 给调用方。</li>
-<li>写日志然后将错误抛出。这种情况一般是发生了比较致命的错误，没法处理，也不能重试，那我们需要记下错误日志（方便以后定位问题），然后将错误往上抛（交给上层代码去进行统一错误展示）。</li>
-</ul>
-<h2 id="使用中间件统一处理错误"><a href="#使用中间件统一处理错误" class="headerlink" title="使用中间件统一处理错误"></a>使用中间件统一处理错误</h2><p>有了上面的说明，那现在我们就来看看在 koa 里面怎么优雅的实现统一错误处理。</p>
-<p>答案就是使用强大的中间件！</p>
-<p>我们可以在业务逻辑中间件（一般就是 MVC 中的 Controller）开始之前定义下面的中间件：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">app.use(<span class="function"><span class="keyword">function</span>* (<span class="params">next</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">yield</span>* next;</span><br><span class="line">  &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">    <span class="keyword">let</span> status = e.status || <span class="number">500</span>;</span><br><span class="line">    <span class="keyword">let</span> message = e.message || <span class="string">'服务器错误'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (e <span class="keyword">instanceof</span> JsonError) &#123; <span class="comment">// 错误是 json 错误</span></span><br><span class="line">      <span class="keyword">this</span>.body = &#123;</span><br><span class="line">        <span class="string">'status'</span>: status,</span><br><span class="line">        <span class="string">'message'</span>: message</span><br><span class="line">      &#125;;</span><br><span class="line">      <span class="keyword">if</span> (status == <span class="number">500</span>) &#123; </span><br><span class="line">        <span class="comment">// 触发 koa 统一错误事件，可以打印出详细的错误堆栈 log</span></span><br><span class="line">        <span class="keyword">this</span>.app.emit(<span class="string">'error'</span>, e, <span class="keyword">this</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">this</span>.status = status;</span><br><span class="line">    <span class="comment">// 根据 status 渲染不同的页面</span></span><br><span class="line">    <span class="keyword">if</span> (status == <span class="number">403</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.body = <span class="keyword">yield</span> <span class="keyword">this</span>.render(<span class="string">'403.html'</span>, &#123;<span class="string">'err'</span>: e&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (status == <span class="number">404</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.body = <span class="keyword">yield</span> <span class="keyword">this</span>.render(<span class="string">'404.html'</span>, &#123;<span class="string">'err'</span>: e&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (status == <span class="number">500</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.body = <span class="keyword">yield</span> <span class="keyword">this</span>.render(<span class="string">'500.html'</span>, &#123;<span class="string">'err'</span>: e&#125;);</span><br><span class="line">      <span class="comment">// 触发 koa 统一错误事件，可以打印出详细的错误堆栈 log</span></span><br><span class="line">      <span class="keyword">this</span>.app.emit(<span class="string">'error'</span>, e, <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>可以看到，我们直接执行 <code>yield* next</code>，然后 <code>catch</code> 执行过程中任何一个中间件的错误，然后根据错误的“特性”，分别进行不同的处理。</p>
-<p>有了这个中间件，我们的业务逻辑 controller 中的代码就可以这样来触发错误：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> (<span class="built_in">require</span>(<span class="string">'koa-router'</span>));</span><br><span class="line"></span><br><span class="line">router.get(<span class="string">'/some_page'</span>, <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 直接抛出错误，被中间件捕获后当成 500 错误</span></span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> PageError(<span class="string">'发生了一个致命错误'</span>); </span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> JsonError(<span class="string">'发送了一个致命错误'</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 带 status 的错误，被中间件捕获后特殊处理</span></span><br><span class="line">  <span class="keyword">this</span>.throw(<span class="number">403</span>, <span class="keyword">new</span> PageError(<span class="string">'没有权限访问'</span>));</span><br><span class="line">  <span class="keyword">this</span>.throw(<span class="number">403</span>, <span class="keyword">new</span> JsonError(<span class="string">'没有权限访问'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="对-Error-分类"><a href="#对-Error-分类" class="headerlink" title="对 Error 分类"></a>对 Error 分类</h2><p>上面的代码里面出现的 <code>JsonError</code>、<code>PageError</code>，实际上是继承于 <code>Error</code> 的两个构造器。代码如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">'util'</span>);</span><br><span class="line"></span><br><span class="line">exports.JsonError = JsonError;</span><br><span class="line">exports.PageError = PageError;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">JsonError</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">Error</span>.call(<span class="keyword">this</span>, message);</span><br><span class="line">&#125;</span><br><span class="line">util.inherits(JsonError, <span class="built_in">Error</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">PageError</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">Error</span>.call(<span class="keyword">this</span>, message);</span><br><span class="line">&#125;</span><br><span class="line">util.inherits(PageError, <span class="built_in">Error</span>);</span><br></pre></td></tr></table></figure>
-<p>通过继承 <code>Error</code> 构造器，我们可以将错误进行细分，从而能更精细的对错误进行处理。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://www.joyent.com/developers/node/design/errors" target="_blank" rel="external">https://www.joyent.com/developers/node/design/errors</a></li>
-<li><a href="https://github.com/koajs/koa/wiki/Error-Handling" target="_blank" rel="external">https://github.com/koajs/koa/wiki/Error-Handling</a></li>
-<li><a href="https://imququ.com/post/generator-function-in-es6.html" target="_blank" rel="external">https://imququ.com/post/generator-function-in-es6.html</a></li>
-<li><a href="http://purplebamboo.github.io/2014/05/24/koa-source-analytics-1/" target="_blank" rel="external">http://purplebamboo.github.io/2014/05/24/koa-source-analytics-1/</a></li>
-<li><a href="http://purplebamboo.github.io/2015/01/16/koa-source-analytics-4/" target="_blank" rel="external">http://purplebamboo.github.io/2015/01/16/koa-source-analytics-4/</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="https://img.alicdn.com/tps/TB1WJcvLVXXXXX5XFXXXXXXXXXX-900-500.jpg" alt="如何优雅的在 koa 中处理错误"></p>
-<blockquote>
-<p>软件开发时，有 80% 的代码]]>
-    </summary>
-    
-      <category term="node.js" scheme="http://taobaofed.org/tags/node-js/"/>
-    
-      <category term="co" scheme="http://taobaofed.org/tags/co/"/>
-    
-      <category term="koa" scheme="http://taobaofed.org/tags/koa/"/>
-    
-      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
     
   </entry>
   
