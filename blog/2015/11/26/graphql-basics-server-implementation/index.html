@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Node.js 服务端实践之 GraphQL 初探 | Taobao FED | 淘宝前端团队</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="baidu-site-verification" content="OTHOW5vFFG" />
+  <meta name="description" content="0.问题来了DT 时代，各种业务依赖强大的基础数据平台快速生长，如何高效地为各种业务提供数据支持，是所有人关心的问题。
+现有的业务场景一般是这样的，业务方提出需求，然后寻找开发资源，由后端提供数据，让前端实现各种不同的业务视图。这样的做法存在很多的重复劳动，如果能够将其中通用的内容抽取出来提供给各个业务方反复使用，必然能够节省宝贵的开发时间和开发人力。
+前端的解决方案是将视图组件化，各个业务线既">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 服务端实践之 GraphQL 初探">
+<meta property="og:url" content="http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/index.html">
+<meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
+<meta property="og:description" content="0.问题来了DT 时代，各种业务依赖强大的基础数据平台快速生长，如何高效地为各种业务提供数据支持，是所有人关心的问题。
+现有的业务场景一般是这样的，业务方提出需求，然后寻找开发资源，由后端提供数据，让前端实现各种不同的业务视图。这样的做法存在很多的重复劳动，如果能够将其中通用的内容抽取出来提供给各个业务方反复使用，必然能够节省宝贵的开发时间和开发人力。
+前端的解决方案是将视图组件化，各个业务线既">
+<meta property="og:image" content="http://gtms04.alicdn.com/tps/i4/TB15B9CKFXXXXbaXVXXlzJZ8pXX-900-500.jpg">
+<meta property="og:image" content="http://taobaofed.org//gtms02.alicdn.com/tps/i2/TB1RbibJpXXXXaxXVXXS1JeFpXX-1903-506.png">
+<meta property="og:image" content="http://taobaofed.org//gtms03.alicdn.com/tps/i3/TB1y9OwJpXXXXbGXXXXcXaZMFXX-1814-601.png">
+<meta property="og:image" content="http://taobaofed.org//gtms03.alicdn.com/tps/i3/TB1.FKlJpXXXXXpXFXXMnEVZFXX-954-344.png">
+<meta property="og:image" content="http://taobaofed.org//gtms03.alicdn.com/tps/i3/TB1.IOkJpXXXXXQXFXXiT9y0pXX-955-349.png">
+<meta property="og:image" content="http://taobaofed.org//gtms04.alicdn.com/tps/i4/TB1de1aJpXXXXavXVXX6VZiWVXX-951-461.png">
+<meta property="og:updated_time" content="2016-09-09T06:51:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 服务端实践之 GraphQL 初探">
+<meta name="twitter:description" content="0.问题来了DT 时代，各种业务依赖强大的基础数据平台快速生长，如何高效地为各种业务提供数据支持，是所有人关心的问题。
+现有的业务场景一般是这样的，业务方提出需求，然后寻找开发资源，由后端提供数据，让前端实现各种不同的业务视图。这样的做法存在很多的重复劳动，如果能够将其中通用的内容抽取出来提供给各个业务方反复使用，必然能够节省宝贵的开发时间和开发人力。
+前端的解决方案是将视图组件化，各个业务线既">
+<meta name="twitter:image" content="http://gtms04.alicdn.com/tps/i4/TB15B9CKFXXXXbaXVXXlzJZ8pXX-900-500.jpg">
+  
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/rss+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  
+    <link rel="stylesheet" href="/scrollLoading/style.css">
+  
+
+  
+    <style type="text/css">
+      .logo { background-image:url(//img.alicdn.com/tps/TB1Nv_wKXXXXXbmXVXXXXXXXXXX-295-195.png); }
+    </style>
+  
+
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <script src="/js/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+  <img src="//img.alicdn.com/tps/TB1GKckKXXXXXXIXpXXXXXXXXXX-400-400.png" alt="Taobao FED" style="position:absolute;left:-9999px">
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+            <h2 class="subtitle-wrap">
+              <p class="subtitle">淘宝前端团队（FED）</p>
+              <p class="description">用技术为体验提供无限可能</p>
+            </h2>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/">主页</a></li>
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Web开发/">Web开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Node-js/">Node.js</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/无线开发/">无线开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/工具-平台/">工具&amp;平台</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/团队生活/">团队生活</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/about/">关于我们</a>
+                </li>
+                
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://taobaofed.org"></form>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header"><a class="page-title-link" href="/categories/Node-js/">Node.js</a></h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-graphql-basics-server-implementation" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      Node.js 服务端实践之 GraphQL 初探
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        
+        <span>作者: 云翮
+        </span>
+        <span>发表于: <a href="/blog/2015/11/26/graphql-basics-server-implementation/" class="article-date">
+  <time datetime="2015-11-26T02:08:53.000Z" itemprop="datePublished">2015-11-26</time>
+</a></span>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <p><img src="http://gtms04.alicdn.com/tps/i4/TB15B9CKFXXXXbaXVXXlzJZ8pXX-900-500.jpg" alt="Node.js 服务端实践之 GraphQL 初探"></p>
+<h1 id="0-问题来了"><a href="#0-问题来了" class="headerlink" title="0.问题来了"></a>0.问题来了</h1><p>DT 时代，各种业务依赖强大的基础数据平台快速生长，如何高效地为各种业务提供数据支持，是所有人关心的问题。</p>
+<p>现有的业务场景一般是这样的，业务方提出需求，然后寻找开发资源，由后端提供数据，让前端实现各种不同的业务视图。这样的做法存在很多的重复劳动，如果能够将其中通用的内容抽取出来提供给各个业务方反复使用，必然能够节省宝贵的开发时间和开发人力。</p>
+<p>前端的解决方案是将视图组件化，各个业务线既可以是组件的使用者，也可以是组件的生产者。那么问题来了，前端通过组件实现了跨业务的复用，后端接口如何相应地提高开发效率呢？</p>
+<p>我们假设某个业务需要以下数据内容 a：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  user(<span class="name">id:</span> <span class="number">3500401</span>) &#123;</span><br><span class="line">    id,</span><br><span class="line">    name,</span><br><span class="line">    isViewerFriend</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对，这不是 JSON，但是我们仍然可以看懂它表示的是查询 id 为 3500401 用户的 id，name 和 isViewerFriend 信息。用户信息对于各个业务都是通用的，假设另外一个业务需要这样的用户信息 b：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  user(<span class="name">id:</span> <span class="number">3500401</span>) &#123;</span><br><span class="line">    name,</span><br><span class="line">    profilePicture(<span class="name">size:</span> <span class="number">50</span>)  &#123;</span><br><span class="line">      uri,</span><br><span class="line">      width,</span><br><span class="line">      height</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对比一下，我们发现只是少了两个字段，多了一个字段而已。如果要实现我们的目标，即复用同一个接口来支持这两种业务的话，会有以下几种做法：</p>
+<ol>
+<li>用同一个接口，这个接口提供了所有数据。这样做的好处是实现起来简单，但缺点是对业务做判断的逻辑会增多，而且对于业务来说，响应内容中有些数据根本用不到；</li>
+<li>使用参数来区分不同的业务方并返回相应的数据。好处仍然是实现简单，虽然不会有用不到的数据返回，但是仍然需要增加业务逻辑判断，会造成以后维护的困难。</li>
+</ol>
+<p>此外，这样还会造成不同业务之间的强依赖，每次发布都需要各个业务线一起测试和回归。不重用接口则没法提高开发效率，重用接口则会有这些问题，那么到底有没有“好一点”的解决方案呢？</p>
+<p>这是我们在处理复杂的前后端分离中经常要面临的一个思考。</p>
+<h1 id="1-GraphQL，一种新的思路"><a href="#1-GraphQL，一种新的思路" class="headerlink" title="1.GraphQL，一种新的思路"></a>1.GraphQL，一种新的思路</h1><p>我们知道，用户信息对应的数据模型是固定的，每次请求其实是对这些数据做了过滤和筛选。对应到数据库操作，就是数据的查询操作。如果客户端也能够像“查询”一样发送请求，那不就可以从后端接口这个大的“大数据库”去过滤筛选业务需要的数据了吗？</p>
+<p>GraphQL 就是基于这样的思想来设计的。上面提到的（a）和（b）类型的数据结构就是 GraphQL 的查询内容。使用上面的查询，GraphQL 服务器会分别返回如下响应内容。</p>
+<p>a 查询对应的响应：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"user"</span> : &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="number">3500401</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Jing Chen"</span>,</span><br><span class="line">    <span class="attr">"isViewerFriend"</span>: <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>b 查询对应的响应：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"user"</span> : &#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Jing Chen"</span>,</span><br><span class="line">    <span class="attr">"profilePicture"</span>: &#123;</span><br><span class="line">      <span class="attr">"uri"</span>: <span class="string">"http: //someurl.cdn/pic.jpg"</span>,</span><br><span class="line">      <span class="attr">"width"</span>: <span class="number">50</span>,</span><br><span class="line">      <span class="attr">"height"</span>: <span class="number">50</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只需要改变查询内容，前端就能定制服务器返回的响应内容，这就是 GraphQL 的客户端指定查询（Client Specified Queries）。假如我们能够将基础数据平台做成一个 GraphQL 服务器，不就能为这个平台上的所有业务提供统一可复用的数据接口了吗？</p>
+<p>了解了 GraphQL 的这些信息，我们一起来动手实践吧。</p>
+<h1 id="2-使用-Node-js-实现-GraphQL-服务器"><a href="#2-使用-Node-js-实现-GraphQL-服务器" class="headerlink" title="2.使用 Node.js 实现 GraphQL 服务器"></a>2.使用 Node.js 实现 GraphQL 服务器</h1><p>我们先按照官方文档搭建一个 GraphQL 服务器：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>mkdir graphql-intro &amp;&amp; cd ./graphql-intro</span><br><span class="line"><span class="variable">$ </span>npm install express --save</span><br><span class="line"><span class="variable">$ </span>npm install babel --save</span><br><span class="line"><span class="variable">$ </span>touch ./server.js</span><br><span class="line"><span class="variable">$ </span>touch ./index.js</span><br></pre></td></tr></table></figure>
+<p>index.js 的内容如下：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">//index.js</span><br><span class="line">//</span><span class="built_in">require</span> `babel/register` <span class="keyword">to</span> handle JavaScript code</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'babel/register'</span>);</span><br><span class="line"><span class="built_in">require</span>(<span class="string">'./server.js'</span>);</span><br></pre></td></tr></table></figure>
+<p>server.js 的内容如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//server.js</span></span><br><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> app = express();</span><br><span class="line"><span class="keyword">let</span> PORT = <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">'/graphql'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  res.send(<span class="string">'Hello!'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> server = app.listen(PORT, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> host = server.address().address;</span><br><span class="line">  <span class="keyword">let</span> port = server.address().port;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'GraphQL listening at http://%s:%s'</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>然后执行代码： nodemon index.js：</p>
+<p><i><small>如果没有安装 nodemon，需要先 npm install -g nodemon，也推荐使用<a href="https://www.npmjs.com/package/node-dev" target="_blank" rel="external"> node-dev 模块</a>。</small></i></p>
+<p>测试是否有效：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST <span class="string">http:</span><span class="comment">//localhost:3000/graphql</span></span><br></pre></td></tr></table></figure>
+<p><strong>接着编写 GraphQL Schema</strong></p>
+<p>接下来是添加 GraphQL Schema（Schema 是 GraphQL 请求的入口，用户的 GraphQL 请求会对应到具体的 Schema），首先回忆一下 GraphQL 请求是这样的：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">query</span> getHightScore &#123; <span class="attribute">score</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>上面的请求是获取 getHightScore 的 score 值。也可以加上查询条件，例如：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">query</span> <span class="selector-tag">getHightScore</span>(<span class="attribute">limit</span>: <span class="number">10</span>) &#123; score &#125;</span><br></pre></td></tr></table></figure>
+<p>这样的请求格式就是 GraphQL 中的 schema。通过 schema 可以定义服务器的响应内容。</p>
+<p>接下来我们在项目中使用 graphql：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> graphql <span class="comment">--save</span></span><br></pre></td></tr></table></figure>
+<p>使用 body-parser 来处理请求内容：<code>npm install body-parser --save</code>。 而 graphql 这个 npm 包会负责组装服务器 schema 并处理 GraphQL 请求。</p>
+<p>创建 schema：<code>touch ./schema.js</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//schema.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  GraphQLObjectType,</span><br><span class="line">  GraphQLSchema,</span><br><span class="line">  GraphQLInt</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'graphql'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> schema = <span class="keyword">new</span> GraphQLSchema(&#123;</span><br><span class="line">  query: <span class="keyword">new</span> GraphQLObjectType(&#123;</span><br><span class="line">    name: <span class="string">'RootQueryType'</span>,</span><br><span class="line">    fields: &#123;</span><br><span class="line">      count: &#123;</span><br><span class="line">        type: GraphQLInt,</span><br><span class="line">        resolve: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> count;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> schema;</span><br></pre></td></tr></table></figure>
+<p>这段代码创建了一个 GraphQLSchema 实例。这个 schema 的顶级查询对象会返回一个 RootQueryType 对象，这个 RootQueryType 对象有一个整数类型的 count 域。GraphQL 除了支持整数（ Interger ），还支持字符串（ String ）、列表（ List ）等多种类型的数据。</p>
+<p><strong>连接 schema </strong></p>
+<p>下面是将 GraphQL schema 和服务器连接起来，我们需要修改 server.js 为如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//server.js</span></span><br><span class="line"><span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;</span><br><span class="line"><span class="keyword">import</span> schema <span class="keyword">from</span> <span class="string">'./schema'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; graphql &#125; <span class="keyword">from</span> <span class="string">'graphql'</span>;</span><br><span class="line"><span class="keyword">import</span> bodyParser <span class="keyword">from</span> <span class="string">'body-parser'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> app = express();</span><br><span class="line"><span class="keyword">let</span> PORT = <span class="number">3000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Parse post content as text</span></span><br><span class="line">app.use(bodyParser.text(&#123; type: <span class="string">'application/graphql'</span> &#125;));</span><br><span class="line"></span><br><span class="line">app.post(<span class="string">'/graphql'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  <span class="comment">//GraphQL executor</span></span><br><span class="line">  graphql(schema, req.body)</span><br><span class="line">  .then((result) =&gt; &#123;</span><br><span class="line">    res.send(<span class="built_in">JSON</span>.stringify(result, <span class="literal">null</span>, <span class="number">2</span>));</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> server = app.listen(PORT, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> host = server.address().address;</span><br><span class="line">  <span class="keyword">let</span> port = server.address().port;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'GraphQL listening at http://%s:%s'</span>, host, port);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>验证下效果：</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -v -XPOST -<span class="keyword">H</span> <span class="string">"Content-Type:application/graphql"</span>  -<span class="keyword">d</span> 'query RootQueryType &#123; count &#125;' http:<span class="comment">//localhost:3000/graphql</span></span><br></pre></td></tr></table></figure>
+<p>结果如下图所示：</p>
+<p><img src="//gtms02.alicdn.com/tps/i2/TB1RbibJpXXXXaxXVXXS1JeFpXX-1903-506.png" alt=""></p>
+<p>GraphQL 查询还可以省略掉 query RootQueryType 前缀，即：</p>
+<p><img src="//gtms03.alicdn.com/tps/i3/TB1y9OwJpXXXXbGXXXXcXaZMFXX-1814-601.png" alt=""></p>
+<p><strong>检查服务器</strong></p>
+<p>GraphQL 最让人感兴趣的是可以编写 GraphQL 查询来让 GraphQL 服务器告诉我们它支持那些查询，即官方文档提到的自检性（introspection）。</p>
+<p>例如：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST -H <span class="string">'Content-Type:application/graphql'</span>  -d <span class="string">'&#123;__schema &#123; queryType &#123; name, fields &#123; name, description&#125; &#125;&#125;&#125;'</span> <span class="string">http:</span><span class="comment">//localhost:3000/graphql</span></span><br></pre></td></tr></table></figure>
+<p><img src="//gtms03.alicdn.com/tps/i3/TB1.FKlJpXXXXXpXFXXMnEVZFXX-954-344.png" alt=""></p>
+<p>而我们实际的 GraphQL 查询请求内容为：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  __schema &#123;</span><br><span class="line">    queryType &#123;</span><br><span class="line">      name,</span><br><span class="line">      fields &#123;</span><br><span class="line">        name,</span><br><span class="line">        description</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本上每个 GraphQL 根域都会自动加上一个 __schema 域，这个域有一个子域叫 queryTyp。我们可以通过查询这些域来了解 GraphQL 服务器支持那些查询。我们可以修改 schema.js 来为 count 域加上 description：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> schema = <span class="keyword">new</span> GraphQLSchema(&#123;</span><br><span class="line">  query: <span class="keyword">new</span> GraphQLObjectType(&#123;</span><br><span class="line">    name: <span class="string">'RootQueryType'</span>,</span><br><span class="line">    fields: &#123;</span><br><span class="line">      count: &#123;</span><br><span class="line">        type: GraphQLInt,</span><br><span class="line">        <span class="comment">//Add description</span></span><br><span class="line">        description: <span class="string">'The count!'</span>,</span><br><span class="line">        resolve: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> count;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>验证一下：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST -H <span class="string">'Content-Type:application/graphql'</span>  -d <span class="string">'&#123;__schema &#123; queryType &#123; name, fields &#123; name, description&#125; &#125;&#125;&#125;'</span> <span class="string">http:</span><span class="comment">//localhost:3000/graphql</span></span><br></pre></td></tr></table></figure>
+<p><img src="//gtms03.alicdn.com/tps/i3/TB1.IOkJpXXXXXQXFXXiT9y0pXX-955-349.png" alt=""></p>
+<p><strong>变异（mutation，即修改数据）</strong></p>
+<p>GraphQL中将对数据的修改操作称为 mutation。在 GraphQL Schema 中按照如下形式来定义一个 mutation：</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> schema = <span class="literal">new</span> GraphQLSchema(&#123;</span><br><span class="line">  query: <span class="attr">...</span></span><br><span class="line">  mutation: <span class="comment">//TODO</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>mutation 查询和普通查询请求（query）的重要区别在于 mutation 操作是序列化执行的。例如 GraphQL 规范中给出的示例，服务器一定会序列化处理下面的 mutation 请求：</p>
+<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  first: changeTheNumber(<span class="name">newNumber:</span> <span class="number">1</span>) &#123;</span><br><span class="line">    theNumber</span><br><span class="line">  &#125;,</span><br><span class="line">  second: changeTheNumber(<span class="name">newNumber:</span> <span class="number">3</span>) &#123;</span><br><span class="line">    theNumber</span><br><span class="line">  &#125;,</span><br><span class="line">  third: changeTheNumber(<span class="name">newNumber:</span> <span class="number">2</span>) &#123;</span><br><span class="line">    theNumber</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请求结束时 theNumber 的值会是 2。下面为我们的服务器添加一个 mutation 查询，修改 schema.js 为如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//schema.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  GraphQLObjectType,</span><br><span class="line">  GraphQLSchema,</span><br><span class="line">  GraphQLInt</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'graphql'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> schema = <span class="keyword">new</span> GraphQLSchema(&#123;</span><br><span class="line">  query: <span class="keyword">new</span> GraphQLObjectType(&#123;</span><br><span class="line">    name: <span class="string">'RootQueryType'</span>,</span><br><span class="line">    fields: &#123;</span><br><span class="line">      count: &#123;</span><br><span class="line">        type: GraphQLInt,</span><br><span class="line">        <span class="comment">//Add description</span></span><br><span class="line">        description: <span class="string">'The count!'</span>,</span><br><span class="line">        resolve: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> count;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;),</span><br><span class="line">  <span class="comment">//Note：this is the newly added mutation query</span></span><br><span class="line">  mutation: <span class="keyword">new</span> GraphQLObjectType(&#123;</span><br><span class="line">    name: <span class="string">'RootMutationType'</span>,</span><br><span class="line">    fields: &#123;</span><br><span class="line">      updateCount: &#123;</span><br><span class="line">        type: GraphQLInt,</span><br><span class="line">        description: <span class="string">'Update the count'</span>,</span><br><span class="line">        resolve: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">          count += <span class="number">1</span>;</span><br><span class="line">          <span class="keyword">return</span> count;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> schema;</span><br></pre></td></tr></table></figure>
+<p>验证：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -XPOST -H <span class="string">'Content-Type:application/graphql'</span> -d <span class="string">'mutation RootMutationType &#123; updateCount &#125;'</span> <span class="string">http:</span><span class="comment">//localhost:3000/graphql</span></span><br></pre></td></tr></table></figure>
+<p><img src="//gtms04.alicdn.com/tps/i4/TB1de1aJpXXXXavXVXX6VZiWVXX-951-461.png" alt=""></p>
+<p>搭建好 GraphQL 服务器后，我们来模拟下业务场景的实际需求，对于电商平台来说，最常用的就是商品信息，假设目前的商品数据模型可以用下面的 GraphQLObject 来表示：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">var ItemType =  new GraphQLObjectType(&#123;</span><br><span class="line"><span class="symbol">  name:</span> <span class="string">"item"</span>,</span><br><span class="line"><span class="symbol">  description:</span> <span class="string">"item"</span>,</span><br><span class="line"><span class="symbol">  fields:</span> &#123;</span><br><span class="line"><span class="symbol">    id:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item id"</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    title:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item title"</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    price:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item price"</span>,</span><br><span class="line"><span class="symbol">      resolve:</span> function(root, param, context) &#123;</span><br><span class="line">        return (root.price/<span class="number">100</span>).toFixed(<span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    pic:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item pic url"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>查询商品的 schema 如下所示：</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">var</span> ItemSchema = <span class="keyword">new</span> GraphQLSchema(&#123;</span><br><span class="line">  <span class="attribute">query</span>: &#123;</span><br><span class="line">    <span class="attribute">name</span>: <span class="string">"ItemQuery"</span>,</span><br><span class="line">    <span class="attribute">description</span>: <span class="string">"query item"</span>,</span><br><span class="line">    <span class="attribute">fields</span>: &#123;</span><br><span class="line">      <span class="attribute">item</span>: &#123;</span><br><span class="line">        <span class="attribute">type</span>: ItemType,</span><br><span class="line">        <span class="attribute">description</span>: <span class="string">"item"</span>,</span><br><span class="line">        <span class="attribute">args</span>: &#123;</span><br><span class="line">          <span class="attribute">id:</span><span class="string"> &#123;</span><br><span class="line">            type</span>: GraphQLInt,</span><br><span class="line">            <span class="attribute">required</span>: <span class="literal">true</span>    <span class="comment">//itemId required for query</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attribute">resolve</span>: <span class="function"><span class="keyword">function</span>(<span class="params">root, obj, ctx</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">yield</span> ItemService(obj[<span class="string">'id'</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>通过如下 query 可以查询 id 为 12345 的商品信息：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">query</span> <span class="selector-tag">ItemQuery</span>(<span class="attribute">id</span>: <span class="number">12345</span>)&#123;</span><br><span class="line">  id</span><br><span class="line">  title</span><br><span class="line">  price</span><br><span class="line">  pic</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>商品详情页展示时需要加上优惠价格信息，我们可以修改 ItemType，为它加上一个 promotion 字段：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">var ItemType =  new GraphQLObjectType(&#123;</span><br><span class="line"><span class="symbol">  name:</span> <span class="string">"item"</span>,</span><br><span class="line"><span class="symbol">  description:</span> <span class="string">"item"</span>,</span><br><span class="line"><span class="symbol">  fields:</span> &#123;</span><br><span class="line"><span class="symbol">    id:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item id"</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    title:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item title"</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    price:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item price"</span>,</span><br><span class="line"><span class="symbol">      resolve:</span> function(root, param, context) &#123;</span><br><span class="line">        return (root.price/<span class="number">100</span>).toFixed(<span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    pic:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLString,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"item pic url"</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="symbol">    promotion:</span> &#123;</span><br><span class="line"><span class="symbol">      type:</span> GraphQLInt,</span><br><span class="line"><span class="symbol">      description:</span> <span class="string">"promotion price"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>商品详情页的查询为：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">query</span> <span class="selector-tag">ItemQuery</span>(<span class="attribute">id</span>: <span class="number">12345</span>)&#123;</span><br><span class="line">  id</span><br><span class="line">  title</span><br><span class="line">  price</span><br><span class="line">  pic</span><br><span class="line">  promotion</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ItemSchema 无需修改，只要在 ItemService 的返回结果中加上 promotion 就可以了。这样接口的修改对于原有业务是透明的，而新的业务也能基于已有的代码快速开发和迭代。</p>
+<p>再假设有一个新的页面，只需要用到宝贝的图片信息，业务方可以使用下面的查询：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">query</span> <span class="selector-tag">ItemQuery</span>(<span class="attribute">id</span>: <span class="number">12345</span>)&#123;</span><br><span class="line">  id</span><br><span class="line">  pic</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务器代码不用做任何修改。</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h1><p>至此我们已经实现了一个 GraphQL 基础服务器。在实际业务中数据模型肯定会更加复杂，而 GraphQL 也提供了强大的类型系统（Type System）让我们能够轻松地描述各种数据模型，它提供的抽象层能够为依赖同一套数据模型的不同业务方提供灵活的数据支持。关于 GraphQL 在淘宝更多的生产实践，请持续关注我们博客未来的系列文章。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html" target="_blank" rel="external">GraphQL Introduction</a></li>
+<li><a href="http://facebook.github.io/react/blog/2015/02/20/introducing-relay-and-graphql.html" target="_blank" rel="external">Introducing Relay and GraphQL</a></li>
+<li><a href="https://facebook.github.io/graphql/" target="_blank" rel="external">GraphQL Specification</a></li>
+<li><a href="http://segmentfault.com/a/1190000002570887" target="_blank" rel="external">Introducing Relay and GraphQL译文</a></li>
+<li><a href="https://blog.risingstack.com/graphql-overview-getting-started-with-graphql-and-nodejs/" target="_blank" rel="external">GraphQL Overview - Getting Started with GraphQL and Node.js</a></li>
+<li><a href="https://gist.github.com/wincent/598fa75e22bdfa44cf47#What_is_Relay" target="_blank" rel="external">what is relay</a></li>
+<li><a href="https://www.codementor.io/ama/1237952640/facebook-react-contributer-lee-byron" target="_blank" rel="external">facebook engineer answers about relay, graphql</a></li>
+<li><a href="https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2" target="_blank" rel="external">Your First GraphQL Server</a></li>
+<li><a href="https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2" target="_blank" rel="external">https://medium.com/@clayallsopp/your-first-graphql-server-3c766ab4f0a2</a></li>
+<li><a href="https://blog.risingstack.com/graphql-overview-getting-started-with-graphql-and-nodejs/" target="_blank" rel="external">https://blog.risingstack.com/graphql-overview-getting-started-with-graphql-and-nodejs/</a></li>
+<li><a href="https://github.com/davidchang/graphql-pokedex-api" target="_blank" rel="external">https://github.com/davidchang/graphql-pokedex-api</a></li>
+<li><a href="http://nginx.com/blog/introduction-to-microservices/" target="_blank" rel="external">http://nginx.com/blog/introduction-to-microservices/</a></li>
+<li><a href="https://code.facebook.com/posts/1691455094417024/graphql-a-data-query-language/" target="_blank" rel="external">https://code.facebook.com/posts/1691455094417024/graphql-a-data-query-language/</a></li>
+<li><a href="http://graphql.org/blog/" target="_blank" rel="external">http://graphql.org/blog/</a></li>
+<li><a href="https://github.com/chentsulin/awesome-graphql" target="_blank" rel="external">https://github.com/chentsulin/awesome-graphql</a></li>
+</ul>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/" data-id="cisvevf88002debqee9doa0vj" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/grpahql/">grpahql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/node/">node</a></li></ul>
+
+      </footer>
+    </div>
+  </article>
+  
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-graphql-basics-server-implementation" data-title="Node.js 服务端实践之 GraphQL 初探" data-url="http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'taobaofed'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我们 :</p>
+    <ul class="social-links">
+      
+        <li><a class="social-tooltip" title="github" href="https://github.com/taobaofed" target="_blank"><i class="icon fa fa-github"></i></a></li>
+      
+        <li><a class="social-tooltip" title="weibo" href="http://weibo.com/taobaofed" target="_blank"><i class="icon fa fa-weibo"></i></a></li>
+      
+        <li><a class="social-tooltip" title="rss" href="/atom.xml" target="_blank"><i class="icon fa fa-rss"></i></a></li>
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2015/11/27/webkit-remote-debug-action/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <p class="article-nav-title">
+        
+          Webkit远程调试协议实战
+        
+      </p>
+      <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+  
+  
+    <a href="/blog/2015/11/25/react-native-android-debug/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">使用 JS 构建跨平台的原生应用：React Native for Android 调试技术剖析</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+      
+  <div class="widget-wrap widget-wechat">
+    <a href="javascript:; ">
+      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
+    </a>
+  </div>
+
+  <div class="widget-wrap widget-wechat">
+    <a href="https://github.com/taobaofed/react-web ">
+      <img src="//img1.tbcdn.cn/L1/461/1/850051b092bf91403dfe9ba4c421b6b06d397777.png" width="280" alt="A framework for building web apps with React Native compatible API." title="A framework for building web apps with React Native compatible API.">
+    </a>
+  </div>
+
+    
+      
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/09/09/webpack-flow/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg
+)" alt="细说 webpack 之流程篇" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/09/09/webpack-flow/" class="title">细说 webpack 之流程篇</a></p>
+              
+              <p class="item-author">by 七珏</p>
+              
+              <p class="item-date">at <time datetime="2016-09-09T04:02:58.000Z" itemprop="datePublished">2016-09-09</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/24/react-key/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：key 属性的原理和用法" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/24/react-key/" class="title">React 实践心得：key 属性的原理和用法</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-24T11:38:35.000Z" itemprop="datePublished">2016-08-24</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/18/react-redux-connect/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：react-redux 之 connect 方法详解" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/18/react-redux-connect/" class="title">React 实践心得：react-redux 之 connect 方法详解</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-18T07:15:12.000Z" itemprop="datePublished">2016-08-18</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/12/optimized-react-components/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg
+)" alt="高性能 React 组件" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/12/optimized-react-components/" class="title">高性能 React 组件</a></p>
+              
+              <p class="item-author">by 慎里</p>
+              
+              <p class="item-date">at <time datetime="2016-08-12T02:44:11.000Z" itemprop="datePublished">2016-08-12</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/04/instructions-of-semver/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png
+)" alt="论版本号的正确打开方式" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a></p>
+              
+              <p class="item-author">by 法海</p>
+              
+              <p class="item-date">at <time datetime="2016-08-04T09:48:27.000Z" itemprop="datePublished">2016-08-04</time></p>
+            </div>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://ued.taobao.org/blog/">淘宝UED</a>
+          </li>
+        
+          <li>
+            <a href="http://www.nodejs.club/">Node地下铁</a>
+          </li>
+        
+          <li>
+            <a href="http://alinode.aliyun.com/">alinode</a>
+          </li>
+        
+          <li>
+            <a href="http://fex.baidu.com/">百度FEX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.75team.com/">奇舞团</a>
+          </li>
+        
+          <li>
+            <a href="http://aotu.io/notes/">凹凸实验室</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <!-- <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a> -->
+      <div class="credit">
+        <p>Copyright &copy; 2016 Taobao FED. All rights reserved.</p>
+        <!-- <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a> Redesigned by <a href="http://barretlee.com/" target="_blank">barretlee</a></p> -->
+      </div>
+    </div>
+  </div>
+</footer>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65944345-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+<script>
+// for baidu spider
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+// for baidu analysis
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?33dd75d7b88de8722970ea06fa5f06b0";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+    
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script src="/scrollLoading/jquery.scrollLoading.js"></script>
+  <script src="/scrollLoading/main.js"></script>
+
+
+<script src="/js/html-patch.js"></script>
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Node.js 单元测试：workflow | Taobao FED | 淘宝前端团队</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="baidu-site-verification" content="OTHOW5vFFG" />
+  <meta name="description" content="Talk is cheap, show me the code!
+
+是否还记得小明在《 Node.js 单元测试之我要写测试》里引用的这句话么，不过引用了之后，小明就像跑路了一般再也没见其 code……其实呀，不知道大家有没有关注最近比较火 minggeJs, 稍微联想下你就知道小明最近在忙啥了 O(∩_∩)O~~
+虽说小明现在还写不出 minggeJs 这样的前端库，不过，小明想说的是：当你">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js 单元测试：workflow">
+<meta property="og:url" content="http://taobaofed.org/blog/2015/12/29/nodejs-unit-tests-workflow/index.html">
+<meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
+<meta property="og:description" content="Talk is cheap, show me the code!
+
+是否还记得小明在《 Node.js 单元测试之我要写测试》里引用的这句话么，不过引用了之后，小明就像跑路了一般再也没见其 code……其实呀，不知道大家有没有关注最近比较火 minggeJs, 稍微联想下你就知道小明最近在忙啥了 O(∩_∩)O~~
+虽说小明现在还写不出 minggeJs 这样的前端库，不过，小明想说的是：当你">
+<meta property="og:image" content="https://img.alicdn.com/tps/TB13keMLXXXXXbmXVXXXXXXXXXX-900-500.jpg">
+<meta property="og:image" content="https://img.alicdn.com/tps/TB1LQm3LXXXXXbyXpXXXXXXXXXX-657-166.png">
+<meta property="og:image" content="http://gtms02.alicdn.com/tps/i2/TB196CTLXXXXXXBaXXXkRNLSXXX-1266-273.png">
+<meta property="og:updated_time" content="2016-09-09T06:51:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Node.js 单元测试：workflow">
+<meta name="twitter:description" content="Talk is cheap, show me the code!
+
+是否还记得小明在《 Node.js 单元测试之我要写测试》里引用的这句话么，不过引用了之后，小明就像跑路了一般再也没见其 code……其实呀，不知道大家有没有关注最近比较火 minggeJs, 稍微联想下你就知道小明最近在忙啥了 O(∩_∩)O~~
+虽说小明现在还写不出 minggeJs 这样的前端库，不过，小明想说的是：当你">
+<meta name="twitter:image" content="https://img.alicdn.com/tps/TB13keMLXXXXXbmXVXXXXXXXXXX-900-500.jpg">
+  
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/rss+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  
+    <link rel="stylesheet" href="/scrollLoading/style.css">
+  
+
+  
+    <style type="text/css">
+      .logo { background-image:url(//img.alicdn.com/tps/TB1Nv_wKXXXXXbmXVXXXXXXXXXX-295-195.png); }
+    </style>
+  
+
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <script src="/js/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+  <img src="//img.alicdn.com/tps/TB1GKckKXXXXXXIXpXXXXXXXXXX-400-400.png" alt="Taobao FED" style="position:absolute;left:-9999px">
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+            <h2 class="subtitle-wrap">
+              <p class="subtitle">淘宝前端团队（FED）</p>
+              <p class="description">用技术为体验提供无限可能</p>
+            </h2>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/">主页</a></li>
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Web开发/">Web开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Node-js/">Node.js</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/无线开发/">无线开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/工具-平台/">工具&amp;平台</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/团队生活/">团队生活</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/about/">关于我们</a>
+                </li>
+                
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://taobaofed.org"></form>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header"><a class="page-title-link" href="/categories/Node-js/">Node.js</a></h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-nodejs-unit-tests-workflow" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      Node.js 单元测试：workflow
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        
+        <span>作者: 大果
+        </span>
+        <span>发表于: <a href="/blog/2015/12/29/nodejs-unit-tests-workflow/" class="article-date">
+  <time datetime="2015-12-29T02:11:43.000Z" itemprop="datePublished">2015-12-29</time>
+</a></span>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <p><img src="https://img.alicdn.com/tps/TB13keMLXXXXXbmXVXXXXXXXXXX-900-500.jpg" alt="Node.js 单元测试：workflow"></p>
+<blockquote>
+<p>Talk is cheap, show me the code!</p>
+</blockquote>
+<p>是否还记得小明在《 Node.js 单元测试之我要写测试》里引用的这句话么，不过引用了之后，小明就像跑路了一般再也没见其 code……其实呀，不知道大家有没有关注最近比较火 minggeJs, 稍微联想下你就知道小明最近在忙啥了 O(∩_∩)O~~</p>
+<p>虽说小明现在还写不出 minggeJs 这样的前端库，不过，小明想说的是：<strong>当你准备开源一个库的时候，一定要写单元测试；当你要使用一个开源库的时候，单元测试的覆盖率是衡量质量的最重要标准之一</strong>。</p>
+<p>好了，扯了这么多闲话之后，明哥（不对，是小明……）接下来介绍一下在项目里单元测试整个流程是如何的。</p>
+<h3 id="Node-js-专属之-npm-scripts"><a href="#Node-js-专属之-npm-scripts" class="headerlink" title="Node.js 专属之 npm scripts"></a>Node.js 专属之 <code>npm scripts</code></h3><p>起初，小明将 Mocha 和 istanbul 装在全局命令下，然后每个项目都使用全局的命令，后来发现多人合作时会因为版本不一致而报错，因此果断将 Mocha 之类的装在项目的 <code>node_modules/</code> 下：</p>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install mocha istanbul --<span class="built_in">save</span>-<span class="built_in">dev</span></span><br></pre></td></tr></table></figure>
+<p>然后只需要执行下面两条命令即可：</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 执行单测</span></span><br><span class="line">.<span class="regexp">/node_modules/</span>.bin<span class="regexp">/mocha test/</span>*.test.js --timeout <span class="number">20000</span></span><br><span class="line"><span class="comment"># 收集覆盖率报告</span></span><br><span class="line">.<span class="regexp">/node_modules/</span>.bin<span class="regexp">/istanbul cover ./node_modules/</span>.bin/_mocha -- -u exports --reporter spec --timeout <span class="number">20000</span></span><br></pre></td></tr></table></figure>
+<p>然而每次都执行这么长的命令让隔壁（座位）的老王实在看不下去了，于是就告诉小明 <code>npm scripts</code> 的用法。只需要在 <code>package.json</code> 里定义几个命令即可：</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">  <span class="string">"test"</span>: <span class="string">"./node_modules/.bin/mocha 'test/*.test.js' --timeout 20000"</span>,</span><br><span class="line">  <span class="string">"cov"</span>: <span class="string">"./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -u exports 'test/*.test.js' --timeout 20000"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如此之后，每次写完代码，小明只需要执行 <code>npm run test/cov</code> 即可，省事了很多。</p>
+<p>不知道诸位有没有注意到，小明在 <code>&#39;test/*.test.js&#39;</code> 上故意加了一个引号，这一点也是小明被坑了之后才发现的：执行 shell 命令时，如果参数中包含如 <code>test/*.test.js</code> 这种 glob 模式，对应的 shell 会自动解析掉，但是不同的 shell 对 glob 的实现又不一致，因此就会出现匹配文件出错的问题，当加了引号之后，shell 会把参数原封不动的交给 Mocha（或者其他工具）来解析，这样才能保持不同 shell 的一致性。</p>
+<p>当然，<code>npm scripts</code> 还有很多对于 Node.js 开发者很便利的功能，请参阅文末的相关链接。</p>
+<h3 id="构建利器-makefile"><a href="#构建利器-makefile" class="headerlink" title="构建利器 makefile"></a>构建利器 makefile</h3><p>随着代码的积累，小明写的单测也越来越多，有时候可能只需要运行某一个测试文件，所以小明希望能通过命令行参数将需要测试的单个文件传进去，这时候 <code>npm scripts</code> 就显得捉襟见肘了。于是小明继续秉持着「有问题找老王」的原则，老王毫不犹豫的给小明推荐了 <code>makefile</code>.</p>
+<p>关于 <code>makefile</code> 的介绍，网上有很多的资料，小明的简单理解就是：<code>makefile</code> 就是将某个流程（如编译、打包、构建等）包含的所有相关命令集成到一个 make 命令下，极大的方便开发者。具体到目前的场景，可以参照如下的示例：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">test := './test/*.test.js'</span><br><span class="line">timeout := 20000</span><br><span class="line">mocha := ./node_modules/.bin/mocha</span><br><span class="line">istanbul := ./node_modules/.bin/istanbul</span><br><span class="line">coverageMocha := ./node_modules/.bin/_mocha</span><br><span class="line"></span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	echo '开始运行单测'</span><br><span class="line">	<span class="variable">$(mocha)</span> --timeout <span class="variable">$(timeout)</span> <span class="variable">$(test)</span></span><br><span class="line">	echo '单测运行结束'</span><br><span class="line"></span><br><span class="line"><span class="section">cov:</span></span><br><span class="line">	<span class="variable">$(istanbul)</span> cover <span class="variable">$(coverageMocha)</span> -- -u exports <span class="variable">$(test)</span> --timeout <span class="variable">$(timeout)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 区分命令和文件名称</span></span><br><span class="line"><span class="meta"><span class="meta-keyword">.PHONY</span>: test</span></span><br></pre></td></tr></table></figure>
+<p>在项目里定义了如上的 <code>makefile</code> 文件后，只需要执行 <code>make test</code> 就可以跑单元测试了，并且上面提到的传参数的问题也可以迎刃而解：<code>make test test=test/util.test.js</code>. 相对于 <code>npm scripts</code>, <code>makefile</code> 借助 shell 脚本的能力要强大灵活很多，然而一个不太好的消息是：windows 并不支持 <code>makefile</code>……</p>
+<h3 id="持续集成"><a href="#持续集成" class="headerlink" title="持续集成"></a>持续集成</h3><p>在经过了上面的这些步骤之后，小明在本地已经可以完美的执行单元测试了，然而在跟小伙伴们合作的过程中，小明发现有的同学并不是很关注这个事情，单元测试没跑通过就将代码 push 到了远程仓库，这时候就需要其他同学来帮忙擦屁股，很是不方便。</p>
+<p>于是，老王就告诉了小明持续集成这个东西，所谓持续集成，简单来讲就是：在代码 push 之后，对代码进行一系列的构建，比如 lint 检测、单元测试、部署等，借此提高代码的质量以及多人合作开发效率。而在 Node.js 领域，这方面比较优秀的工具就是 travis-ci 了，小明也顺便体验了一下 travis-ci, 按照其三步走的接入流程的确是非常之方便。</p>
+<p><img src="https://img.alicdn.com/tps/TB1LQm3LXXXXXbyXpXXXXXXXXXX-657-166.png" alt=""></p>
+<p>然而，小明平时开发的仓库大部分都是托管在内部的，没法使用面向 GitHub 的 travis-ci, 这一次小明决定不再去问老王了，程序员嘛，造轮子的功能还是要有的。于是，在一个多月的开发后，小明基于内部的其他服务做出了一个八九不离十的持续集成系统，名曰 UITest-ci:</p>
+<p><img src="http://gtms02.alicdn.com/tps/i2/TB196CTLXXXXXXBaXXXkRNLSXXX-1266-273.png" alt=""></p>
+<p>这个系统可以运行单测、执行 lint、可以生成覆盖率报表、可以通知开发者集成结果、同时提供徽章服务，近乎完美。之后有时间了再详细介绍这个系统的设计和实现吧 ：）</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>至此，小明介绍了单元测试各个部分的相关概念以及整个工作流程是如何的，接下来，我们会面对项目中更具体的一些单测问题，比如：如何用 supertest 做接口测试、如何测试私有方法、如何针对命令行工具做单测等等。敬请期待~</p>
+<h3 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h3><ul>
+<li><a href="https://docs.npmjs.com/misc/scripts" target="_blank" rel="external">npm scripts 文档</a></li>
+<li><a href="http://wiki.ubuntu.org.cn/%E8%B7%9F%E6%88%91%E4%B8%80%E8%B5%B7%E5%86%99Makefile" target="_blank" rel="external">跟我一起写 makefile</a></li>
+<li><a href="https://travis-ci.org/" target="_blank" rel="external">持续集成：travis-ci</a></li>
+</ul>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://taobaofed.org/blog/2015/12/29/nodejs-unit-tests-workflow/" data-id="cisvevfah0051ebqe25vxeq8r" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li></ul>
+
+      </footer>
+    </div>
+  </article>
+  
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-nodejs-unit-tests-workflow" data-title="Node.js 单元测试：workflow" data-url="http://taobaofed.org/blog/2015/12/29/nodejs-unit-tests-workflow/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'taobaofed'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我们 :</p>
+    <ul class="social-links">
+      
+        <li><a class="social-tooltip" title="github" href="https://github.com/taobaofed" target="_blank"><i class="icon fa fa-github"></i></a></li>
+      
+        <li><a class="social-tooltip" title="weibo" href="http://weibo.com/taobaofed" target="_blank"><i class="icon fa fa-weibo"></i></a></li>
+      
+        <li><a class="social-tooltip" title="rss" href="/atom.xml" target="_blank"><i class="icon fa fa-rss"></i></a></li>
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2015/12/30/the-communication-scheme-of-react-native-in-ios/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <p class="article-nav-title">
+        
+          使用 JS 构建跨平台的原生应用：React Native iOS 通信机制初探
+        
+      </p>
+      <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+  
+  
+    <a href="/blog/2015/12/28/anim-train/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">小火车是怎么跑起来的</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+      
+  <div class="widget-wrap widget-wechat">
+    <a href="javascript:; ">
+      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
+    </a>
+  </div>
+
+  <div class="widget-wrap widget-wechat">
+    <a href="https://github.com/taobaofed/react-web ">
+      <img src="//img1.tbcdn.cn/L1/461/1/850051b092bf91403dfe9ba4c421b6b06d397777.png" width="280" alt="A framework for building web apps with React Native compatible API." title="A framework for building web apps with React Native compatible API.">
+    </a>
+  </div>
+
+    
+      
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/09/09/webpack-flow/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg
+)" alt="细说 webpack 之流程篇" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/09/09/webpack-flow/" class="title">细说 webpack 之流程篇</a></p>
+              
+              <p class="item-author">by 七珏</p>
+              
+              <p class="item-date">at <time datetime="2016-09-09T04:02:58.000Z" itemprop="datePublished">2016-09-09</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/24/react-key/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：key 属性的原理和用法" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/24/react-key/" class="title">React 实践心得：key 属性的原理和用法</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-24T11:38:35.000Z" itemprop="datePublished">2016-08-24</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/18/react-redux-connect/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：react-redux 之 connect 方法详解" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/18/react-redux-connect/" class="title">React 实践心得：react-redux 之 connect 方法详解</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-18T07:15:12.000Z" itemprop="datePublished">2016-08-18</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/12/optimized-react-components/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg
+)" alt="高性能 React 组件" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/12/optimized-react-components/" class="title">高性能 React 组件</a></p>
+              
+              <p class="item-author">by 慎里</p>
+              
+              <p class="item-date">at <time datetime="2016-08-12T02:44:11.000Z" itemprop="datePublished">2016-08-12</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/04/instructions-of-semver/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png
+)" alt="论版本号的正确打开方式" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a></p>
+              
+              <p class="item-author">by 法海</p>
+              
+              <p class="item-date">at <time datetime="2016-08-04T09:48:27.000Z" itemprop="datePublished">2016-08-04</time></p>
+            </div>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://ued.taobao.org/blog/">淘宝UED</a>
+          </li>
+        
+          <li>
+            <a href="http://www.nodejs.club/">Node地下铁</a>
+          </li>
+        
+          <li>
+            <a href="http://alinode.aliyun.com/">alinode</a>
+          </li>
+        
+          <li>
+            <a href="http://fex.baidu.com/">百度FEX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.75team.com/">奇舞团</a>
+          </li>
+        
+          <li>
+            <a href="http://aotu.io/notes/">凹凸实验室</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <!-- <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a> -->
+      <div class="credit">
+        <p>Copyright &copy; 2016 Taobao FED. All rights reserved.</p>
+        <!-- <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a> Redesigned by <a href="http://barretlee.com/" target="_blank">barretlee</a></p> -->
+      </div>
+    </div>
+  </div>
+</footer>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65944345-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+<script>
+// for baidu spider
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+// for baidu analysis
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?33dd75d7b88de8722970ea06fa5f06b0";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+    
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script src="/scrollLoading/jquery.scrollLoading.js"></script>
+  <script src="/scrollLoading/main.js"></script>
+
+
+<script src="/js/html-patch.js"></script>
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

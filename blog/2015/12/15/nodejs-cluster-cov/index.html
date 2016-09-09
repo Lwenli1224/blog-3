@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>多进程下的测试覆盖率 | Taobao FED | 淘宝前端团队</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="baidu-site-verification" content="OTHOW5vFFG" />
+  <meta name="description" content="单元测试在 Node.js 项目开发中的重要性就不言而喻了，项目一旦稍微大起来了就经常出现拆东墙补西墙的情况。这边修复了一个 bug，那边又不知道什么时候产生了一个新的 bug，越到后面没有经过完整的测试都不敢随便发布。
+代码覆盖率测试的时候，我们常常关心，是否所有代码都测试到了。这个指标就叫做“代码覆盖率”（code coverage），它有四个测量维度。
+
+行覆盖率（line coverag">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多进程下的测试覆盖率">
+<meta property="og:url" content="http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/index.html">
+<meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
+<meta property="og:description" content="单元测试在 Node.js 项目开发中的重要性就不言而喻了，项目一旦稍微大起来了就经常出现拆东墙补西墙的情况。这边修复了一个 bug，那边又不知道什么时候产生了一个新的 bug，越到后面没有经过完整的测试都不敢随便发布。
+代码覆盖率测试的时候，我们常常关心，是否所有代码都测试到了。这个指标就叫做“代码覆盖率”（code coverage），它有四个测量维度。
+
+行覆盖率（line coverag">
+<meta property="og:image" content="http://gtms01.alicdn.com/tps/i1/TB1Db7eKVXXXXatXXXX2AXZ8pXX-900-500.png">
+<meta property="og:image" content="http://gtms02.alicdn.com/tps/i2/TB1fMrJKVXXXXXaXXXXXsjJFVXX-1344-530.png">
+<meta property="og:image" content="http://gtms04.alicdn.com/tps/i4/TB1QRPfKVXXXXbvaXXXHP4SLXXX-1570-372.png">
+<meta property="og:image" content="http://gtms04.alicdn.com/tps/i4/TB1w8DHKVXXXXa.XXXX.KiBGVXX-1560-430.png">
+<meta property="og:updated_time" content="2016-09-09T06:51:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多进程下的测试覆盖率">
+<meta name="twitter:description" content="单元测试在 Node.js 项目开发中的重要性就不言而喻了，项目一旦稍微大起来了就经常出现拆东墙补西墙的情况。这边修复了一个 bug，那边又不知道什么时候产生了一个新的 bug，越到后面没有经过完整的测试都不敢随便发布。
+代码覆盖率测试的时候，我们常常关心，是否所有代码都测试到了。这个指标就叫做“代码覆盖率”（code coverage），它有四个测量维度。
+
+行覆盖率（line coverag">
+<meta name="twitter:image" content="http://gtms01.alicdn.com/tps/i1/TB1Db7eKVXXXXatXXXX2AXZ8pXX-900-500.png">
+  
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/rss+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  
+    <link rel="stylesheet" href="/scrollLoading/style.css">
+  
+
+  
+    <style type="text/css">
+      .logo { background-image:url(//img.alicdn.com/tps/TB1Nv_wKXXXXXbmXVXXXXXXXXXX-295-195.png); }
+    </style>
+  
+
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <script src="/js/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+  <img src="//img.alicdn.com/tps/TB1GKckKXXXXXXIXpXXXXXXXXXX-400-400.png" alt="Taobao FED" style="position:absolute;left:-9999px">
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+            <h2 class="subtitle-wrap">
+              <p class="subtitle">淘宝前端团队（FED）</p>
+              <p class="description">用技术为体验提供无限可能</p>
+            </h2>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/">主页</a></li>
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Web开发/">Web开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Node-js/">Node.js</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/无线开发/">无线开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/工具-平台/">工具&amp;平台</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/团队生活/">团队生活</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/about/">关于我们</a>
+                </li>
+                
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://taobaofed.org"></form>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header"><a class="page-title-link" href="/categories/Node-js/">Node.js</a></h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-nodejs-cluster-cov" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      多进程下的测试覆盖率
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        
+        <span>作者: 淘杰
+        </span>
+        <span>发表于: <a href="/blog/2015/12/15/nodejs-cluster-cov/" class="article-date">
+  <time datetime="2015-12-15T01:54:40.000Z" itemprop="datePublished">2015-12-15</time>
+</a></span>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <p><img src="http://gtms01.alicdn.com/tps/i1/TB1Db7eKVXXXXatXXXX2AXZ8pXX-900-500.png" alt="多进程下的测试覆盖率"></p>
+<p>单元测试在 Node.js 项目开发中的重要性就不言而喻了，项目一旦稍微大起来了就经常出现拆东墙补西墙的情况。这边修复了一个 bug，那边又不知道什么时候产生了一个新的 bug，越到后面没有经过完整的测试都不敢随便发布。</p>
+<h2 id="代码覆盖率"><a href="#代码覆盖率" class="headerlink" title="代码覆盖率"></a>代码覆盖率</h2><p>测试的时候，我们常常关心，是否所有代码都测试到了。这个指标就叫做“代码覆盖率”（code coverage），它有四个测量维度。</p>
+<ul>
+<li>行覆盖率（line coverage）：是否每一行都执行了？</li>
+<li>函数覆盖率（function coverage）：是否每个函数都调用了？</li>
+<li>分支覆盖率（branch coverage）：是否每个 if 代码块都执行了？</li>
+<li>语句覆盖率（statement coverage）：是否每个语句都执行了？</li>
+</ul>
+<p>目前在 Node.js 开发中比较流行的测试覆盖率工具是 Istanbul。</p>
+<blockquote>
+<p>Yet another JS code coverage tool that computes statement, line, function and branch coverage with module loader hooks to transparently add coverage when running tests. Supports all JS coverage use cases including unit tests, server side functional tests and browser tests. Built for scale.</p>
+</blockquote>
+<p>Istanbul 不但可以统计到整个项目的代码覆盖率，还会生成一份漂亮的覆盖率报告，准确的标记出哪些代码没有被覆盖到。 </p>
+<p>平常我们写的 JS 测试用例大部分都是单进程的场景，下面我们来看一个多进程项目的测试情况又是怎么样的呢？</p>
+<h2 id="多进程-demo"><a href="#多进程-demo" class="headerlink" title="多进程 demo"></a>多进程 demo</h2><p>先写一个简单的 demo，使用 Mocha 做单元测试，Istanbul 生成测试覆盖率。<br>下面是整个项目的目录结构。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.istanbul-cluster-demo</span><br><span class="line">|____.gitignore</span><br><span class="line">|____lib</span><br><span class="line">| |____master.js</span><br><span class="line">| |____worker.js</span><br><span class="line">|____package.json</span><br><span class="line">|____<span class="built_in">test</span></span><br><span class="line">| |____index.test.js</span><br></pre></td></tr></table></figure>
+<p>master.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> childProcess = <span class="built_in">require</span>(<span class="string">'child_process'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> rid = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> service = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> requestQueue = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">ready</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> worker = childProcess.fork(path.join(__dirname,<span class="string">'./worker'</span>));</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">send</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    rid++;</span><br><span class="line">    <span class="keyword">let</span> args = [].slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">const</span> method = args.slice(<span class="number">0</span>,<span class="number">1</span>)[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">const</span> callback = args.slice(<span class="number">-1</span>)[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> req = &#123;</span><br><span class="line">      rid: rid,</span><br><span class="line">      method:method,</span><br><span class="line">      args:args.slice(<span class="number">1</span>,<span class="number">-1</span>)</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    requestQueue.set(rid,<span class="built_in">Object</span>.assign(&#123;</span><br><span class="line">      callback: callback</span><br><span class="line">    &#125;, req));</span><br><span class="line"></span><br><span class="line">    worker.send(req);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  worker.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">message</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (message.action === <span class="string">'register'</span>) &#123;</span><br><span class="line">       message.methods.forEach((method) =&gt; &#123;</span><br><span class="line">        service[method] = send.bind(<span class="literal">null</span>, method);</span><br><span class="line">       &#125;);</span><br><span class="line">       ready(service);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> req = requestQueue.get(message.rid);</span><br><span class="line">      <span class="keyword">const</span> callback = req.callback;</span><br><span class="line">      <span class="keyword">if</span> (message.success) &#123;</span><br><span class="line">        callback(<span class="literal">null</span>, message.data);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        callback(<span class="keyword">new</span> <span class="built_in">Error</span>(message.error));</span><br><span class="line">      &#125;</span><br><span class="line">      requestQueue.delete(message.rid);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>worker.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> service = &#123;</span><br><span class="line">  add() &#123;</span><br><span class="line">    <span class="keyword">const</span> args = [].slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> args.slice().reduce(<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  time() &#123;</span><br><span class="line">    <span class="keyword">const</span> args = [].slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>((resolve, reject)=&gt; &#123;</span><br><span class="line">       setTimeout( ()=&gt; &#123;</span><br><span class="line">          <span class="keyword">const</span> ret = args.slice().reduce(<span class="function"><span class="keyword">function</span>(<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> a*b;</span><br><span class="line">                      &#125;);</span><br><span class="line">          resolve(ret);</span><br><span class="line">       &#125;, <span class="number">1000</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (process.send) &#123;</span><br><span class="line">  process.send(&#123;</span><br><span class="line">    action:<span class="string">'register'</span>,</span><br><span class="line">    methods: <span class="built_in">Object</span>.keys(service)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">process.on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ret = &#123; success: <span class="literal">false</span>, rid: message.rid &#125;;</span><br><span class="line">  <span class="keyword">const</span> method = message.method;</span><br><span class="line">  <span class="keyword">if</span> (service[method]) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> result = service[method].apply(service, message.args);</span><br><span class="line">      ret.success = <span class="literal">true</span>;</span><br><span class="line">      <span class="keyword">if</span>(<span class="keyword">typeof</span> result.then === <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result.then((data)=&gt; &#123;</span><br><span class="line">          ret.data = data;</span><br><span class="line">          process.send(ret);</span><br><span class="line">        &#125;).catch((err)=&gt;&#123;</span><br><span class="line">          ret.success = <span class="literal">false</span>;</span><br><span class="line">          ret.error = err.message;</span><br><span class="line">          process.send(err);</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">      ret.data = result;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">      ret.error = err.message;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  process.send(ret);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面的 demo 实现了一个简单的进程间 rpc 功能，master 进程提供接口，worker 进程实现具体的逻辑，并通过进程间通信给 master 调用。 </p>
+<p>worker 进程 向 master 进程注册了 add 和 time 方法，分别提供相加和相乘的服务。</p>
+<h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>我们接着使用 Mocha 写一个脚本测试下这个功能。</p>
+<p>index.test.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">const</span> master = <span class="built_in">require</span>(<span class="string">'../lib/master'</span>);</span><br><span class="line"><span class="keyword">const</span> assert = <span class="built_in">require</span>(<span class="string">'assert'</span>);</span><br><span class="line"></span><br><span class="line">describe(<span class="string">'test/index.test.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> service;</span><br><span class="line">  before(<span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</span><br><span class="line">    master(<span class="function"><span class="keyword">function</span>(<span class="params">_service</span>)</span>&#123;</span><br><span class="line">      service = _service;</span><br><span class="line">      done();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  it(<span class="string">'add should work'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</span><br><span class="line">    service.add(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">        assert(result === <span class="number">1</span>+<span class="number">2</span>+<span class="number">3</span>+<span class="number">4</span>+<span class="number">5</span>);</span><br><span class="line">        done();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  it(<span class="string">'time should work'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">done</span>) </span>&#123;</span><br><span class="line">    service.time(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, result</span>) </span>&#123;</span><br><span class="line">        assert(result === <span class="number">1</span>*<span class="number">2</span>*<span class="number">3</span>*<span class="number">4</span>*<span class="number">5</span>);</span><br><span class="line">        done();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>运行  <code>node --harmony node_modules/.bin/istanbul cover  ./node_modules/mocha/bin/_mocha --  test/**/*.test.js</code> 输出</p>
+<p><img src="http://gtms02.alicdn.com/tps/i2/TB1fMrJKVXXXXXaXXXXXsjJFVXX-1344-530.png" alt="测试结果"></p>
+<p>所有的测试用例都已经跑通并统计出各种覆盖率， 再看看生成的覆盖率报告<br><img src="http://gtms04.alicdn.com/tps/i4/TB1QRPfKVXXXXbvaXXXHP4SLXXX-1570-372.png" alt="覆盖率报告，子进程没有被统计到"></p>
+<p>发现并没有 worker.js 的覆盖率数据，所以上面输出的覆盖率是不完整的。</p>
+<h2 id="分析原因"><a href="#分析原因" class="headerlink" title="分析原因"></a>分析原因</h2><p>为什么测试的结果中会没有 worker.js 的覆盖率数据呢，稍微想一下其实很简单，master.js 之所以有覆盖率数据因为它通过 Istanbul 启动执行的，代码运行之前 Istanbul 会对 master.js 进行 instrument。下面是一段代码被 instrument 前后的情况。</p>
+<p>before instrument<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"Node.js"</span>; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>after instrument<br><figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var __cov_lgAhQ3cOIwE1WdZw07U4cQ = (Function(<span class="string">'return this'</span>))();</span><br><span class="line"><span class="keyword">if</span> (!__cov_lgAhQ3cOIwE1WdZw07U4cQ.__coverage_<span class="number">_</span>) &#123; __cov_lgAhQ3cOIwE1WdZw07U4cQ.__coverage_<span class="number">_</span> = &#123;&#125;; &#125;</span><br><span class="line">__cov_lgAhQ3cOIwE1WdZw07U4cQ = __cov_lgAhQ3cOIwE1WdZw07U4cQ.__coverage_<span class="number">_</span>;</span><br><span class="line"><span class="keyword">if</span> (!(__cov_lgAhQ3cOIwE1WdZw07U4cQ[<span class="string">'demo.js'</span>])) &#123;</span><br><span class="line">   __cov_lgAhQ3cOIwE1WdZw07U4cQ[<span class="string">'demo.js'</span>] = &#123;<span class="string">"path"</span>:<span class="string">"demo.js"</span>,<span class="string">"s"</span>:&#123;<span class="string">"1"</span>:<span class="number">1</span>,<span class="string">"2"</span>:<span class="number">0</span>&#125;,<span class="string">"b"</span>:&#123;&#125;,<span class="string">"f"</span>:&#123;<span class="string">"1"</span>:<span class="number">0</span>&#125;,<span class="string">"fnMap"</span>:&#123;<span class="string">"1"</span>:&#123;<span class="string">"name"</span>:<span class="string">"test"</span>,<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"loc"</span>:&#123;<span class="string">"start"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">0</span>&#125;,<span class="string">"end"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">16</span>&#125;&#125;&#125;&#125;,<span class="string">"statementMap"</span>:&#123;<span class="string">"1"</span>:&#123;<span class="string">"start"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">0</span>&#125;,<span class="string">"end"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">37</span>&#125;&#125;,<span class="string">"2"</span>:&#123;<span class="string">"start"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">18</span>&#125;,<span class="string">"end"</span>:&#123;<span class="string">"line"</span>:<span class="number">1</span>,<span class="string">"column"</span>:<span class="number">35</span>&#125;&#125;&#125;,<span class="string">"branchMap"</span>:&#123;&#125;&#125;;</span><br><span class="line">&#125;</span><br><span class="line">__cov_lgAhQ3cOIwE1WdZw07U4cQ = __cov_lgAhQ3cOIwE1WdZw07U4cQ[<span class="string">'demo.js'</span>];</span><br><span class="line"><span class="keyword">function</span> test()&#123;__cov_lgAhQ3cOIwE1WdZw07U4cQ.f[<span class="string">'1'</span>]++;__cov_lgAhQ3cOIwE1WdZw07U4cQ.s[<span class="string">'2'</span>]++;return<span class="string">'Node.js'</span>;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看出 instrument 后的代码每一行是否被执行都可以监测到，而 worker.js 是 master.js 通过调用 childProcess.fork， 在一个很干净的 Node.js 环境中执行， 执行的代码没有被 instrument，执行情况自然无法被 Istanbul 检测到。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>所以要获取 worker.js 的覆盖率，必须在执行 worker.js 代码之前先注入 Istanbul，那很自然的就会想到 hack 掉 childProcess.fork。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> childProcess = <span class="built_in">require</span>(<span class="string">'child_process'</span>);</span><br><span class="line"><span class="keyword">const</span> fork = childProcess.fork;</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">childProcess.fork = <span class="function"><span class="keyword">function</span>(<span class="params">modulePath, args, options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> execPath = path.resolve(__dirname,<span class="string">'../node_modules/.bin/istanbul'</span>);</span><br><span class="line">  args = [<span class="string">'cover'</span>, <span class="string">'--report'</span>, <span class="string">'none'</span>, <span class="string">'--print'</span>, <span class="string">'none'</span>, <span class="string">'--include-pid'</span>,modulePath+<span class="string">'.js'</span>];</span><br><span class="line">  <span class="keyword">return</span> fork.apply(childProcess,[execPath, args, options]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然这样处理后 master.js 和 worker.js 的覆盖率都有了，但由于它们是在不同的进程中产生的，Istanbul 不会自动将 2 个文件的覆盖率数据合并处理，所以我们可以先产生覆盖率数据，再根据覆盖率数据生成报告。由于涉及到多个进程，启动  Istanbul 时需要加上 <code>include-pid</code> 参数，这样每个进程生成的 coverage.json 文件就会带上进程 pid，否则 子进程的  coverage.json 会覆盖掉 主进程的。</p>
+<p>运行 <code>istanbul report --root ./coverage text-summary json lcov</code> 便会自动对生成的 coverage-pid.json 文件合并处理，产生最终的覆盖率数据以及覆盖率报告。</p>
+<p>最后将这 2 条命令集成到 Node.js 项目的 package.json 文件中。</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"test"</span>:<span class="string">"npm run cov &amp;&amp; npm run report"</span>,</span><br><span class="line">    <span class="string">"report"</span>:<span class="string">"node --harmony node_modules/.bin/istanbul report --root ./coverage text-summary json lcov"</span>,</span><br><span class="line">    <span class="string">"cov"</span>: <span class="string">"node --harmony node_modules/.bin/istanbul cover  --report none --print none --include-pid  ./node_modules/mocha/bin/_mocha -- 'test/**/*.test.js'"</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>执行 <code>npm test</code><br><img src="http://gtms04.alicdn.com/tps/i4/TB1w8DHKVXXXXa.XXXX.KiBGVXX-1560-430.png" alt="主进程和子进程中的所有代码覆盖率都被统计到"><br> 可以看到主进程和子进程中的所有代码覆盖率都被统计到了。</p>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/" data-id="cisvevf9y004hebqe7lmin3pm" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多进程/">多进程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试/">测试</a></li></ul>
+
+      </footer>
+    </div>
+  </article>
+  
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-nodejs-cluster-cov" data-title="多进程下的测试覆盖率" data-url="http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'taobaofed'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我们 :</p>
+    <ul class="social-links">
+      
+        <li><a class="social-tooltip" title="github" href="https://github.com/taobaofed" target="_blank"><i class="icon fa fa-github"></i></a></li>
+      
+        <li><a class="social-tooltip" title="weibo" href="http://weibo.com/taobaofed" target="_blank"><i class="icon fa fa-weibo"></i></a></li>
+      
+        <li><a class="social-tooltip" title="rss" href="/atom.xml" target="_blank"><i class="icon fa fa-rss"></i></a></li>
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2015/12/16/h5-performance-optimization-and-domain-convergence/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <p class="article-nav-title">
+        
+          无线性能优化：域名收敛
+        
+      </p>
+      <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+  
+  
+    <a href="/blog/2015/12/14/velocity-new-york-2015-frontend/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">Velocity New York 2015 - 前端篇</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+      
+  <div class="widget-wrap widget-wechat">
+    <a href="javascript:; ">
+      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
+    </a>
+  </div>
+
+  <div class="widget-wrap widget-wechat">
+    <a href="https://github.com/taobaofed/react-web ">
+      <img src="//img1.tbcdn.cn/L1/461/1/850051b092bf91403dfe9ba4c421b6b06d397777.png" width="280" alt="A framework for building web apps with React Native compatible API." title="A framework for building web apps with React Native compatible API.">
+    </a>
+  </div>
+
+    
+      
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/09/09/webpack-flow/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg
+)" alt="细说 webpack 之流程篇" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/09/09/webpack-flow/" class="title">细说 webpack 之流程篇</a></p>
+              
+              <p class="item-author">by 七珏</p>
+              
+              <p class="item-date">at <time datetime="2016-09-09T04:02:58.000Z" itemprop="datePublished">2016-09-09</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/24/react-key/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：key 属性的原理和用法" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/24/react-key/" class="title">React 实践心得：key 属性的原理和用法</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-24T11:38:35.000Z" itemprop="datePublished">2016-08-24</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/18/react-redux-connect/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg
+)" alt="React 实践心得：react-redux 之 connect 方法详解" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/18/react-redux-connect/" class="title">React 实践心得：react-redux 之 connect 方法详解</a></p>
+              
+              <p class="item-author">by 叶斋</p>
+              
+              <p class="item-date">at <time datetime="2016-08-18T07:15:12.000Z" itemprop="datePublished">2016-08-18</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/12/optimized-react-components/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg
+)" alt="高性能 React 组件" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/12/optimized-react-components/" class="title">高性能 React 组件</a></p>
+              
+              <p class="item-author">by 慎里</p>
+              
+              <p class="item-date">at <time datetime="2016-08-12T02:44:11.000Z" itemprop="datePublished">2016-08-12</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/08/04/instructions-of-semver/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png
+)" alt="论版本号的正确打开方式" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a></p>
+              
+              <p class="item-author">by 法海</p>
+              
+              <p class="item-date">at <time datetime="2016-08-04T09:48:27.000Z" itemprop="datePublished">2016-08-04</time></p>
+            </div>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://ued.taobao.org/blog/">淘宝UED</a>
+          </li>
+        
+          <li>
+            <a href="http://www.nodejs.club/">Node地下铁</a>
+          </li>
+        
+          <li>
+            <a href="http://alinode.aliyun.com/">alinode</a>
+          </li>
+        
+          <li>
+            <a href="http://fex.baidu.com/">百度FEX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.75team.com/">奇舞团</a>
+          </li>
+        
+          <li>
+            <a href="http://aotu.io/notes/">凹凸实验室</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <!-- <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a> -->
+      <div class="credit">
+        <p>Copyright &copy; 2016 Taobao FED. All rights reserved.</p>
+        <!-- <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a> Redesigned by <a href="http://barretlee.com/" target="_blank">barretlee</a></p> -->
+      </div>
+    </div>
+  </div>
+</footer>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65944345-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+<script>
+// for baidu spider
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+// for baidu analysis
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?33dd75d7b88de8722970ea06fa5f06b0";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+    
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script src="/scrollLoading/jquery.scrollLoading.js"></script>
+  <script src="/scrollLoading/main.js"></script>
+
+
+<script src="/js/html-patch.js"></script>
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
