@@ -1,3 +1,0 @@
-Sitemap: http://taobaofed.org/sitemap.xml
-User-agent: *
-Allow: /
