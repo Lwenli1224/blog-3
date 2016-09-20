@@ -143,6 +143,45 @@
   <article class="article article-summary">
     <div class="article-summary-inner">
       
+<a href="/blog/2016/01/14/nodejs-memory-leak-analyze/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB1LphILpXXXXb5XVXXXXXXXXXX-900-500.jpg
+)" alt="记一次 Node.js 应用内存暴涨分析" class="thumbnail-image"></span>
+  
+</a>
+
+      <div class="article-meta">
+        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+        <p class="date"><time datetime="2016-01-14T02:46:37.000Z" itemprop="datePublished">2016-01-14</time></p>
+      </div>
+      <h2 class="article-title">
+        <a href="/blog/2016/01/14/nodejs-memory-leak-analyze/" class="title">记一次 Node.js 应用内存暴涨分析</a>
+      </h2>
+      <p class="article-excerpt">
+        
+        
+起因之前 TMS 在运行时 CPU 中占用率和内存占用一直很高，导致应用运行状态不是很良好，需要频繁重启。经过排查，找出了部分原因：
+
+使用的 html-minifier 模块有问题，如果输入的内容是一个有错误的 HTML 结构，会使解析进入死循环，导致 CPU 占用率 100%。
+
+在使用 vm 模块时，使用姿势错误，导致内存占用无法释放，使内存占用暴涨。
+
+
+第一个问题我们今天不予讨论，主要
+      </p>
+    </div>
+  </article>
+
+    
+  
+    
+    
+    
+    
+        
+  <article class="article article-summary">
+    <div class="article-summary-inner">
+      
 <a href="/blog/2016/01/13/measuring-fps/" class="thumbnail">
   
     <span style="background-image:url(https://img.alicdn.com/tps/TB1vDR6LpXXXXbnXpXXXXXXXXXX-900-500.jpg
@@ -167,10 +206,14 @@
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -202,14 +245,10 @@
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -240,10 +279,14 @@ D2 当天，承
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -275,14 +318,10 @@ D2 当天，承
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -312,10 +351,14 @@ D2 当天，承
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -345,14 +388,10 @@ Dragonfly 使用 Node.js 开发，稳定性保障是一边实践探索、一边�
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -381,6 +420,8 @@ Web 发展了几十个春秋，风起云涌，千变万化。我很庆幸自己�
     </div>
   </article>
 
+    
+      </div>
     
   
     
@@ -464,44 +505,6 @@ JS 启动过程React Native 的 iOS 端代码是直接从 Xcode IDE 里启动的
       </div>
     
   
-    
-    
-    
-    
-      <div class="article-row">
-    
-        
-  <article class="article article-summary">
-    <div class="article-summary-inner">
-      
-<a href="/blog/2015/12/29/nodejs-unit-tests-workflow/" class="thumbnail">
-  
-    <span style="background-image:url(https://img.alicdn.com/tps/TB13keMLXXXXXbmXVXXXXXXXXXX-900-500.jpg
-)" alt="Node.js 单元测试：workflow" class="thumbnail-image"></span>
-  
-</a>
-
-      <div class="article-meta">
-        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
-        <p class="date"><time datetime="2015-12-29T02:11:43.000Z" itemprop="datePublished">2015-12-29</time></p>
-      </div>
-      <h2 class="article-title">
-        <a href="/blog/2015/12/29/nodejs-unit-tests-workflow/" class="title">Node.js 单元测试：workflow</a>
-      </h2>
-      <p class="article-excerpt">
-        
-        
-
-Talk is cheap, show me the code!
-
-是否还记得小明在《 Node.js 单元测试之我要写测试》里引用的这句话么，不过引用了之后，小明就像跑路了一般再也没见其 code……其实呀，不知道大家有没有关注最近比较火 minggeJs, 稍微联想下你就知道小明最近在忙啥了 O(∩_∩)O~~
-虽说小明现在还写不出 minggeJs 这样的前端库，不过，小明想说的是：当你
-      </p>
-    </div>
-  </article>
-
-    
-  
   
     </div></section>
   
@@ -551,6 +554,29 @@ Talk is cheap, show me the code!
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/09/20/type-casts-between-node-and-cpp/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg
+)" alt="Node.js 和 C++ 之间的类型转换" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+              <p class="item-title"><a href="/blog/2016/09/20/type-casts-between-node-and-cpp/" class="title">Node.js 和 C++ 之间的类型转换</a></p>
+              
+              <p class="item-author">by 慎里</p>
+              
+              <p class="item-date">at <time datetime="2016-09-20T03:18:23.000Z" itemprop="datePublished">2016-09-20</time></p>
+            </div>
+          </li>
         
           <li>
             
@@ -644,29 +670,6 @@ Talk is cheap, show me the code!
             </div>
           </li>
         
-          <li>
-            
-            <div class="item-thumbnail">
-              
-<a href="/blog/2016/08/04/instructions-of-semver/" class="thumbnail">
-  
-    <span style="background-image:url(https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png
-)" alt="论版本号的正确打开方式" class="thumbnail-image"></span>
-  
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
-              <p class="item-title"><a href="/blog/2016/08/04/instructions-of-semver/" class="title">论版本号的正确打开方式</a></p>
-              
-              <p class="item-author">by 法海</p>
-              
-              <p class="item-date">at <time datetime="2016-08-04T09:48:27.000Z" itemprop="datePublished">2016-08-04</time></p>
-            </div>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -676,7 +679,7 @@ Talk is cheap, show me the code!
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">37</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">31</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
     </div>
   </div>
 
@@ -686,7 +689,7 @@ Talk is cheap, show me the code!
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
     </div>
   </div>
 
