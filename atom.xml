@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2016-10-12T02:02:15.000Z</updated>
+  <updated>2016-10-19T08:11:41.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,82 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[揭秘浏览器远程调试技术]]></title>
+    <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
+    <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
+    <published>2016-10-19T07:15:15.000Z</published>
+    <updated>2016-10-19T08:11:41.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
+<h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
+<p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
+<p>从格蕾丝调试第一个 bug 到现在，69 年的时间里，在计算机领域，硬件、软件各种调试技术都在不断的发展和演进。那么对于日新月异的前端来说，调试技术也尤其显得重要。淘宝前端团队也正在使用一些创新的技术和手段来解决无线页面调试的问题。今天先跟大家分享下浏览器远程调试技术，本文将用 Chrome/Webview 来作为案例。</p>
+<h2 id="调试原理"><a href="#调试原理" class="headerlink" title="调试原理"></a>调试原理</h2><h3 id="调试方式与权限管理"><a href="#调试方式与权限管理" class="headerlink" title="调试方式与权限管理"></a>调试方式与权限管理</h3><p><img src="https://img.alicdn.com/tps/TB1KA.XNpXXXXbFXFXXXXXXXXXX-1021-336.png" alt="-"></p>
+<p>目前常规浏览器调试目标分为两种：Chrome PC 浏览器和 Chrome Mobile（Android 4.4 以后，Android WebView 其实就是 Chromium WebView）。</p>
+<h4 id="Chrome-PC-浏览器"><a href="#Chrome-PC-浏览器" class="headerlink" title="Chrome PC 浏览器"></a>Chrome PC 浏览器</h4><p>对于调试 Chrome PC 浏览器，可能大家经常使用的是用鼠标右键或者快捷方式（mac:option + command + J），唤起 Chrome 的控制台，来对当前页面进行调试。其实还有另外一种方法，就是使用一个 Chrome 浏览器调试另一个 Chrome 浏览器。Chrome 启动的时候，默认是关闭了调试端口的，如果要对一个目标 Chrome PC 浏览器进行调试，那么启动的时候，可以通过传递参数来开启 Chrome 的调试开关：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># for mac</span></span><br><span class="line">sudo /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222</span><br></pre></td></tr></table></figure>
+<h4 id="Chrome-Android-浏览器"><a href="#Chrome-Android-浏览器" class="headerlink" title="Chrome Android 浏览器"></a>Chrome Android 浏览器</h4><p>对于调试 Android 上的 Chrome 或者 WebView 需要连接 USB 线。打开调试端口的方法如下：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb forward tcp:9222 localabstract:chrome_devtools_remote</span><br></pre></td></tr></table></figure></p>
+<p>跟 Chrome PC 浏览器不同的是，对于 Chrome Android 浏览器，由于数据传输是通过 USB 线而不是 WIFI，实际上 Chrome Android 创建的一个 chrome_devtools_remote 这个 path 的 domain socket。所以，上面一条命令则是通过 Android 的 adb 将 PC 的端口 9222 通过 USB 线与 chrome_devtools_remote 这个 domain socket 建立了一个端口映射。</p>
+<h4 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h4><p>Google 为了限制调试端口的接入范围，对于 Chrome PC 浏览器，调试端口只接受来自 <code>127.0.0.1</code> 或者 <code>localhost</code> 的数据请求，所以，你无法通过你的本地机器 IP 来调试 Chrome。对于 Android Chrome/WebView，调试端口只接受来自于 <code>shell</code> 这个用户数据请求，也就是说只能通过 USB 进行调试，而不能通过 WIFI。</p>
+<h3 id="开始调试"><a href="#开始调试" class="headerlink" title="开始调试"></a>开始调试</h3><p>通过以上的调试方式的接入以及调试端口的打开，这个时候在浏览器中输入：<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//127.0.0.1:9222/json</span></span><br></pre></td></tr></table></figure></p>
+<p>将会看到类似下面的内容：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="attr">"devtoolsFrontendUrl"</span>: <span class="string">"/devtools/inspector.html?ws=127.0.0.1:9222/devtools/page/ebdace60-d482-4340-b622-a6198e7aad6e"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"ebdace60-d482-4340-b622-a6198e7aad6e"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"揭秘浏览器远程调试技术.mdown—/Users/harlen/Documents"</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"page"</span>,</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"http://127.0.0.1:51004/view/61"</span>,</span><br><span class="line">    <span class="attr">"webSocketDebuggerUrl"</span>: <span class="string">"ws://127.0.0.1:9222/devtools/page/ebdace60-d482-4340-b622-a6198e7aad6e"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>其中，最重要的 2 个参数分别是 id 和 webSocketDebuggerUrl。Chrome 会为每个页面分配一个唯一的 id，作为该页面的唯一标识符。几乎对目标浏览器的所有操作都是需要带上这个 id。</p>
+<p>Chrome 提供了以下这些 http 接口控制目标浏览器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取当前所有可调式页面信息</span></span><br><span class="line">http://127.0.0.1:9222/json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取调试目标 WebView/blink 的版本号</span></span><br><span class="line">http://127.0.0.1:9222/json/version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建新的 tab，并加载 url</span></span><br><span class="line">http://127.0.0.1:9222/json/new?url</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭 id 对应的 tab</span></span><br><span class="line">http://127.0.0.1:9222/json/close/id</span><br></pre></td></tr></table></figure></p>
+<p>webSocketDebuggerUrl 则在调试该页面需要用到的一个 WebSocket 连接。chrome 的 devtool 的所有调试功能，都是基于 <a href="https://chromedevtools.github.io/debugger-protocol-viewer/1-1/Debugger/" target="_blank" rel="external">Remote Debugging Protocol</a> 使用 WebSocket 来进行数据传输的。那么这个 WebSocket，就是上面我们从 <code>http://127.0.0.1:9222/json</code> 获取的 <code>webSocketDebuggerUrl</code>，每一个页面都有自己不同的 <code>webSocketDebuggerUrl</code>。这个 <code>webSocketDebuggerUrl</code>是通过 url 的 query 参数传递给 chrome devtool 的。</p>
+<p>chrome 的 devtool 可以从 Chrome 浏览器中进行提取 devtool 源码或者从 blink 源码中获取。在部署好自己的 chrome devtool 代码之后，下面既可以开始对 Chrome 进行调试, 浏览器输入一下内容：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://path_to_your_devtool/devtool.html?ws=127.0.0.1:9222/devtools/page/ebdace60<span class="_">-d</span>482-4340-b622<span class="_">-a</span>6198e7aad6e</span><br></pre></td></tr></table></figure></p>
+<p>其中 ws 这个参数的值就是上面出现的 webSocketDebuggerUrl。Chrome 的 devtool 会使用这个 url 创建 WebSocket 对该页面进行调试。</p>
+<h3 id="如何实现-JavaScript-调试"><a href="#如何实现-JavaScript-调试" class="headerlink" title="如何实现 JavaScript 调试"></a>如何实现 JavaScript 调试</h3><p>在进入 Chrome 的 devtool 之后，我们可以调出控制台，来查看 devtool 的 WebSocket 数据。这个里面有很多数据，我这里只讲跟 JavaScript 调试相关的。<br><img src="https://img.alicdn.com/tps/TB1.H3kNpXXXXalXVXXXXXXXXXX-740-191.png" alt="-"></p>
+<p>图中，对于 JavaScript 调试，有一条非常重要的消息，我蓝色选中的那条消息：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"id"</span>:<span class="number">6</span>,<span class="attr">"method"</span>:<span class="string">"Debugger.enable"</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后选中要调试的 JavaScript 文件，然后设置一个断点，我们再来看看 WebSocket 消息：<br><img src="https://img.alicdn.com/tps/TB1h2UANpXXXXaYXpXXXXXXXXXX-912-214.png" alt="-"></p>
+<p>devtool 像目标 Chrome 发送了 2 条消息<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="number">23</span>,</span><br><span class="line">  <span class="attr">"method"</span>: <span class="string">"Debugger.getScriptSource"</span>,</span><br><span class="line">  <span class="attr">"params"</span>: &#123;</span><br><span class="line">    <span class="attr">"scriptId"</span>: <span class="string">"103"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>: <span class="number">24</span>,</span><br><span class="line">  <span class="attr">"method"</span>: <span class="string">"Debugger.setBreakpointByUrl"</span>,</span><br><span class="line">  <span class="attr">"params"</span>: &#123;</span><br><span class="line">    <span class="attr">"lineNumber"</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"https://g.alicdn.com/alilog/wlog/0.2.10/??aplus_wap.js,spm_wap.js,spmact_wap.js"</span>,</span><br><span class="line">    <span class="attr">"columnNumber"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"condition"</span>: <span class="string">""</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么收到这几条消息之后，V8 做了些什么呢？<br>我们先来简单的看下 V8 里面的一小段源码片段：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// V8 Debugger.cpp</span></span><br><span class="line">DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend) : DispatcherBase(frontendChannel), m_backend(backend) &#123;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.enable"</span>] = &amp;DispatcherImpl::enable;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.disable"</span>] = &amp;DispatcherImpl::disable;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setBreakpointsActive"</span>] = &amp;DispatcherImpl::setBreakpointsActive;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setSkipAllPauses"</span>] = &amp;DispatcherImpl::setSkipAllPauses;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setBreakpointByUrl"</span>] = &amp;DispatcherImpl::setBreakpointByUrl;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setBreakpoint"</span>] = &amp;DispatcherImpl::setBreakpoint;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.removeBreakpoint"</span>] = &amp;DispatcherImpl::removeBreakpoint;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.continueToLocation"</span>] = &amp;DispatcherImpl::continueToLocation;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.stepOver"</span>] = &amp;DispatcherImpl::stepOver;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.stepInto"</span>] = &amp;DispatcherImpl::stepInto;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.stepOut"</span>] = &amp;DispatcherImpl::stepOut;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.pause"</span>] = &amp;DispatcherImpl::pause;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.resume"</span>] = &amp;DispatcherImpl::resume;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.searchInContent"</span>] = &amp;DispatcherImpl::searchInContent;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setScriptSource"</span>] = &amp;DispatcherImpl::setScriptSource;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.restartFrame"</span>] = &amp;DispatcherImpl::restartFrame;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.getScriptSource"</span>] = &amp;DispatcherImpl::getScriptSource;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setPauseOnExceptions"</span>] = &amp;DispatcherImpl::setPauseOnExceptions;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.evaluateOnCallFrame"</span>] = &amp;DispatcherImpl::evaluateOnCallFrame;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setVariableValue"</span>] = &amp;DispatcherImpl::setVariableValue;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setAsyncCallStackDepth"</span>] = &amp;DispatcherImpl::setAsyncCallStackDepth;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setBlackboxPatterns"</span>] = &amp;DispatcherImpl::setBlackboxPatterns;</span><br><span class="line">    m_dispatchMap[<span class="string">"Debugger.setBlackboxedRanges"</span>] = &amp;DispatcherImpl::setBlackboxedRanges;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你会发现，V8 有 <code>m_dispatchMap</code> 这样一个 Map。专门用来处理所有 JavaScript 调试相关的处理。<br>其中就有本文即将重点讲述的:</p>
+<ul>
+<li>Debuggger.enable</li>
+<li>Debugger.getScriptSource</li>
+<li>setBreakpointByUrl</li>
+</ul>
+<p>这些都需要在 V8 的源码中找到答案。顺便给大家推荐一个查看 Chromium/V8 最正确的方式是使用 <a href="https://cs.chromium.org/" target="_blank" rel="external">https://cs.chromium.org</a>，比 SourceInsight 还要方便。</p>
+<h4 id="Debugger-enable"><a href="#Debugger-enable" class="headerlink" title="Debugger.enable"></a>Debugger.enable</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> V8Debugger::enable() &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_enableCount++) <span class="keyword">return</span>;</span><br><span class="line">    DCHECK(!enabled());</span><br><span class="line">    v8::<span class="function">HandleScope <span class="title">scope</span><span class="params">(m_isolate)</span></span>;</span><br><span class="line">    v8::Debug::SetDebugEventListener(m_isolate, &amp;V8Debugger::v8DebugEventCallback,</span><br><span class="line">    v8::External::New(m_isolate, <span class="keyword">this</span>));</span><br><span class="line">    m_debuggerContext.Reset(m_isolate, v8::Debug::GetDebugContext(m_isolate));</span><br><span class="line">    compileDebuggerScript();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个接口的名称叫 <code>Debugger.enable</code>，但是收到这条消息，V8 其实就干了两件事情事情：</p>
+<ul>
+<li><p>SetDebugEventListener：<br>给 JavaScript 调试安装监听器，并设置 <code>v8DebugEventCallback</code> 这个回调函数。JavaScript 所有的调试事件，都会被这个监听器捕获，包括：JavaScript 异常停止，断点停止，单步调试等等。</p>
+</li>
+<li><p>compileDebuggerScript:<br>编译 V8 内置的 JavaScript 文件 <a href="https://cs.chromium.org/chromium/src/v8/src/inspector/debugger-script.js?q=debugger-script.js&amp;sq=package:chromium&amp;dr" target="_blank" rel="external">debugger-script.js</a>。由于这文件比较长，我这里就不贴出来了，感兴趣的同学点击这个链接进行查看源码。<code>debugger-script.js</code> 主要是定义了一些针对 JavaScript 断点进行操作的函数，例如设置断点、查找断点以及单步调试相关的函数。那么这个 <code>debugger-script.js</code> 文件，被 V8 进行编译之后，保存在 global 对象上，等待对 JavaScript 进行调试的时候，被调用。</p>
+<h4 id="Debugger-getScriptSource"><a href="#Debugger-getScriptSource" class="headerlink" title="Debugger.getScriptSource"></a>Debugger.getScriptSource</h4><p>在 Chrome 解析引擎解析到 <code>&lt;script&gt;</code> 标签之后，Chrome 将会把 script 标签对应的 JavaScript 源码扔给 V8 编译执行。同时，V8 将会对所有的 JavaScript 源码片段进行编号并保存。所以，当 chrome devtool 需要获取要调试的 JavaScript 文件的时候，只需要通过 <code>Debugger.getScriptSource</code>，给 V8 传递一个 scriptId，V8 将会把 JavaScript 源码返回。我们再回头看看这个图中的消息：<br><img src="https://img.alicdn.com/tps/TB1h2UANpXXXXaYXpXXXXXXXXXX-912-214.png" alt="-"><br>上面 id 为 23 的 <code>scriptSource</code> 就是 V8 返回的 JavaScript 源码，如此以来，我们就可以在 devtool 中看到我们要调试的 JavaScript 源码了。</p>
+</li>
+</ul>
+<h4 id="Debugger-setBreakpointByUrl"><a href="#Debugger-setBreakpointByUrl" class="headerlink" title="Debugger.setBreakpointByUrl"></a>Debugger.setBreakpointByUrl</h4><p>所有准备工作都做好了，现在就可以开始设置断点了。从上面的几个图中，已经可以很清楚的看到，<code>Debugger.setBreakpointByUrl</code> 给目标 Chrome 传递了一个 JavaScript 的 url 和断点的行号。</p>
+<p>首先，V8 会去找，是否已经存在了该 URL 对应的 JavaScript 源码了：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; script : m_scripts) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!matches(m_inspector, script.second-&gt;sourceURL(), url, isRegex))</span><br><span class="line">    <span class="keyword">continue</span>;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;protocol::Debugger::Location&gt; location = resolveBreakpoint(</span><br><span class="line">    breakpointId, script.first, breakpoint, UserBreakpointSource);</span><br><span class="line">  <span class="keyword">if</span> (location) (*locations)-&gt;addItem(<span class="built_in">std</span>::move(location));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">*outBreakpointId = breakpointId;</span><br></pre></td></tr></table></figure></p>
+<p>V8 给所有的断点，创建一个 breakpointObject。并将这些 braekpointObject 以 <key, value=""> 的形式存放在一个 Map 里面，而这个 Key，就是这个 JavaScript 文件的 URL。看到这里，已经可以解释很多同学在调试 JavaScript 遇到的一个问题：</key,></p>
+<blockquote>
+<p>有些同学为了防止页面的 JavaScript 文件不更新，对于一些重要的 JavaScript 文件的 URL 添加访问时间戳，对于这些添加了访问时间戳的 JavaScript 文件进行设置断点然后刷新调试的时候，Chrome 会打印一个 warnning，告诉你断点丢失。</p>
+</blockquote>
+<p>原因很简单，在调试的时候，V8 发现这个 breakpointMap 里面找不到对应的 breakpointObject，因为 URL 发生了变化，这个 brakpointObject 就丢失了，所以 V8 就找不到了，无法进行断点调试。</p>
+<p>根据我们的正常思维，你可能会认为 V8 会将断点设置在 C++ 中，其实一开始我也是这么认为。随着对 V8 的探索，让我看到了我时曾相识的一些函数名：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">v8::Local&lt;v8::Function&gt; setBreakpointFunction = v8::Local&lt;v8::Function&gt;::Cast(</span><br><span class="line">    m_debuggerScript.Get(m_isolate)</span><br><span class="line">    -&gt;Get(context, toV8StringInternalized(m_isolate, <span class="string">"setBreakpoint"</span>))</span><br><span class="line">      .ToLocalChecked());</span><br><span class="line">v8::Local&lt;v8::Value&gt; breakpointId =</span><br><span class="line">  v8::Debug::Call(debuggerContext(), setBreakpointFunction, info)</span><br><span class="line">    .ToLocalChecked();</span><br></pre></td></tr></table></figure></p>
+<p>其中，<code>m_debuggerScript</code>，就是我前面提到的 <code>debugger-script.js</code>。随着对 V8 Debugger 的进一步探索，我发现，V8 实际上对这个对这个 breakpointObject 设置了 2 次。一次是通过在 C++ 中调用 m_debuggerScript 的 setBreakpoint 设置到 JavaScript 的 context 里面，也就是上面这段 C++ 逻辑做的事情。另一次是，<code>m_debuggerScript</code> 反过来将断点信息设置到了 V8 的 C++ Runtime 中，为要调试的 JavaScript 的某一行设置一个 JavaScript 的回调函数。</p>
+<h4 id="断点命中"><a href="#断点命中" class="headerlink" title="断点命中"></a>断点命中</h4><p>由于 V8 对 JavaScript 是及时编译执行的，没有生成 bytecode，而是直接生成的 machine code 执行的，所以这个断点回调函数也会被设置到这个 machine code 里面。</p>
+<p>最终触发断点事件，也是 V8 的 C++ Runtime。当用户刷新或者直接执行 JavaScript 的逻辑的时候，实际上是 V8 C++ Runtime 在运行 JavaScript 片段产生的 machine code，这个 machine code 已经包含了断点回调函数了。一旦这个 machine code 里面的回调函数被触发，接着就会触发之前 Debugger.enable 设置的调试事件监听器 DebugEventListener 的回调函数。并返回一条消息给 Chrome 的 devtool，告诉 Chrome devtool，当前 JavaScript 被 pause 的行号。到此为止，一个断点就被命中了。</p>
+<p>关于 JavaScript 断点命中，其实是一个很复杂的过程。后面有时间的话，会专门讲讲 JavaScript 断点命中的详细逻辑。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>浏览器的调试，最终都落脚到引擎：渲染引擎和 JavaScipt 引擎。那么对于 JavaScript 调试来说，难点就在于 V8 如何给 JavaScript 某一行进行标记然后进行断点，这需要有一点 V8 的知识。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
+<h2 id="调试技术的起源"><a href="#调试技术的起源" ]]>
+    </summary>
+    
+      <category term="远程调试" scheme="http://taobaofed.org/tags/%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[Velocity NYC 2016 参会总结]]></title>
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -102,7 +173,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -155,7 +226,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -216,7 +287,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -323,7 +394,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -379,7 +450,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -458,7 +529,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -554,7 +625,7 @@
     <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
     <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
     <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
 <p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
 <p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
@@ -702,7 +773,7 @@
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -799,7 +870,7 @@
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -880,7 +951,7 @@
     <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
     <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
     <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
 <p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
@@ -983,7 +1054,7 @@
     <link href="http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/"/>
     <id>http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/</id>
     <published>2016-06-02T06:45:32.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1dcfNKXXXXXXcXVXXXXXXXXXX-900-500.png" alt="聊一聊淘宝首页和它背后的一套"></p>
 <p>从 14 年双十二结束开始接手淘宝首页，到如今差不多 1 年半时间了，不久前完成了首页相关工作的交接。经历了两次改版和一次从 PHP 到 Node 的迁移，还是颇有感受，下面给大家分享下。</p>
 <h3 id="一、相关背景介绍"><a href="#一、相关背景介绍" class="headerlink" title="一、相关背景介绍"></a>一、相关背景介绍</h3><p>淘宝首页是淘宝的门面，承载着几乎淘系所有业务的入口，流量很大，量级单位为亿。近几年无线端崛起，业务重点开始向无线终端偏移（目前不能叫偏移，基本以无线为主了），所以淘宝 PC 端首页的流量也有削减，不过即便如此，它的日均 PV 依然相当高。</p>
@@ -1133,7 +1204,7 @@
     <link href="http://taobaofed.org/blog/2016/05/23/video-player/"/>
     <id>http://taobaofed.org/blog/2016/05/23/video-player/</id>
     <published>2016-05-23T03:26:29.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
 <ul>
 <li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
@@ -1841,7 +1912,7 @@
     <link href="http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/"/>
     <id>http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/</id>
     <published>2016-05-13T07:59:50.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1zithJVXXXXabXVXXXXXXXXXX-900-500.jpg" alt="无线端的弹幕实现方案"></p>
 <p>前段时间做了游戏的相关业务，其中弹幕相关的内容自成一块。弹幕已经不只是最初的视频弹幕了，战火已经烧到了评论区，烧到了手机淘宝的首页搜索结果。作为一种近几年迅速燃起的内容呈现形式，有必要适时引入，对于休闲化、娱乐化的业务更是如此。那么，要做出一个较为完整的弹幕效果来，需要哪几个部分呢？尤其是，在集团内部，怎么快速地搭建起一个可用的弹幕框架来？本文分3块来阐述。</p>
 <ol>
@@ -1896,7 +1967,7 @@
     <link href="http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/"/>
     <id>http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/</id>
     <published>2016-05-05T07:03:37.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1brqAJFXXXXaGXVXXXXXXXXXX-900-500.jpg" alt="Android 新一代编译 toolchain Jack &amp; Jill 简介"></p>
 <p>2016 年 3 月 10 日， Google 向外界发布了 Android N 的预览版，并宣布了 Android N 的 <a href="https://developer.android.com/intl/zh-cn/preview/overview.html" target="_blank" rel="external">Roadmap</a>，Android N 的最终版源代码将于今年 8 或 9 月份释出到 AOSP 项目。</p>
 <p>在众多的 Android N 新特性中，有一项新工具链的出现与 Android 生态圈的所有开发者息息相关，即 Jack &amp; Jill 编译器的引入。</p>
@@ -2087,7 +2158,7 @@
     <link href="http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/"/>
     <id>http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/</id>
     <published>2016-05-03T08:59:13.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms02.alicdn.com/tps/i2/TB1d9xhJFXXXXa8XFXX2AXZ8pXX-900-500.png" alt="Promise 反模式"></p>
 <p>Promises are about making asynchronous code retain most of the lost properties of synchronous code such as flat indentation and one exception channel. – Bluebird Wiki: Promise Anti Patterns</p>
 <p>Promises 是为了让异步代码也能保持这些同步代码的属性：扁平缩进和单异常管道。</p>
@@ -2177,7 +2248,7 @@
     <link href="http://taobaofed.org/blog/2016/04/25/performance-composite/"/>
     <id>http://taobaofed.org/blog/2016/04/25/performance-composite/</id>
     <published>2016-04-25T02:21:18.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1XT4kMFXXXXaBXXXXXXXXXXXX-900-500.png" alt="无线性能优化：Composite"></p>
 <p>一个 Web 页面的展示，简单来说可以认为经历了以下下几个步骤。</p>
 <p><img src="https://img.alicdn.com/tps/TB1eabOLpXXXXX3XFXXXXXXXXXX-1093-167.jpg_720x720.jpg" alt=""></p>
@@ -2430,7 +2501,7 @@
     <link href="http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/"/>
     <id>http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/</id>
     <published>2016-04-15T09:58:18.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tps/TB1Fs7jMpXXXXabXXXXXXXXXXXX-900-500.jpg" alt="如何定位 Node.js 的内存泄漏"></p>
 <p>在 <a href="http://taobaofed.org/blog/2016/01/14/nodejs-memory-leak-analyze/">《一次 Node.js 应用内存暴涨分析》</a>中，我们处理了一个 Node.js vm 引发的内存泄漏问题，处理过程也是比较艰辛。而在我们实际开发中，可能经常会碰到内存泄漏的问题，但很多情况下，我们对于这种问题的处理是有些迷茫的，没有一定的操作流程，效率比较低。虽然这种问题对于经验的要求比较高，但如果有一个简单的排查流程，还是会有一定帮助的。</p>
 <p>这里简单整理一个流程，欢迎一起探讨，补充。</p>
@@ -2511,7 +2582,7 @@
     <link href="http://taobaofed.org/blog/2016/04/12/webfont-practice/"/>
     <id>http://taobaofed.org/blog/2016/04/12/webfont-practice/</id>
     <published>2016-04-12T01:11:03.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
+    <updated>2016-10-19T08:11:41.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1kaazMpXXXXacXFXXXXXXXXXX-900-500.jpg" alt="H5 页面高级字体应用实践"></p>
 <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ul>
 <li>最近在开发一个 H5 活动页快速搭建平台，可以通过拖拽编辑图片，文字等元素组件，快速搭建出一个移动端的活动页面，基本交互和成品效果类似 PPT 软件。这类活动大量在微信等平台上传播，其中会包含各种动画和特效，而各类高级艺术字体（如：方正兰亭黑，方正彩云，方正大草，方正剑体等）的应用也非常广泛。</li>
@@ -2573,143 +2644,6 @@
       <category term="TTF" scheme="http://taobaofed.org/tags/TTF/"/>
     
       <category term="无线开发" scheme="http://taobaofed.org/categories/%E6%97%A0%E7%BA%BF%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[企业级 Node.js Web 应用解决方案设计的零零总总]]></title>
-    <link href="http://taobaofed.org/blog/2016/04/08/node-web-framework-design/"/>
-    <id>http://taobaofed.org/blog/2016/04/08/node-web-framework-design/</id>
-    <published>2016-04-08T08:28:29.000Z</published>
-    <updated>2016-10-12T02:02:15.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="http://gtms01.alicdn.com/tps/i1/TB146VMMpXXXXXqXXXXWPiOLXXX-900-500.jpeg" alt="企业级 Node.js Web 应用解决方案设计的零零总总"></p>
-<p>年前一直在忙着做新版 Midway 升级的事情，不少同学都知道 Midway 是淘宝的 Node.js Web 应用解决方案，目的是为了更好的做前后端分离，让前端同学开发更简单，生活更幸福（笑）。</p>
-<p>如今 Midway 5 正式发布了，横跨了几个月的开发个工作，期间带来的感慨，也算是史上最多。</p>
-<p>Midway 的诞生也有 2 年多的时间，我个人参与维护也有 1 年多，经历了从 v3 到 v5 的变化，最大的感慨莫过于，<strong>分分合合</strong>，以前总想着灵活性，要做分离，后来就想着统一升级，又合并回去， 折腾的是自己，也是用户，不管怎么说，之前欠着的债总是要还的，历史包袱总是框架开发者的胸口大石，不破不立才是最终的方案。</p>
-<h2 id="代码风格选型"><a href="#代码风格选型" class="headerlink" title="代码风格选型"></a>代码风格选型</h2><p>随着 ES6 乃至 ES2015 的出现，<code>generator</code> 和 <code>promise</code> 配合的开发方式渐渐的趋于稳定和标准化，再结合未来 <code>async/await</code> 的方式，使用 <code>Koa 1.0</code> 是比较中和的选择，在 2.0 推出之前，可以使用  <code>yield</code> 的写法来简化异步操作，将大部分的异步代码扁平化，同时也可以对未来的 <code>Koa 2.0</code> 代码进行一个很好的兼容和补充。</p>
-<p>有人不禁会问，为什么不用 <code>babel</code> ，当然这是一种选择，在 <code>Node.js</code> 没有原生支持这些语法特性，乃至 <code>--harmony</code> 也无法启用的新特性的时候，我们不会考虑使用，这是在做企业级框架的一些基本原则，在面对数千万用户的期待的时候，我们不能拿稳定性来试错。</p>
-<h2 id="稳定性"><a href="#稳定性" class="headerlink" title="稳定性"></a>稳定性</h2><p>框架的稳定性和业务的稳定性是两个不同的方向，业务需要的是容错，而框架需要的是兜底。很多时候业务代码只需要 <code>try/catch</code> 就能解决，再不然 <code>promise.catch</code> 也好，然后 <code>logger.error</code> 就可以了，但是框架不行。</p>
-<p>Midway 使用的是 <code>Master/Agent/Worker</code> 进程方案，同时会启动 N+2 的进程，每个 Worker 进程可能会和 <code>Master/Agent</code> 进程进行通信，一旦有进程错误甚至挂掉，都是一个复杂的情况，所以要处理所有类型的错误就变得非常重要。</p>
-<p>进程本身有着一些简单的处理，比如在接受到正常的信息消息的时候正常退出流程，并且杀死其他子进程（碰到过其他子进程杀不死的，所以要强制再杀一下）:</p>
-<pre><code>// SIGTERM AND SIGINT will trigger the exit event.
-process.once(&apos;SIGQUIT&apos;, function() {
-  process.exit(0);
-});
-
-process.once(&apos;SIGTERM&apos;, function() {
-  process.exit(0);
-});
-
-process.once(&apos;SIGINT&apos;, function() {
-  process.exit(0);
-});
-
-process.on(&apos;exit&apos;, function(code) {
-  killAgentWorker();
-});
-</code></pre><p>当然，进程也有一些奇奇怪怪的异常，这些异常必须通过日志记录，然后才能进行安全的退出或者其他自定义行为。</p>
-<pre><code>process.on(&apos;unhandledRejection&apos;, function(err, p) {
-     //logger
-});
-</code></pre><p>除了以上标准流程之外，就得考虑非主进程出错退出时的情况并做相应的处理，比如 Agent 进程属于非常重要的业务进程，假如第一次启动就出问题，那必然需要强制退出，如果进程在某些情况下意外挂掉，必须有一些自重启机制来保证稳定运行，同时需要处理一些事件（之前出现过事件绑定过多内存泄露的事故）。</p>
-<pre><code>agentWorker.once(&apos;exit&apos;, function(code, signal) {
-  coreLogger.error(err);
-  // 防止事件泄漏
-  agentWorker.removeAllListeners(&apos;message&apos;);
-  agentWorker = null;
-
-  if (allWorkerStartSuccess) {
-    // restart agent
-    setTimeout(startAgent.bind(null, opts), 1000);
-  } else {
-    // AgentWorker 初始化过程发生异常，主进程直接退出
-    // coreLogger.error(&apos;Agent worker init exception occurs. Master exits therefor.&apos;);
-    process.exit(1);
-  }
-});
-</code></pre><p>Worker 进程虽然使用 cluster 机制来启动，但是处理方式和 Agent 差不太多，除了挂掉自启之外，还需要有一些不一样的地方，比如进程的数量，原本默认的是 CPU 的核数，但是可能会根据当前的运行环境稍稍进行一些降低以保证内存的可用。此外，进程重启次数过多可能也是一大问题，需要进行额外的计数和报警，当然代码很简单，这边就不再赘述。</p>
-<p>当然框架稳定性不仅仅只有这些，进程的处理只是最重要的一环，整个架构的设计中都必须考虑。</p>
-<h2 id="框架设计"><a href="#框架设计" class="headerlink" title="框架设计"></a>框架设计</h2><p>Midway 新的设计理念是 <code>Everything is a plugin</code>，即所有的都是插件，包括框架和普通应用，这样的设计可以最大化的复用代码，简化使用。</p>
-<p>一个简单的应用的结构和插件的结构，乃至框架的结构大致是一样的，经过集团 Node 小组的讨论形成了一套规范，也算是一次大统一。</p>
-<pre><code>app_name/
-├─app/   
-|  ├─extends/
-|  │  └─application.js      
-│  ├─controllers/         
-│  │  └─home.js            
-│  ├─router.js             
-│  └─views/               
-│     └─home.xtpl 
-├─bin/                     
-│  ├─build.sh
-│  └─server.js 
-├─config/
-│  ├─config.js 
-│  ├─config.local.conf 
-│  ├─config.prod.conf 
-├─node_modules/
-├─package.json              
-└─README.md
-</code></pre><p>看起来非常简单，除了常见的 node_modules 之外，还有一些淘宝特有的 <code>bin/app</code> 目录和一些 <code>xtpl</code> 模板文件。_bin 是启动目录，这边暂且不谈。</p>
-<p>所有的插件的目录结构除了没有 <code>controllers</code> 和 <code>routers</code> 之外，和应用的目录结构是一样的，这其中最重要的一环就是加载方式。</p>
-<p>Midway 的加载思路非常清晰简单：</p>
-<ul>
-<li>顺序加载插件</li>
-<li>把应用作为最后一个插件加载进来</li>
-<li>后边的插件覆盖之前的插件</li>
-</ul>
-<p>作为一个需要满足大部分场景的框架（插件、应用），需要加载东西有几样，配置文件、Koa 扩展、中间件，控制器，路由，这个时候需要一个通用的加载方法，这个方法可能是长这个样子。</p>
-<pre><code>_loadFiles(files, opts) {
-  //...
-
-  loadDirs.forEach((dir)=&gt; {
-    let fileResults = globby.sync(files, {cwd: dir});
-
-    fileResults.forEach((f)=&gt; {
-      let m = util.tryRequire(path.join(dir, f), opts.required);
-      let result = (is.function(m) &amp;&amp; !is.class(m) &amp;&amp; needCall) ? m.apply(this, opts.inject ? [].concat(opts.inject) : [this.app]) : m;
-
-      results.push(opts.resultHandler ? opts.resultHandler.call(this, result, f, dir, m) : result);
-
-      if (opts.target) {
-        extend(true, opts.target, result);
-      }
-    });
-  });
-
-  return results;
-}
-</code></pre><p>整个方法核心的思路就是加载(<code>tryRequire</code>)，除此之外，就是对加载之后的内容进行判断，处理，合并，返回。所有的加载都通过这一方法来做，就目前来看，大部分场景都已经满足了（笑）。</p>
-<p>至此，一个框架的主线已经比较明确，核心功能也可用，剩下的就是插件的开发和补充，以及一些细节的修补。</p>
-<h2 id="细节和纠结"><a href="#细节和纠结" class="headerlink" title="细节和纠结"></a>细节和纠结</h2><p>一个企业级框架的开发肯定没那么简单，主线设计相对容易一些，更麻烦的是细节，往往细节才是区别不同的框架最重要的地方。</p>
-<h3 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h3><p>框架的历史包袱很大一部分体现在升级和兼容性上，但是框架的大版本更新往往是很多的不兼容，要让旧版本用户升级是一件非常头疼的事情。</p>
-<p>Midway 也一样。</p>
-<p>以前的 Midway 使用的是 <code>Proxy</code> 方式，所有暴露的外部接口都从 <code>midway.getXXXX</code> 中体现，而现有的进程加载方式使得 Midway 从 Worker 进程变为了 Master 进程，导致无法使用原本的方式了。</p>
-<p>经历了多次讨论，最后还是为了用户妥协，将入口的文件(require 的部分) 变为 Worker ，而真正用户启动的 <code>server.js</code> 变为了 <code>midway/server</code>，也算是一个圆满的解决方案。</p>
-<h3 id="测试和调试"><a href="#测试和调试" class="headerlink" title="测试和调试"></a>测试和调试</h3><p>由于将 Worker 机制内置到了 Midway 框架中，本来用户通过 app.js 的调试方式就行不通了，现在必须通过 <code>bin/server.js</code> 的方式来调试，略显繁琐。</p>
-<p>根据新升级的 <a href="http://taobaofed.org/blog/2016/01/26/nodejs-ipc/">IPC 通信方式</a>，我们想到了可以通过只启动一个进程的方式来调试代码。所以在测试用例中也可以不用启动多个进程来测试代码了。</p>
-<p>在大部分情况下测试代码使用 <code>mocha + supertest</code> 已经可以完美的完成了，但是偶尔会在运行多个的时候抽个风，这个问题属于 Agent 进程通信在本地无法判断出相同目录下是否是同一个实例的问题，除此之外，其他还没发现问题（笑:)）。</p>
-<h3 id="更新机制"><a href="#更新机制" class="headerlink" title="更新机制"></a>更新机制</h3><p>新 Midway 的设计理念是简化开发，以往的经历告诉我们，推动用户升级是不现实的，花了许多的时间在给用户升级脚本，升级 Node.js 上，不仅给自己带来了很多不必要的工作量，也给用户带来了很多麻烦和隐患。</p>
-<p>在新的设计中，把插件都内置到了自身的依赖中，由框架统一来处理版本，同时，把打包脚本和启动脚本也固化到了框架中，随着框架一起升级，至少在框架使用到现在，已经非常明显的减少客服量。</p>
-<p>Midway 本身的升级由 <code>npm tag</code> 版本来控制，这个是由脚手架来处理的，用户每次部署 <code>install</code>，都使用的是该版本最新的框架。</p>
-<pre><code>&quot;publishConfig&quot;: {
-   &quot;tag&quot;: &quot;release-5.1&quot;
- },
-</code></pre><p>当然这样的行为也是有隐患的，比如某个插件升级导致框架出错，不过作为一个内部的框架，我们尽可能保证插件的兼容性和稳定性，必须符合 <a href="http://semver.org/" target="_blank" rel="external">semver</a> 的版本规范，必须有一定的测试覆盖率，如果有不兼容的情况，整个框架都会一起升级 tag，尽可能减少给用户带来问题的机会。</p>
-<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>一个解决方案、一个框架的诞生背后总有一群抓耳挠腮的开发者，经常为了一些小的地方，团队会讨论许久，不光是为用户负责，也对自己负责，Midway 不会走 102 年，只是希望在能做的事情上，稍微多做一点罢了。</p>
-<p>想来随着 Midway 5 的发布，有一阵子可以不用考虑该如何权衡和取舍了，可以更加把事情专注在服务用户，提升效率这些事情上了（笑）。</p>
-<p>最后，铭记，不忘初心，奋勇前行。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="http://gtms01.alicdn.com/tps/i1/TB146VMMpXXXXXqXXXXWPiOLXXX-900-500.jpeg" alt="企业级 Node.js Web 应用解决方案设计的零零总总"></p>
-<p>年前一直在忙着做新]]>
-    </summary>
-    
-      <category term="node.js" scheme="http://taobaofed.org/tags/node-js/"/>
-    
-      <category term="midway" scheme="http://taobaofed.org/tags/midway/"/>
-    
-      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
     
   </entry>
   
