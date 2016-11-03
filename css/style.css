@@ -1496,6 +1496,12 @@ a.article-title:hover {
 #footer .credit {
   padding: 30px;
 }
+#footer .credit p {
+  display: inline-block;
+}
+#footer .credit a {
+  float: right;
+}
 #footer #back-to-top {
   background: #fff;
   color: #777;
