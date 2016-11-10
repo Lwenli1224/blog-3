@@ -143,6 +143,39 @@
   <article class="article article-summary">
     <div class="article-summary-inner">
       
+<a href="/blog/2015/11/10/nodejs-cluster-2/" class="thumbnail">
+  
+    <span style="background-image:url(http://gtms04.alicdn.com/tps/i4/TB17WhrKpXXXXXiXpXX2AXZ8pXX-900-500.png
+)" alt="当我们谈论 cluster 时我们在谈论什么（下）" class="thumbnail-image"></span>
+  
+</a>
+
+      <div class="article-meta">
+        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+        <p class="date"><time datetime="2015-11-10T03:27:12.000Z" itemprop="datePublished">2015-11-10</time></p>
+      </div>
+      <h2 class="article-title">
+        <a href="/blog/2015/11/10/nodejs-cluster-2/" class="title">当我们谈论 cluster 时我们在谈论什么（下）</a>
+      </h2>
+      <p class="article-excerpt">
+        
+        
+上篇文章讲解了 Node.js 中多进程部署时遇到的各种问题，那么实际的线上项目中到底是如何利用多进程，如何保障各个 worker 进程稳定性的呢，又是如何利用 cluster 模块 fork 子进程，父子进程间又是如何实现通信的呢？本篇就来一一揭晓。
+负载均衡回忆一下上篇中提到的最初 Node.js 多进程模型，多个进程绑定同一端口，相互竞争 accpet 新到来的连接。由于无法控制一个新的连
+      </p>
+    </div>
+  </article>
+
+    
+  
+    
+    
+    
+    
+        
+  <article class="article article-summary">
+    <div class="article-summary-inner">
+      
 <a href="/blog/2015/11/09/web-performance/" class="thumbnail">
   
     <span style="background-image:url(https://img.alicdn.com/tps/TB1MByrKpXXXXc.aXXXXXXXXXXX-900-500.jpg
@@ -171,10 +204,14 @@
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -215,14 +252,10 @@ JSTracker的系统流程图：
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -251,10 +284,14 @@ JSTracker的系统流程图：
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -285,14 +322,10 @@ rem关于 rem 这个单位的介绍，在此就不赘述，有兴趣的同学可
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -325,10 +358,14 @@ Node.js 诞生之初就遭到不少这样的吐槽，当然这些都早已不是
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -360,14 +397,10 @@ Node.js 诞生之初就遭到不少这样的吐槽，当然这些都早已不是
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -398,10 +431,14 @@ timers: Improved timer performance from porting the 0.12 implementation, plus mi
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -432,14 +469,10 @@ Node.js® is a JavaScript runtime built on Chrome’s V8 JavaScript engine. Node
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -467,39 +500,6 @@ Node.js® is a JavaScript runtime built on Chrome’s V8 JavaScript engine. Node
 
 某个接口挂了，前端拿不到数据或者拿到的数据不够，页面展示就会出问题，出现空白或者某个模块直接天窗。
 用户因为网络问题或者安装了某些插件，导致页面广告、接口请求挂掉，从
-      </p>
-    </div>
-  </article>
-
-    
-  
-    
-    
-    
-    
-        
-  <article class="article article-summary">
-    <div class="article-summary-inner">
-      
-<a href="/blog/2015/10/28/jstracker-how-to-collect-data/" class="thumbnail">
-  
-    <span style="background-image:url(http://gtms01.alicdn.com/tps/i1/TB1wsEtKXXXXXXTXXXXlzJZ8pXX-900-500.jpg
-)" alt="JSTracker：前端异常数据采集" class="thumbnail-image"></span>
-  
-</a>
-
-      <div class="article-meta">
-        <p class="category"><a class="article-category-link" href="/categories/工具-平台/">工具&平台</a></p>
-        <p class="date"><time datetime="2015-10-27T23:11:43.000Z" itemprop="datePublished">2015-10-28</time></p>
-      </div>
-      <h2 class="article-title">
-        <a href="/blog/2015/10/28/jstracker-how-to-collect-data/" class="title">JSTracker：前端异常数据采集</a>
-      </h2>
-      <p class="article-excerpt">
-        
-        
-JSTracker - 淘宝前端监控平台基本上服务器端的代码都是处于 7x24 小时的实时监控状态的，一旦有任何异常对应的开发同学就马上收到报警，并且第一时间处理。 但是对于前端来说，往往是实际用户那里的脚本报错后才知道页面出现异常，这时候已经是故障了。
-为了让前端也能和后端一样，需要将线上的 JavaScript 代码监控起来，当用户端浏览器出现异前端第一时间被通知到。于是便有了淘宝前端的监控
       </p>
     </div>
   </article>
@@ -551,6 +551,29 @@ JSTracker - 淘宝前端监控平台基本上服务器端的代码都是处于 7
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2016/11/10/prevent-prop-access-error-in-js/" class="thumbnail">
+  
+    <span style="background-image:url(//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg
+)" alt="聊一聊 JavaScript 中的错误隔离" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2016/11/10/prevent-prop-access-error-in-js/" class="title">聊一聊 JavaScript 中的错误隔离</a></p>
+              
+              <p class="item-author">by 水澜</p>
+              
+              <p class="item-date">at <time datetime="2016-11-10T07:52:27.000Z" itemprop="datePublished">2016-11-10</time></p>
+            </div>
+          </li>
         
           <li>
             
@@ -644,29 +667,6 @@ JSTracker - 淘宝前端监控平台基本上服务器端的代码都是处于 7
             </div>
           </li>
         
-          <li>
-            
-            <div class="item-thumbnail">
-              
-<a href="/blog/2016/09/29/babel-plugins/" class="thumbnail">
-  
-    <span style="background-image:url(http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg
-)" alt="理解 Babel 插件" class="thumbnail-image"></span>
-  
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
-              <p class="item-title"><a href="/blog/2016/09/29/babel-plugins/" class="title">理解 Babel 插件</a></p>
-              
-              <p class="item-author">by 波本</p>
-              
-              <p class="item-date">at <time datetime="2016-09-29T10:58:03.000Z" itemprop="datePublished">2016-09-29</time></p>
-            </div>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -676,7 +676,7 @@ JSTracker - 淘宝前端监控平台基本上服务器端的代码都是处于 7
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">38</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">35</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">38</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">36</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
     </div>
   </div>
 
@@ -686,7 +686,7 @@ JSTracker - 淘宝前端监控平台基本上服务器端的代码都是处于 7
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">十二月 2015</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">21</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">8</span></li></ul>
     </div>
   </div>
 
