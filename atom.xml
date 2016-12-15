@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2016-12-08T09:46:01.000Z</updated>
+  <updated>2016-12-15T08:07:02.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,63 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结]]></title>
+    <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
+    <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
+    <published>2016-12-14T03:19:30.000Z</published>
+    <updated>2016-12-15T08:07:02.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
+<p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
+<p>广州的同学非常热情，会场里面座无虚席。</p>
+<p><img src="https://img.alicdn.com/tfs/TB1sukYOFXXXXcXXXXXXXXXXXXX-1280-853.jpg" alt="IMG_0251.jpg"></p>
+<p><img src="https://img.alicdn.com/tfs/TB1rfoCOFXXXXXQXVXXXXXXXXXX-1280-853.jpg" alt="IMG_0344.jpg"></p>
+<h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><h2 id="Thrift-下的-Node-js-跨语言异构"><a href="#Thrift-下的-Node-js-跨语言异构" class="headerlink" title="Thrift 下的 Node.js 跨语言异构"></a>Thrift 下的 Node.js 跨语言异构</h2><p>Node.js 越来越成为主流选型，在实际工作和复杂的历史遗留问题中，往往需要使用 Node.js 和其它服务，组件进行各种通讯和相互调用，如何让 Node.js 和其它服务一起和谐相处，是我们越来越多所面临的局面。来自 UC 的前端工程师刘欣给我们介绍了他们如何在实际生产中使用 Thrift 做接口在异构系统之间做通讯，以及性能上有怎样的提升。</p>
+<p><img src="https://img.alicdn.com/tfs/TB18XwcOFXXXXcvaFXXXXXXXXXX-1280-853.jpg" alt="IMG_0275.jpg"></p>
+<p><a href="http://taobaofed.github.io/nodejs-club/slides/season-3/thrift-liuxin%40uc.pdf" target="_blank" rel="external">PPT</a></p>
+<h2 id="Node-js-服务前端数据接口的演化"><a href="#Node-js-服务前端数据接口的演化" class="headerlink" title="Node.js 服务前端数据接口的演化"></a>Node.js 服务前端数据接口的演化</h2><p>九十为我们介绍了在淘宝前端团队中，Node.js 在数据接口服务上的演变。</p>
+<p>从传统的半栈开始，逐步引入 BFF（Backend For Frontend），然后形成统一的 API 接入层。</p>
+<p><img src="https://img.alicdn.com/tfs/TB1V1QROFXXXXXLXpXXXXXXXXXX-1280-853.jpg" alt="IMG_0302.jpg"></p>
+<p><a href="http://v.youku.com/v_show/id_XMTg2MTI3NjMwNA==.html" target="_blank" rel="external">视频</a><br><a href="http://taobaofed.github.io/nodejs-club/slides/season-3/Node.js%20api%20serving%20frontend%20-%20wangguang%40taobaofed.pdf" target="_blank" rel="external">PPT</a></p>
+<h2 id="TypeScript-简介"><a href="#TypeScript-简介" class="headerlink" title="TypeScript 简介"></a>TypeScript 简介</h2><p>UC 的小鲜肉 Randy 为我们简单介绍了 TypeScript 在实际开发中给我们带来的好处</p>
+<p>他从写 JavaScript 常遇到的类型不匹配的问题开始，介绍了类型判断在 TypeScript 中如何为开发减少错误，还介绍了 TypeScript 的一些其他高级特性如 async/await, decorator 等。</p>
+<p><img src="https://img.alicdn.com/tfs/TB1FIoTOFXXXXaeXpXXXXXXXXXX-1280-853.jpg" alt="IMG_0309.jpg"></p>
+<p><a href="http://v.youku.com/v_show/id_XMTg2MTI4MzU0NA==.html" target="_blank" rel="external">视频</a><br><a href="http://slides.com/randylu/deck-3/" target="_blank" rel="external">PPT</a></p>
+<h2 id="Node-js-直出套路"><a href="#Node-js-直出套路" class="headerlink" title="Node.js 直出套路"></a>Node.js 直出套路</h2><p>来自腾讯视频的前端 Leader 姚穗斌给我们带来了一种新的直出思路。直出其实并不算是新概念。只不过在 Web 2.0 单页应用流行的年代，一直被人遗忘在身后。直出能对首屏的渲染带来不错的性能提升。姚穗斌通过层层展开，给我们在提升直出的性能和扩展性上很多启发。</p>
+<p><img src="https://img.alicdn.com/tfs/TB1fvknOFXXXXXyapXXXXXXXXXX-1280-853.jpg" alt="IMG_0339.jpg"></p>
+<p><a href="http://v.youku.com/v_show/id_XMTg2MTI5MDI0NA==.html" target="_blank" rel="external">视频</a><br><a href="http://taobaofed.github.io/nodejs-club/slides/season-3/Nodejs%20patterns%20of%20directly%20rendering%20-%20vicyao%40tencent.pdf" target="_blank" rel="external">PPT</a></p>
+<h2 id="辩论会"><a href="#辩论会" class="headerlink" title="辩论会"></a>辩论会</h2><p>此次活动最大的亮点在于试水了辩论会这种活动形式，程序员撕逼往往只是在键盘上，鲜有正儿八经的辩论，此次活动特地设置这个环节让大家能在台上友好的探讨一些问题</p>
+<p>辩论的主题是“统一单语言构建系统” vs “混合多语言构建系统”哪个更好，由正方 叶倍宏、Randy、Leon、姚穗斌对阵反方 九十、刘欣、老雷和三圈。这些都是拥有丰富经验的工程师们。</p>
+<p><img src="https://img.alicdn.com/tfs/TB1MCMuOFXXXXXxaXXXXXXXXXXX-1280-853.jpg" alt="IMG_0359.jpg"></p>
+<p>辩论中双方辩友唇枪舌剑，你来我往，摆事实，讲道理，证据凿凿，场面非常激烈。双方从历史遗留现状，到架构，到成本，到商业价值等等，都展开了攻防辩论。最后由观众评选出正方“统一单语言构建系统”表现更好，三辩 Leon 被认为是最佳辩手。</p>
+<p><a href="http://v.youku.com/v_show/id_XMTg2MTI5NDQzNg==.html" target="_blank" rel="external">视频</a></p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>感谢各位同学的参与，我们下次再约！欢迎关注 Node.js 地下铁微信公共账号，随时关注下一次线下沙龙动态。</p>
+<p><img src="https://img.alicdn.com/tfs/TB15lsyOFXXXXbMXVXXXXXXXXXX-1280-853.jpg" alt="IMG_0362.jpg"></p>
+<p><img src="https://img.alicdn.com/tps/TB1roZoKVXXXXcWXFXXXXXXXXXX-86-86.jpg" alt="IMG_0362.jpg"></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
+<h1 id="前言]]>
+    </summary>
+    
+      <category term="nodejs" scheme="http://taobaofed.org/tags/nodejs/"/>
+    
+      <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
+    
+      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
+    
+      <category term="广州" scheme="http://taobaofed.org/tags/%E5%B9%BF%E5%B7%9E/"/>
+    
+      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[happypack 原理解析]]></title>
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -215,7 +267,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -282,7 +334,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -382,7 +434,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -507,7 +559,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -611,7 +663,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -682,7 +734,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -765,7 +817,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -818,7 +870,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -879,7 +931,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -986,7 +1038,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -1042,7 +1094,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -1121,7 +1173,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -1217,7 +1269,7 @@
     <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
     <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
     <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
 <p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
 <p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
@@ -1365,7 +1417,7 @@
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -1462,7 +1514,7 @@
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -1543,7 +1595,7 @@
     <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
     <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
     <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
 <p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
@@ -1646,7 +1698,7 @@
     <link href="http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/"/>
     <id>http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/</id>
     <published>2016-06-02T06:45:32.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1dcfNKXXXXXXcXVXXXXXXXXXX-900-500.png" alt="聊一聊淘宝首页和它背后的一套"></p>
 <p>从 14 年双十二结束开始接手淘宝首页，到如今差不多 1 年半时间了，不久前完成了首页相关工作的交接。经历了两次改版和一次从 PHP 到 Node 的迁移，还是颇有感受，下面给大家分享下。</p>
 <h3 id="一、相关背景介绍"><a href="#一、相关背景介绍" class="headerlink" title="一、相关背景介绍"></a>一、相关背景介绍</h3><p>淘宝首页是淘宝的门面，承载着几乎淘系所有业务的入口，流量很大，量级单位为亿。近几年无线端崛起，业务重点开始向无线终端偏移（目前不能叫偏移，基本以无线为主了），所以淘宝 PC 端首页的流量也有削减，不过即便如此，它的日均 PV 依然相当高。</p>
@@ -1796,7 +1848,7 @@
     <link href="http://taobaofed.org/blog/2016/05/23/video-player/"/>
     <id>http://taobaofed.org/blog/2016/05/23/video-player/</id>
     <published>2016-05-23T03:26:29.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
+    <updated>2016-12-15T08:07:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
 <ul>
 <li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
@@ -2496,61 +2548,6 @@
       <category term="视频" scheme="http://taobaofed.org/tags/%E8%A7%86%E9%A2%91/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[无线端的弹幕实现方案]]></title>
-    <link href="http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/"/>
-    <id>http://taobaofed.org/blog/2016/05/13/barrage-in-mobile/</id>
-    <published>2016-05-13T07:59:50.000Z</published>
-    <updated>2016-12-08T09:46:01.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1zithJVXXXXabXVXXXXXXXXXX-900-500.jpg" alt="无线端的弹幕实现方案"></p>
-<p>前段时间做了游戏的相关业务，其中弹幕相关的内容自成一块。弹幕已经不只是最初的视频弹幕了，战火已经烧到了评论区，烧到了手机淘宝的首页搜索结果。作为一种近几年迅速燃起的内容呈现形式，有必要适时引入，对于休闲化、娱乐化的业务更是如此。那么，要做出一个较为完整的弹幕效果来，需要哪几个部分呢？尤其是，在集团内部，怎么快速地搭建起一个可用的弹幕框架来？本文分3块来阐述。</p>
-<ol>
-<li><a href="#client_rendering_module">弹幕渲染层</a></li>
-<li><a href="#data_pipeline_module">弹幕数据通道</a></li>
-<li><a href="#server_business_module">弹幕服务逻辑</a></li>
-</ol>
-<h2 id="弹幕渲染层"><a href="#弹幕渲染层" class="headerlink" title="弹幕渲染层"></a><a name="client_rendering_module"></a>弹幕渲染层</h2><p>目前弹幕的呈现载体主要是Web、无线客户端。因为我们的工作主要针对无线端，所以本文主要以无线端为例——包括iOS，Android两类系统。</p>
-<h4 id="碰撞检测"><a href="#碰撞检测" class="headerlink" title="碰撞检测"></a>碰撞检测</h4><p>弹幕无非是动画，是分布在时间轴上图像的连续运动。自然可以用Native的动画来实现。不过弹幕动画有一个重要的特征，即保持动画元素(sprites)尽可能少地碰撞，以使弹幕承载的信息能够清晰地传达，执行碰撞检测是必须的。但弹幕里的碰撞检测相对简单，因为弹幕的运动轨迹相对简单并且容易预测，所以只需要在一条弹幕将要显示之前，根据已经显示的弹幕(位置、速度、活跃的时间等)来确定他的运动轨迹。以尽最大可能地在其生命周期内不与已有弹幕冲突。</p>
-<p><img src="http://img.alicdn.com/tfs/TB1tSxyJVXXXXarXpXXXXXXXXXX-900-507.png" alt="弹幕碰撞检测范例"></p>
-<h4 id="弹幕的同步问题"><a href="#弹幕的同步问题" class="headerlink" title="弹幕的同步问题"></a>弹幕的同步问题</h4><p>弹幕不是超然而独立的，往往相伴业务场景而生，目前可见最多的场景是视频，直播或者录播皆有。到此时则涉及到一个时间同步的问题。比如，一位用户在看一段时间第314s的时候突然有感而发，发出了一条弹幕，自然希望其他观众能够在看到视频此刻看到他的弹幕。所以一条弹幕上屏的时间是需要明确的，想想那些年文不对题的字幕君吧。那么，如何实现呢？一般，可以为一条弹幕提供一个时间点delay，当到了这个时刻，由控制器把这条弹幕播放出去。但仅仅这些是不够的，因为视频还存在暂停，存在快进快退，所以你必须也为弹幕组件提供类似的接口，以期能和视频内容同步。其他的应用场景也是类似的。比如下面的样子(弹幕在向左运动)：</p>
-<h4 id="弹幕的样式"><a href="#弹幕的样式" class="headerlink" title="弹幕的样式"></a>弹幕的样式</h4><p>弹幕的运动样式主要有两种，一种是横向的过场弹幕，一种是纵向的浮动弹幕。弹幕的内容形式不外乎一段文字或者图片，其中以文字为主。对于文字，则有文字的颜色、背景、字体、边框等属性，这一切必须是灵活可配的。当然实际应用中一个APP需要的是风格统一的、优雅美观的弹幕动画。所以弹幕的方向不要太混乱，不要有太多不一样的主题配置。你可以定义几类色调协调但样式不同的弹幕，然后由业务代码决定使用哪一种风格的弹幕。</p>
-<h4 id="渲染效率"><a href="#渲染效率" class="headerlink" title="渲染效率"></a>渲染效率</h4><p>性能直接关系到用户体验。在绝大多数场景中，锦上添花的弹幕往往伴随着具体的业务逻辑，业务逻辑会占用CPU——甚至很高的CPU，比如视频解码———所以弹幕动画应该尽可能地使用GPU渲染。为应对线上可能的大规模弹幕的情况，本地最好也能测试到大量弹幕的情况。可以使用一个定时器，模拟客户端频繁接受渲染弹幕的情况，看看实际中弹幕的性能究竟如何。</p>
-<h4 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h4><p>弹幕稀稀疏疏地铺满半屏窗口，朦胧中犹抱琵琶半遮面的感觉，自然是最好的。但万一遇到弹幕决堤，内容疯狂涌来，那当如何应对？渲染内容层层堆叠，既看不清，又降低了系统应用性能，为此可以在业务或者组件中选择限流。</p>
-<h2 id="弹幕数据层"><a href="#弹幕数据层" class="headerlink" title="弹幕数据层"></a><a name="data_pipeline_module"></a>弹幕数据层</h2><p>若不考虑弹幕在用户间共享，只需下图左侧的模块即可；若需引入弹幕共享、存储功能，则如下图右侧所示。</p>
-<p><img src="http://img.alicdn.com/tfs/TB1omxtJVXXXXcAXpXXXXXXXXXX-616-236.png" alt="简要结构图"></p>
-<p>但实际情况往往比这复杂。弹幕很多时候是实时的，最好使用长连接来传输数据。业务导向的项目，很少从零开始开发专门的弹幕服务通道，而是尽可能地应用已有的服务组件。淘宝在长连通道上有多个选择，但其功能又是不尽相同的。这种不同也会带来弹幕实现方案的不同。比如通道A支持订阅功能，消息会根据订阅关系分发；而通道B是单纯的通道，订阅关系由业务方维护，凡是发送到客户端的消息都会接收，所以流量需要业务服务端来控制。</p>
-<h4 id="经过服务端的必要性"><a href="#经过服务端的必要性" class="headerlink" title="经过服务端的必要性"></a>经过服务端的必要性</h4><p>仅仅使用长连接通道是不够的，还需引入业务服务器，其原因如下：</p>
-<ul>
-<li>如果长连通道不支持客户端发送消息，那么弹幕的发送要走其它的接口</li>
-<li>因业务原因，需要统一多个长连接通道，以便更好地做 多端同步，故引入中间服务器做协调</li>
-<li>一些业务相关的需求，不适合在长连接服务器上做，比如内容过滤、弹幕存储、服务端限流等</li>
-</ul>
-<p>整体的数据流如下图所示：</p>
-<p><img src="http://img.alicdn.com/tfs/TB1PEVtJVXXXXcHXpXXXXXXXXXX-920-335.png" alt="详细结构图"></p>
-<h4 id="消息格式制定"><a href="#消息格式制定" class="headerlink" title="消息格式制定"></a>消息格式制定</h4><p>通过长连接传输的弹幕消息会有一些附加数据需要考虑，比如弹幕的样式、出现的时间，随着业务的扩展，可能需要更多的辅助字段。所以弹幕消息必须能够向后兼容，一般可设置为message，version两个字段，message为纯粹的json字符串，version表示消息的版本号。先解析version，根据判断得到的version选择响应的解析样式。太多的附加信息会降低数据的利用率，此是需要权衡的地方。当然，如果针对的是在线视频业务，弹幕的流量相比于视频流而言，就显得不那么重要了。</p>
-<h4 id="自发的弹幕消息"><a href="#自发的弹幕消息" class="headerlink" title="自发的弹幕消息"></a>自发的弹幕消息</h4><p>主要有两种：</p>
-<ol>
-<li>用户发送了弹幕消息后，通过网络发送消息的同时直接将弹幕数据上屏，以提升用户所见即所得的体验；当收到相同的弹幕消息后，将消息抛弃。</li>
-<li>用户发送了弹幕消息后，通过正常的网络接收消息然后渲染呈现，这样会因延时损失一定的用户体验，但逻辑简单，并且可以控制所有弹幕数据。</li>
-</ol>
-<h2 id="弹幕服务层"><a href="#弹幕服务层" class="headerlink" title="弹幕服务层"></a><a name="server_business_module"></a>弹幕服务层</h2><h4 id="主题维护"><a href="#主题维护" class="headerlink" title="主题维护"></a>主题维护</h4><p>主题代表弹幕消息围绕的中心。在不同的业务场景中，主题的呈现方式可能是不同的。在视频直播业务中，主题代表了一个个直播房间，弹幕围绕着视频展开；在新闻咨询业务中，主题代表了一则则新闻，弹幕围绕着新闻展开。客户端与主题存在多对一的关系，如下图所示：</p>
-<p><img src="http://img.alicdn.com/tfs/TB1sVg7JFXXXXcraXXXXXXXXXXX-984-284.png" alt="主题房间维护"></p>
-<p>用户U1、U2订阅了主题T1，用户U3、U4订阅了主题T2。由于处于不同的语境中，U1、U2发送的弹幕U3、U4应该是不能接收到的，反之亦然。很自然服务端需要维护一个用户到主题的映射表简单的实现是，客户端监测到用户进入特定主题之后，发送一条网络请求登记这样一条订阅；用户离开特定主题时发送网络请求注销登记。但由于实际客户端运行场景复杂，离开特定主题不一定来得及发送网络请求。补充方案是，由客户端每隔特定时间心跳一次，用以告知服务端维护映射表。一旦服务端一段时间没有监听到心跳信息，就取消映射表中的一条订阅。这里需要注意的是，服务端需要防止心跳的伪造，否则可能映射表可能会因攻击而混乱掉。一旦映射表正确建立，用户发送的弹幕消息就可以准确传达到相同主题的用户客户端了。</p>
-<h4 id="弹幕存储"><a href="#弹幕存储" class="headerlink" title="弹幕存储"></a>弹幕存储</h4><p>对于直播等即时性业务，弹幕数据一般没有重播的必要；但是对于录播，则需要持久化弹幕，如是方能在其他用户看视频的时候看到其他人发出过的弹幕消息。持久化这类弹幕数据，必须在存储弹幕的时候带上弹幕对应的时间点。在用户进入了某一主题之后，批量返回给客户端对应的弹幕数据，由客户端将弹幕数据对应到视频业务响应的时间点上；如果此主题对应的弹幕数据很多，服务端可能实现做一定的筛选；对于录播同时新发送的弹幕，则由服务端记录并添加到对应的弹幕数据列表中。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1zithJVXXXXabXVXXXXXXXXXX-900-500.jpg" alt="无线端的弹幕实现方案"></p>
-<p>前段时间做了游戏的相关业务，其中弹幕相关的内容自成一块。弹幕已经不只是]]>
-    </summary>
-    
-      <category term="无线" scheme="http://taobaofed.org/tags/%E6%97%A0%E7%BA%BF/"/>
-    
-      <category term="弹幕" scheme="http://taobaofed.org/tags/%E5%BC%B9%E5%B9%95/"/>
-    
-      <category term="无线开发" scheme="http://taobaofed.org/categories/%E6%97%A0%E7%BA%BF%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
