@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2016-12-15T08:07:02.000Z</updated>
+  <updated>2016-12-21T02:40:37.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,172 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[QCon San Francisco 2016 前端参会总结]]></title>
+    <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
+    <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
+    <published>2016-12-20T12:10:14.000Z</published>
+    <updated>2016-12-21T02:40:37.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
+<p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
+<h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1F5cMOFXXXXb3XVXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<h3 id="Webpack-The-One-Build-Step-To-Rule-Them-All"><a href="#Webpack-The-One-Build-Step-To-Rule-Them-All" class="headerlink" title="Webpack: The One Build Step To Rule Them All"></a>Webpack: The One Build Step To Rule Them All</h3><p>webpack 自诞生以来席卷全球，为我们的开发带来了无限可能，相信很多童鞋都在使用 webpack，webpack is great!</p>
+<p>来自 webpack 核心团队的 <a href="https://twitter.com/thelarkinn" target="_blank" rel="external">@thelarkinn</a> 介绍了 webpack 的基本概念及使用方法，最后介绍了一些 webpack 2.0 的计划和未来的一些方向。</p>
+<ol>
+<li>webpack 的几个核心的概念：entry、output、loader、plugin：<ul>
+<li>Entry 就是我们的源码入口文件，可以是一个，也可以是多个；</li>
+<li>Output 是源码编译后的输出 bundle 文件，它根据你定义的 Entry 文件进行生成；</li>
+<li>Loader 可以说是 webpack 最屌的地方了，它定义了你的文件通过什么样的规则进行转换，它目前已经拥有 N 种 loader，市场上你只要见过的类型它基本都支持。分享者给了一张目前的 Loader 图，当时也是被震惊到了：<br><img src="https://gw.alicdn.com/tps/TB1rtEIOFXXXXacaXXXXXXXXXXX-892-509.png" alt=""></li>
+<li>Plugins 是 webpack 另一个易用的设计，你可以比较方便的开发使用自己的插件以实现特殊的效果。</li>
+</ul>
+</li>
+<li>webpack 的一些主要功能：<ul>
+<li>本地服务；</li>
+<li>模块热替换；</li>
+<li>模块懒加载；</li>
+<li>Source Maps；</li>
+</ul>
+</li>
+<li>webpack2 的新特性：<br> <img src="https://gw.alicdn.com/tps/TB15TwzOFXXXXcvaXXXXXXXXXXX-894-513.png" alt=""><ul>
+<li>首先是它将会原生的支持 ES2015，这意味着未来我们无需先将代码转换为 CommonJS 格式了，同时也为 Tree Shaking 的优化提供了基础。</li>
+<li>Tree Shaking 可以帮助我们移除未使用到的代码，以使我们的代码文件更小，这在寸土寸金的无线时代可能更实在。但是，Tree Shaking 能否发挥它的最大作用，还是取决于我们的编码习惯、规范，这也是我们需要去思考和改进的地方。<strong>特别对于公共的组件、模块，我们更需要关注其质量、规范。</strong>开发者关心的不应该只是代码是否能跑起来，同时更需要关心如何跑的更好。</li>
+<li>其它的在编译速度、语法设计、配置校验等方面也做了一些改进。</li>
+</ul>
+</li>
+<li>webpack 的未来：<br> <img src="https://gw.alicdn.com/tps/TB1xxwuOFXXXXbnapXXXXXXXXXX-897-518.png" alt=""><ul>
+<li>webpack 在未来还会针对 HTTP2 的场景做特殊的优化支持，也会与浏览器厂商合作，在 DevTools 上提供更好的体验。另外还提到了会利用 Chrome 的 timeline 去做一些智能调整配置加载的事情，至于具体是什么，尚未查到资料，目前应该仅仅是 idea 阶段。</li>
+</ul>
+</li>
+</ol>
+<p>整场分享其实比较初级，基本是手把手教你用 webpack，帮你理清了 webpack 的一些思路，最后谈到了 webpack2 以及未来的一些计划，缺乏真正的实战分享。但 webpack 给我们带来的技术革新是巨大的，或许有一天，当所有的语言都可以通过 webpack 编译成 JavaScript，而 JavaScript 又可以运行在任意的平台上，那将会是一个怎样的世界？……</p>
+<h3 id="Building-Robust-Web-Applications-With-RxJS"><a href="#Building-Robust-Web-Applications-With-RxJS" class="headerlink" title="Building Robust Web Applications With RxJS"></a>Building Robust Web Applications With RxJS</h3><blockquote>
+<p>RxJS is an API for asynchronous programming<br>with observable streams。</p>
+</blockquote>
+<p>RxJS 5 的带头大哥、来自 Netflix 的 <a href="https://twitter.com/benlesh" target="_blank" rel="external">@BenLesh</a> 通过一个例子分享了 RxJS5 的一些新特性。</p>
+<ul>
+<li>RxJS is “Lodash for events”</li>
+<li>RxJS is Observables</li>
+</ul>
+<p>在 RxJS 的世界里，一切都是流，你可以把任何的东西当成流，通过对这些流的创建、合并、过滤来解耦、分离自己的业务逻辑。</p>
+<p>@BenLesh 通过一个 WebSocket 的例子讲解了 RxJS 的一些基本用法以及新的 RxJS5 带来了哪些新的改变，总体上其实就是在对 RxJS5 做一些宣传工作。</p>
+<p>大家可以从这里下载 @BenLesh 演示的 Demo，自己亲自试一下上：<a href="https://github.com/blesh/robust-websocket-talk" target="_blank" rel="external">https://github.com/blesh/robust-websocket-talk</a></p>
+<p>RxJS 巧妙的利用了观察者模式将一些状态、点击、事件抽象为一系列的流，通过对他们的过滤、组合来实现我们的业务逻辑，对于我们未来的一些实时互动产品，搭配这样的事件流，或许能够可以让我们的代码更清晰、相互之间更解耦。</p>
+<h3 id="The-Strengths-of-Ember-Angular-amp-React-Explored"><a href="#The-Strengths-of-Ember-Angular-amp-React-Explored" class="headerlink" title="The Strengths of Ember, Angular &amp; React Explored"></a>The Strengths of Ember, Angular &amp; React Explored</h3><p>来自 Ember 团队的 @larasm、Angular 团队的 @robwormald（Google）、React 团队的 @leeb（Facebook） 分享了各自的库/框架，然后主持人跟三位分享者进行了一些互动。</p>
+<p>先简单介绍一下这三个东东：</p>
+<ol>
+<li>React：<ul>
+<li>React 并不是 MVC，它是基于 Component 的 UI；</li>
+<li>React 不是为了构建 Web App，它是为了构建 UI，你可以把它类比为 DOM；<br>  <img src="https://gw.alicdn.com/tps/TB1GtU0OFXXXXXIXFXXXXXXXXXX-1072-334.jpg_790x10000.jpg" alt=""></li>
+<li>你可以整个应用都使用 React，也可以像 Facebook 一样在部分模块里使用 React，你可以与其它任何的 framework 一起使用 React。<br><img src="https://gw.alicdn.com/tps/TB1XFZGOFXXXXbjXVXXXXXXXXXX-894-517.png" alt=""></li>
+</ul>
+</li>
+<li>AngularJS： <ul>
+<li>AngularJS 的组件由三部分组成：HTML、CSS、Class；<br><img src="https://gw.alicdn.com/tps/TB1OmIDOFXXXXbBaXXXXXXXXXXX-893-519.png" alt=""></li>
+<li>它的模板就是 HTML，通过属性和事件来定义组件的行为；</li>
+<li>它提供了 router 功能；</li>
+<li>AngularJS 可以运行在任何的环境、平台；</li>
+<li>因为 TypeScript 的类型检测、可读性、易用性以及强大的工具支持，AngularJS 使用 TypeScript；</li>
+<li>AngularJS 2 通过预编译提升了不少性能；</li>
+</ul>
+</li>
+<li>ember：<ul>
+<li>ember 是为构建巨型应用而生的，而巨型应用具备几个条件：多人创建，长期维护，升级而不是重写；</li>
+<li>ember 几乎包含了你可能用到的、在其它框架/库里看到的 NB 的特性，例如路由、组件、DOM diffing、单向/双向半丁、模板、服务端渲染等等……</li>
+<li>ember 是一个大型的框架，它在为社区做出巨大的贡献，也在推进着社区技术的发展；</li>
+<li>ember 发展了 5 年，有成熟的、完善的生态圈，Yahoo、LinkedIn 等公司都在为其贡献代码，目前已经有 3000+ 的插件，覆盖各种各样的交互场景；</li>
+<li>ember 拥有最专业、最好用的工具集，可以帮助你更快、更好的入门、编码；</li>
+</ul>
+</li>
+</ol>
+<p>最后，主持人与三位分享者进行了一场小的讨论会。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1RSQnOFXXXXcuaFXXXXXXXXXX-896-508.png" alt=""></p>
+<p>React 一再说明它不是 framework，而是一个 library，非常的轻量级，入门也比较简单，需要了解一下 babel，最主要的是 <a href="https://facebook.github.io/react/docs/thinking-in-react.html" target="_blank" rel="external">Think in React</a>！React 对于 Virtual DOM 的抽象及使用，使得它可以更好的应用在各个环境、语言层面，为各个平台提供了无限可能。React 有强大的社区支持，虽然 React 自身并无法完全覆盖你的任何需求、功能，但是社区里有大量的 library 可以配合 React 一起来使用，以满足你的任何需求和功能。</p>
+<p>AngularJS 相对来说功能比 React 全，是一个轻量级的 framework，经历了从 1 到 2 的升华，现在逐渐找到了自己的核心并稳定下来。相比 React，它提供了更多的功能以及更完善的体系，你可以在不借助任何外部 library 的情况下基本满足所有的需求和功能，当然，你也同样可以使用外部 library 来弥补 AngularJS 的功能。AngularJS 跟 React 走着完全不同的两个路子，但是理念和思路却在相互的借鉴和学习。使用 AngularJS 2 你需要首先了解 TypeScript，然后根据其文档，理解 Component 等概念，学习成本稍高。</p>
+<p>ember 相对于前两个，基本上就是巨无霸，所有你能想到的功能它都能包含，定位也是大型应用。相较于 AngularJS 被吐槽的升级问题，ember 有严格的升级步骤和规范，配合 ember 强大的 cli 工具及易读好用的文档，你可以轻松的入门、使用 ember。</p>
+<p>总的来说，每一个 framework/library 都在进化，相互的学习、借鉴，都在不断的提升自身的质量和技术，也期望未来我们能够看到更精彩的一些 idea，路走对了就不怕远！没有最好的框架/库，只有更合适的。</p>
+<h2 id="科技公司"><a href="#科技公司" class="headerlink" title="科技公司"></a>科技公司</h2><p>托各位牛逼的小伙们的福，在美期间拜访了一些不错的互联网公司，学到了一些不一样的东西，这里谈一下自己的感受。</p>
+<blockquote>
+<p>由于接待的人的岗位或者资历不同，我们从中了解到的内容跟真实的情况可能存在差异。</p>
+</blockquote>
+<h3 id="Yelp"><a href="#Yelp" class="headerlink" title="Yelp"></a>Yelp</h3><p>Yelp 是一个美国版的大众点评，但用下来你会发现这个大众点评完全不在一个量级，所以拜访之前以为这公司应该比较小，但其实蛮大的，在 downtown 能拥有十多层的办公楼也是够 NB 的。</p>
+<p>Yelp 的办公室跟普通的办公室区别不大，每层会有个小厨房（里边有免费的饮料、小零食等），另外每几排办公桌的墙壁上会有一台电视，据带头大哥说平时无甚鸟用，偶尔会被一些同事连上放一下恶搞的照片、视频之类的。另外呢，员工可申请可升降的桌子用于办公（再也不用自己搞个高架子了……）</p>
+<p>Yelp 的工作比较轻松，施行弹性工作制，公司提倡八小时工作制，我们是大概七点左右去的，基本上比较少的人在“加班”。据带头大哥说，有人竟然会花上两周时间去解决一个 bug！虽然这个问题可能一两个小时就可以通过其他方式修复，但依然坚持要找到问题的原因去修复，想想也是醉了……（刨根问底固然好，但总得先解决问题吧……）</p>
+<p>Yelp 的主要流量入口还是在 PC，手机上可能只占二三十的量，这个让人大跌眼镜。</p>
+<p>Yelp 使用 AWS。</p>
+<h3 id="Airbnb"><a href="#Airbnb" class="headerlink" title="Airbnb"></a>Airbnb</h3><p>Airbnb 的办公室还是蛮有特色的，室内的设计很有艺术感和趣味感，空间很大，感觉工作起来应该很惬意，这里的所有员工桌子均为可升降桌子。</p>
+<p>作为前端，对 Airbnb 最熟悉的莫过于其在 GitHub 上推出的前端规范，我们的规范很多内容也是参考他们来制订的。由于带头大哥并不是前端，问其 Airbnb 各个地方代码规范情况，反馈其实并没有那么的规范…… 少数部门在严格的执行编码规范，大多数部门还是有点散的。</p>
+<p>跟 Yelp 类似，Airbnb 只有百分之三四十的流量在手机端。</p>
+<p>Airbnb 使用 AWS。</p>
+<p><img src="https://gw.alicdn.com/tps/TB17wMvOFXXXXc5apXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1ap7sOFXXXXXTaFXXXXXXXXXX-1152-864.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB197gvOFXXXXc1apXXXXXXXXXX-1152-864.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1nzEGOFXXXXavaXXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1CboNOFXXXXakXVXXXXXXXXXX-1152-864.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1p9UvOFXXXXXSapXXXXXXXXXX-1152-864.jpg_790x10000.jpg" alt=""></p>
+<p>这是 3D 打印的作品。</p>
+<h3 id="Twitter"><a href="#Twitter" class="headerlink" title="Twitter"></a>Twitter</h3><p>Twitter 同样位于 downtown，拥有十几层的办公楼，员工大约有 2000 多名，楼上还有一个露天的大阳台，能看到有些员工就懒洋洋的躺在阳台的草坪上办公…… 内部还有一个比较大的餐厅，平时还可以用来开 party、一些庆功会、活动之类的。</p>
+<p>Twitter 的工作相对来说比较繁忙，时常也会出现加班的情况。</p>
+<p>由于数据量巨大及自身的业务特殊原因，Twitter 并没有使用 AWS，而是通过自建服务来满足业务需求。同样，Twitter 也并没有使用 docker，而是在很早之前就开发了类似的容器来满足需求。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1gtJaOVXXXXa4XXXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p>大大的阳台。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1K2IUOFXXXXbgXFXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p>内部餐厅。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1UtQDOFXXXXbfaXXXXXXXXXXX-3456-4608.jpg_790x10000.jpg" alt=""></p>
+<p>仔细看，这里边有一个 Twitter 的 logo。</p>
+<h3 id="Google"><a href="#Google" class="headerlink" title="Google"></a>Google</h3><p>会议结束后，我们一行来到了硅谷，拜访了这里的 Google 和 Facebook，先来看看 Google。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1vntbOVXXXXX2XXXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p>最先参观了 Google 的 Android 乐园，里边摆放着每个版本的 Android 代号标志：</p>
+<p><img src="https://gw.alicdn.com/tps/TB1qX3LOFXXXXbQXVXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p>先是来了 Google Vistor Center，在这里体验了一个还在试验的谷歌地球。这个系统由一圈竖着的屏幕以及一个操控台组成，输入想看的地点，屏幕上就会带你进入相应的地点（当然需要先建模的），画面非常的逼真、细腻，看了纽约曼哈顿、大峡谷、故宫等，感觉比较 NB，以后在家就可以欣赏到世界各地的美景了，还能自己操控来一场峡谷漂流……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1X7gCOFXXXXXmaXXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p>Vistor Center 里还有一些 ChromeBook 的展览，在世界上第一台 ChromeBook 上访问了下我们的淘宝首页，运行良好……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1py3qOFXXXXb9aFXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p>由于办公区域不能参观，Google 在这里设置了一个小的办公区供人参观，同样也都是可升降桌子。 另外提供睡觉的壳仓蛮有意思，躺进去后自己关上门，睡起来蛮惬意……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1TI7MOFXXXXbxXVXXXXXXXXXX-1440-1920.jpg_790x10000.jpg" alt=""></p>
+<p>Vistor Center 里还有一组照片墙，据说这是一个 Google 的基层员工，每次有大人物来园区，这货都会想尽办法与其合照，然后照的多了就成为了“红人”，每个大人物来都会跟他合照，还有奥巴马…… Google 还专门在 Vistor Center 里给他搞了一堵照片墙…… 事实证明，不管是啥事儿，坚持就会有回报……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1jLQEOFXXXXXIaXXXXXXXXXXX-1152-864.jpg_790x10000.jpg" alt=""></p>
+<p>随后去了 Google 早期的园区，这里是一个开放的区域，不算大，但也不小。有大大的餐厅、各种奇怪的设备、游戏厅、沙滩排球场、小小的静止游泳池、健身房等等，据带头大姐说，员工可以在任意一个喜欢的地方办公，上班时间有的打游戏、有的打球、有的游泳……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1cr._OFXXXXbXXXXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<h3 id="Facebook"><a href="#Facebook" class="headerlink" title="Facebook"></a>Facebook</h3><p>进入 FaceBook 的第一感觉就是，这里简直就像一个五彩斑斓的风情小镇，虽然不大，但是足够的温馨，商店、餐厅、电话亭、游戏厅、办公楼静静的立在街道两旁。</p>
+<p>先是去参观了 Instgram，这里的一些员工桌上有气球挂着，据带头大哥说，是员工一年、两年、三年时会挂不同的气球，但由于人员流动性大，挂球的人其实并不多……</p>
+<p>Facebook 的工程师文化比较浓，我们的厕所里贴的是各种广告，人家的厕所里直接贴的是代码、技术，让你尿尿的时候都能够在大脑中执行一次代码……</p>
+<p><img src="https://gw.alicdn.com/tps/TB1ar.BOFXXXXbmaXXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1NC.LOFXXXXc2XVXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1WqEWOFXXXXabXFXXXXXXXXXX-3456-4608.jpg_790x10000.jpg" alt=""></p>
+<p><img src="https://gw.alicdn.com/tps/TB1ZBZyOFXXXXcEaXXXXXXXXXXX-4608-3456.jpg_790x10000.jpg" alt=""></p>
+<p>Facebook 的大 logo。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>先说 QCon，参会之前，根据主题先看了相关的一些资料，实际听的过程还是稍微有点小失望，前端方面的演讲普遍比较简单，基本是在较少框架、工具的基本使用方式，缺乏真正的实践和应用。如果放在两三年前，或许会是比较有意思的东西，但是今天，这些主题过于基础。相较之前的 QCon 上海，少了无线相关的主题，也少了真正的实践。当然，也并非毫无意义，更多的我们可以听到在被人眼里，这个技术是如何被使用，在这项技术的发展历程中，经历了哪些抉择，变革的思路是怎样的，其实这些对我们的指导意义还是蛮大的。另外，QCon 每天的开场 Keynote 非常的精彩。</p>
+<p>再说下拜访各个公司的收获，从 QCon 到各个创业公司，基本都在使用 AWS，大家都是围绕这 AWS 去做相关的优化、工具来帮助自己的业务运行的更好。我们的阿里云前景广阔啊，如果能够圈住国内的中小创业者，这个市场也是巨大无比的…… 各个公司都各有特色，他们的市场、他们的用户，很多时候真的令你无法想象，跟国内的场景、用户完全是两个不同的景象。员工的工作环境普遍比较惬意，时间也相对比较自由，大多都没有 KPI 的压力。</p>
+<p>再说下美国印象。如果说美国的刷卡业甩中国 100 条街的话，那么中国的移动互联网、移动支付可以甩美国 500 条街。在拜访过程中了解到，在美国，手机的流量套餐基本上是无限量的，但是各个产品的手机端用户并不多，很多人的手机里就装了少数几个 App，他们很少用手机做啥事儿…… 在国内都被用烂了的二维码，在美国几乎看不到，就连 Twitter 也仅仅是在最近才有了二维码功能…… 另外，这些人真是爱跑步啊，无论何时、无论何地，都能看到各种各样的人在跑步…… 很多人周末的活动一般也都是野营、打球、徒步等户外活动，感觉上比较健康。</p>
+<p>美国人在创新上真的是秒杀我们，如高晓松所说，或许是因为美国的强大使美国人感觉到自信、骄傲，更容易创造出不一样的东西，从他们的技术、电影、动画等等我们都能看出美国人的脑洞大开，而我们基本是在其基础上去做增强、改造。在中国逐步的强大、崛起的时候，期望我们也能够更加的自信、骄傲，特别是我们的程序员们能够有自己的创新、自己的不一样的东西，一千个人脑中应该有一千幅不同的 HelloKitty！</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
+<p>11 月初有幸参加了在美国旧金]]>
+    </summary>
+    
+      <category term="React" scheme="http://taobaofed.org/tags/React/"/>
+    
+      <category term="框架" scheme="http://taobaofed.org/tags/%E6%A1%86%E6%9E%B6/"/>
+    
+      <category term="QCon" scheme="http://taobaofed.org/tags/QCon/"/>
+    
+      <category term="Angular" scheme="http://taobaofed.org/tags/Angular/"/>
+    
+      <category term="webpack" scheme="http://taobaofed.org/tags/webpack/"/>
+    
+      <category term="RxJS" scheme="http://taobaofed.org/tags/RxJS/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结]]></title>
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -71,7 +232,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -267,7 +428,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -334,7 +495,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -434,7 +595,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -559,7 +720,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -663,7 +824,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -734,7 +895,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -817,7 +978,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -870,7 +1031,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -931,7 +1092,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -1038,7 +1199,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -1094,7 +1255,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -1173,7 +1334,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -1269,7 +1430,7 @@
     <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
     <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
     <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
 <p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
 <p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
@@ -1417,7 +1578,7 @@
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -1514,7 +1675,7 @@
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -1595,7 +1756,7 @@
     <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
     <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
     <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
 <p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
@@ -1698,7 +1859,7 @@
     <link href="http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/"/>
     <id>http://taobaofed.org/blog/2016/06/02/thing-about-taobao-homepage/</id>
     <published>2016-06-02T06:45:32.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
+    <updated>2016-12-21T02:40:37.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1dcfNKXXXXXXcXVXXXXXXXXXX-900-500.png" alt="聊一聊淘宝首页和它背后的一套"></p>
 <p>从 14 年双十二结束开始接手淘宝首页，到如今差不多 1 年半时间了，不久前完成了首页相关工作的交接。经历了两次改版和一次从 PHP 到 Node 的迁移，还是颇有感受，下面给大家分享下。</p>
 <h3 id="一、相关背景介绍"><a href="#一、相关背景介绍" class="headerlink" title="一、相关背景介绍"></a>一、相关背景介绍</h3><p>淘宝首页是淘宝的门面，承载着几乎淘系所有业务的入口，流量很大，量级单位为亿。近几年无线端崛起，业务重点开始向无线终端偏移（目前不能叫偏移，基本以无线为主了），所以淘宝 PC 端首页的流量也有削减，不过即便如此，它的日均 PV 依然相当高。</p>
@@ -1838,714 +1999,6 @@
     </summary>
     
       <category term="淘宝首页" scheme="http://taobaofed.org/tags/%E6%B7%98%E5%AE%9D%E9%A6%96%E9%A1%B5/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[视频播放的那些事]]></title>
-    <link href="http://taobaofed.org/blog/2016/05/23/video-player/"/>
-    <id>http://taobaofed.org/blog/2016/05/23/video-player/</id>
-    <published>2016-05-23T03:26:29.000Z</published>
-    <updated>2016-12-15T08:07:02.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
-<ul>
-<li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
-</ul>
-<h3 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h3><ul>
-<li><p>在手淘过去一年多的历史长河中存在五种类型的播放器。</p>
-<ul>
-<li>原生 HTML5 video 标签</li>
-<li>Android 5.3.2 版本之后的 UC 内核增强 SAC 播放器</li>
-<li>Android 5.4.9 版本之后的 UC HAC 播放器</li>
-<li>Android 5.3.2 版本之前的 Glue native 播放器</li>
-<li>Android 5.3.2 版本及其之后的 PlayBuddy 播放器</li>
-</ul>
-</li>
-<li><p>下面从支持平台，loading 动画，全屏，模拟全屏和兼容性五个方面对各个播放器做个横向对比。</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>video IOS</th>
-<th>video Android</th>
-<th>UC SAC</th>
-<th>UC HAC</th>
-<th>PlayBuddy</th>
-<th>Glue</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>平台</td>
-<td>IOS手淘</td>
-<td>android手淘</td>
-<td>android手淘&gt;=5.3.2</td>
-<td>android手淘&gt;=5.4.9</td>
-<td>android手淘&gt;=5.3.2</td>
-<td>android手淘&lt;5.3.2</td>
-</tr>
-<tr>
-<td>loading</td>
-<td>可定制</td>
-<td>可定制</td>
-<td>无</td>
-<td>可定制</td>
-<td>不可定制，丑陋</td>
-<td>有</td>
-</tr>
-<tr>
-<td>控件可定制性</td>
-<td>可以</td>
-<td>可以</td>
-<td>不可以</td>
-<td>可以</td>
-<td>不可以</td>
-<td>不可以</td>
-</tr>
-<tr>
-<td>全屏</td>
-<td>支持竖全屏</td>
-<td>不支持</td>
-<td>支持竖全屏</td>
-<td>可以</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>模拟全屏</td>
-<td>支持</td>
-<td>支持</td>
-<td>不支持</td>
-<td>有bug</td>
-<td>–</td>
-<td>–</td>
-</tr>
-<tr>
-<td>兼容性</td>
-<td>好</td>
-<td>较好</td>
-<td>较好</td>
-<td>好</td>
-<td>较好</td>
-<td>一般，不兼容 android 5.0及以上</td>
-</tr>
-</tbody>
-</table>
-<h3 id="接口与事件封装"><a href="#接口与事件封装" class="headerlink" title="接口与事件封装"></a>接口与事件封装</h3><p>上面介绍了手淘中可供 WebView 选择的播放器，对于业务方而言迫切需要一个解决方，无需关心底层差异。为此，我们屏蔽移动端不同系统平台、宿主环境、播放器的实现细节和兼容性问题，提供统一的接口和事件，具体如下：</p>
-<ul>
-<li>方法<ul>
-<li>play 播放</li>
-<li>pause 暂停</li>
-<li>stop 停止</li>
-<li>show 显示</li>
-<li>hide 隐藏</li>
-<li>requestFullscreen 全屏</li>
-<li>exitFullScreen 退出全屏</li>
-<li>getCurrentTime 获取当前播放时间</li>
-<li>setCurrentTime 设置播放时间</li>
-<li>getDuration 获取视频时长</li>
-<li>setPoster 设置背景图</li>
-<li>destory 销毁</li>
-<li>reset 重置视频</li>
-</ul>
-</li>
-<li><p>事件</p>
-<ul>
-<li>timeupdate 进度更新</li>
-<li>ended 停止</li>
-<li>error 错误</li>
-<li>play （专指video）</li>
-<li>pause 停止（专指video）</li>
-<li>firstpaint 视频真正开始播放（专指video）</li>
-</ul>
-</li>
-<li><p>controls 播放控件（专指video）</p>
-<ul>
-<li>播放</li>
-<li>暂停</li>
-<li>进度更新</li>
-<li>全屏</li>
-<li>loading</li>
-</ul>
-</li>
-</ul>
-<h3 id="兼容性处理"><a href="#兼容性处理" class="headerlink" title="兼容性处理"></a>兼容性处理</h3><p>接下来谈谈在开发过程中遇到的各种小问题及其解决办法。</p>
-<h4 id="video"><a href="#video" class="headerlink" title="video"></a>video</h4><ul>
-<li><p><strong>内联播放</strong>。iPhone 在视频播放时默认全屏播放，<a href="https://developer.apple.com/library/iad/documentation/UserExperience/Conceptual/iAdJSProgGuide/PlayingVideosinAds/PlayingVideosinAds.html" target="_blank" rel="external">参考</a>。</p>
-<ul>
-<li><p>WebView 中，可以对 UIWebView 做如下配置，并且在 video 中配置 webkit-playsinline 属性即可：</p>
-<figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">webview.allowsInlineMediaPlayback </span>=<span class="string"> YES;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>iPhone Safari 在 IOS &gt;= 8 的系统中，有人也提出了一个<a href="https://link.zhihu.com/?target=https%3A//github.com/bfred-it/iphone-inline-video" target="_blank" rel="external">方案</a></p>
-</li>
-</ul>
-</li>
-<li><p><strong>自定义播放控件</strong></p>
-<ul>
-<li>部分 Android 机型不支持内置控件，或者说内置控件无法正常使用；各个产品都有特定的视觉规范，默认控件的交互和视觉无法满足需求。因此，我们推荐默认不启用默认控件，采用自定义控件。</li>
-<li>IOS 下播放时还可能还展示系统自带播放按钮，可以配置如下 CSS。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">video</span><span class="selector-pseudo">::-webkit-media-controls-start-playback-button</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p><strong>poster 视频底图</strong></p>
-<ul>
-<li>在 iPhone 中视频加载完第一帧数据后会覆盖 Poster 底图展示第一帧画面，这时可以使用 DIV 覆盖在视频上方模拟，监听 timeupdate 事件做隐藏操作。</li>
-<li>在 UC WebView 中动态设置 poster 可能会导致手淘 crash，方案跟上方一样。</li>
-<li>在使用 Native 播放器时，在播放器未初始化时使用 DIV 替换 video 标签，并设置底图为背景图。</li>
-</ul>
-</li>
-<li><p><strong>播放首屏</strong>：IOS 通过监听 playing 事件可以准确获取视频播放的时间点；Android 中在该事件触发时，还没真正开始播放。我们通过监听 timeupdate 的事件做模拟处理。</p>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">_timeUpdate(e) &#123;</span><br><span class="line"> <span class="keyword">var</span> currentTime = <span class="keyword">this</span>.getCurrentTime();</span><br><span class="line"> </span><br><span class="line"> <span class="comment">// 判断是否为首帧</span></span><br><span class="line"> <span class="keyword">if</span> (currentTime !== <span class="literal">undefined</span> &amp;&amp; currentTime !== <span class="number">0</span>) &#123;</span><br><span class="line">     <span class="keyword">this</span>.fire(<span class="string">'firstpaint'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_playing() &#123;</span><br><span class="line">  <span class="keyword">if</span> (Env.os.ios) &#123;</span><br><span class="line">     <span class="keyword">this</span>.fire(<span class="string">'firstpaint'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>视频切换</strong>：在android 4.4 以下版本，在视频切换时存在第一次切换不能正常播放，第二次才能正常播放情况。通过调试人肉分析，发现切换视频的 video 存在以下两个特征：readyState 值为 0，videoWidth 为 0。因此我们判断当两个属性为0时，则切换失败，再次调用播放逻辑。存在误判的可能，但是能保证正常工作。</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">isWork() &#123;</span><br><span class="line">    <span class="keyword">if</span> (videoEl.readyState === <span class="number">0</span> &amp;&amp; videoEl.videoWidth === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p><strong>全屏</strong>：手淘 IOS 支持竖全屏效果，Android 虽然具有全屏方法，但是被手淘限制，调用全屏方法无效。</p>
-<ul>
-<li><p><code>方案一</code>：为了支持横全屏，我们使用 css3 的 rotate 对视频区域进行90度旋转，并且调用 bridge 接口隐藏 native 顶部的 navibar，并对自定义控件进行响应优化调整。基本到达 native全屏效果。当然顶部状态栏不能隐藏还是有些小瑕疵。同时旋转之后元素的 z-index失效，导致视频覆盖控件问题，可以通过设置 -webkit-transform: translate3d(0,0,0) 来修复</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">requestFullscreen() &#123;</span><br><span class="line">    <span class="keyword">var</span> element = <span class="keyword">this</span>.el[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">var</span> method = FullscreenApi.requestFullscreen;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (method) &#123;</span><br><span class="line">        element[method]();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (element.webkitEnterFullscreen || element.enterFullScreen) &#123;</span><br><span class="line">        element.webkitEnterFullscreen &amp;&amp; element.webkitEnterFullscreen();</span><br><span class="line">        element.enterFullScreen &amp;&amp; element.enterFullScreen();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 模拟全屏</span></span><br><span class="line">        <span class="comment">// enterFullWindow();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟全屏js核心代码</span></span><br><span class="line">_mockFullscreen() &#123;</span><br><span class="line">    <span class="keyword">if</span> (curEl.hasClass(<span class="string">'normal'</span>)) &#123;</span><br><span class="line">        <span class="keyword">this</span>.fullscreen = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        playerEl.css(&#123;</span><br><span class="line">            width: <span class="keyword">this</span>.originWidth,</span><br><span class="line">            height: <span class="keyword">this</span>.originHeight,</span><br><span class="line">            left: <span class="number">0</span></span><br><span class="line">        &#125;).removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">        wrapperEl.css(&#123;</span><br><span class="line">            width: <span class="keyword">this</span>.wrapperOriginWidth,</span><br><span class="line">            height: <span class="keyword">this</span>.wrapperOriginHeight</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        videoEl.css(<span class="string">'height'</span>, <span class="string">'100%'</span>);</span><br><span class="line"></span><br><span class="line">        curEl.removeClass(<span class="string">'normal'</span>);</span><br><span class="line">        contentEl.removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.fullscreen = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.originWidth = playerEl.width();</span><br><span class="line">        <span class="keyword">this</span>.originHeight = playerEl.height();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.wrapperOriginWidth = wrapperEl.width();</span><br><span class="line">        <span class="keyword">this</span>.wrapperOriginHeight = wrapperEl.height();</span><br><span class="line"></span><br><span class="line">        playerEl.css(&#123;</span><br><span class="line">            width: $(<span class="built_in">window</span>).height(),</span><br><span class="line">            height: $(<span class="built_in">window</span>).width(),</span><br><span class="line">            left: $(<span class="built_in">window</span>).width()</span><br><span class="line">        &#125;).addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">        wrapperEl.css(&#123;</span><br><span class="line">            width: $(<span class="built_in">window</span>).height(),</span><br><span class="line">            height: $(<span class="built_in">window</span>).width()</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        videoEl.css(<span class="string">'height'</span>, videoEl.height() - controlsHeight);</span><br><span class="line"></span><br><span class="line">        curEl.addClass(<span class="string">'normal'</span>);</span><br><span class="line">        contentEl.addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>效果图:<br><img src="https://img.alicdn.com/tps/TB1vRHkJpXXXXXAXFXXXXXXXXXX-1280-719.jpg" alt="IOS全屏"></p>
-</li>
-<li>预览地址（请用手淘扫码）：<br><img src="https://img.alicdn.com/tps/TB1VrUrJFXXXXctXVXXXXXXXXXX-178-175.jpg" alt="demo"></li>
-</ul>
-<ul>
-<li><code>方案二</code>。方案一只是模拟了横全屏效果，对于追求完美的处女座不能忍。还有其他方案吗？有时候只需要转换下思维，问题即可迎刃而解。既然是横屏播放，只需要让 WebView 横屏即可，同时在横屏之后重新调整控件即可，关键手淘提供了打开应用横全屏的接口。注意点：横屏之后需要禁止页面滚动，要不然全屏就露馅了，因为本质还是个 WebView。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.transverseFullScreen) &#123;</span><br><span class="line">  <span class="keyword">if</span> (curEl.hasClass(<span class="string">'normal'</span>)) &#123;</span><br><span class="line">    curEl.removeClass(<span class="string">'normal'</span>);</span><br><span class="line">    <span class="keyword">this</span>._transverseFullScreen(<span class="literal">false</span>).then(() =&gt; &#123;</span><br><span class="line">      $(<span class="string">'body'</span>).removeClass(<span class="string">'co-fullscreen'</span>).attr(&#123; height: <span class="string">'auto'</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.videoWrapperEl.height(<span class="keyword">this</span>.videoOriginHeight).removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.player.fire(<span class="string">'transversefullscreen'</span>, &#123; fullscreen: <span class="literal">false</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.resize();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    curEl.addClass(<span class="string">'normal'</span>);</span><br><span class="line">    <span class="keyword">this</span>._transverseFullScreen(<span class="literal">true</span>).then(() =&gt; &#123;</span><br><span class="line">      $(<span class="string">'body'</span>).addClass(<span class="string">'co-fullscreen'</span>).attr(&#123; height: win.height() &#125;);</span><br><span class="line">      <span class="keyword">this</span>.videoWrapperEl.height(win.height()).addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.player.fire(<span class="string">'transversefullscreen'</span>, &#123; fullscreen: <span class="literal">true</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.resize();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>Demo：<br><img src="http://img3.tbcdn.cn/L1/461/1/2d8cead70e721088b82892514ef210b7150df716.gif" alt="fullscreen"></li>
-<li>手淘 IOS 扫码：<br><img src="https://img.alicdn.com/tps/TB1bu2KJVXXXXcfXXXXXXXXXXXX-181-178.jpg" alt=""><ul>
-<li><code>方案3</code>。在 UC HAC 方案视频提供全屏接口 UCSettings.setVideoViewFullscreenByDefault（true），开启后，视频全屏默认为横屏  </li>
-</ul>
-</li>
-<li><strong>自动播放</strong><ul>
-<li>出于用户节省用户流量考虑，iPhone 下播放视频需要用户手动触发，即使配置了 autoplay 属性也是无效的。在业务中，特定场景还是需要视频能够自动播放，对此我们可以监听页面的 touchstart 事件，做如下处理：</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.auoplay &amp;&amp; env.app.TB &amp;&amp; env.network.wifi) &#123;</span><br><span class="line"><span class="keyword">if</span> (player.getCurrentTime() &gt; <span class="number">0</span> &amp;&amp; !player.isPause()) &#123;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.hasAutoPlay) &#123;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">this</span>.hasAutoPlay = <span class="literal">true</span>;</span><br><span class="line">startEl.trigger(<span class="string">'click'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">autoplay</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    doc.detach(<span class="string">'touchstart'</span>, autoplay);</span><br><span class="line">    <span class="keyword">if</span> (player.getCurrentTime() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  startEl.trigger(<span class="string">'click'</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> doc.on(<span class="string">'touchstart'</span>, autoplay);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>其他<ul>
-<li>部分机型手淘低版本使用 video 播放时，会出现有声音没画面的问题，升级手淘后即恢复。例如，小米4 手淘 4.2.0</li>
-<li>IOS 5.1 和部分 android 手机暂停和开始按钮不触发点击事件(元素的 :after 为iconfont)。通过父元素添加background即可</li>
-<li>Android UC 内核的播放器，在未设置 source 资源时，设置 poster 无效</li>
-<li>Android UC 内核的播放器无法自定义控件和样式操作，但是可以正常的监听事件。</li>
-<li>直接替换 source 不会改变当前正在播放的视频，需要调用 load 方法。</li>
-<li>UC 浏览器中 video 标签会被 UC 的播放器插件替换</li>
-<li>使用 m3u8 和 mp4 基本可以兼容所有机型 </li>
-<li>在 IOS 视频初始化后设置 currrentTime 无效，在 loadedmetadata 事件触发后，设置 currentTime 即可。</li>
-</ul>
-</li>
-</ul>
-<h3 id="native播放器"><a href="#native播放器" class="headerlink" title="native播放器"></a>native播放器</h3><ul>
-<li><p>destroy：</p>
-<ul>
-<li>Glue：Glue native 播放器在页面跳转，WebView 后退等操作时，不会自动析构，好的情况是视频依然在背后播放，有时候会直接导致手淘 crash。</li>
-<li><p>PlayBuddy：在页面跳转时依然会继续播放</p>
-<p>处理方式：页面跳转时需要手动的销毁native播放器。</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'WV.Event.Page.Refresh'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>), <span class="literal">false</span>);</span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'WV.Event.Key.Back'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>), <span class="literal">false</span>);</span><br><span class="line">win.on(<span class="string">'unload'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>));</span><br><span class="line">win.on(<span class="string">'beforeunload'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>));</span><br></pre></td></tr></table></figure>
-<ul>
-<li>定位<ul>
-<li>Glue 播放器使用 dip 作为播放器的定位单位，rem 布局会对页面进行缩放，导致定位位置和视频大小错误。同时定位时参数有小数点会导致播放器错误。</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/__</span><br><span class="line"> * 返回值需要是整数，否则会有异常</span><br><span class="line"> */</span><br><span class="line">_getVedioPos(isDpr) &#123;</span><br><span class="line">    var el = this.el,</span><br><span class="line">        offset = el.offset(),</span><br><span class="line">        dpr = 1;</span><br><span class="line"></span><br><span class="line">    if (isDpr) &#123;</span><br><span class="line">        dpr = this._getDpr();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">        x: parseInt(offset.left / dpr),</span><br><span class="line">        y: parseInt(offset.top / dpr),</span><br><span class="line">        w: parseInt(el.width() / dpr),</span><br><span class="line">        h: parseInt(el.height() / dpr)</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>视频源地址：Glue 播放器不支持以 // 开始的视频资源，例如 //video.xxx</li>
-<li>PlayBuddy 播放器不会随着页面滚动而滚动。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>如果业务中需要在手淘中播放视频，IOS 直接使用原生 video 即可。在 Android 中较为复杂，没有完全兼容的方案。建议使用 video，对于 Android 低版本建议使用native 播放器。随着uc内核接入，未来完全抛弃 native 方案也是可行的。</li>
-<li>本文基于过去一年在手淘视频播放过程中遇到问题的小结，后续会整理视频监控和视频娱乐化相关内容。</li>
-</ul>
-<h2 id="附：手淘同学播放器兼容性表"><a href="#附：手淘同学播放器兼容性表" class="headerlink" title="附：手淘同学播放器兼容性表"></a>附：手淘同学播放器兼容性表</h2><table>
-<thead>
-<tr>
-<th>品牌</th>
-<th>机型</th>
-<th>手淘版本</th>
-<th>操作系统版本</th>
-<th>播放器控件</th>
-<th>视频列表切换</th>
-<th>试看控制</th>
-<th>观看进度同步</th>
-<th>切换模式</th>
-<th>问题</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>苹果</td>
-<td>6 plus</td>
-<td>5.2.7</td>
-<td>8.11</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>苹果</td>
-<td>6</td>
-<td>5.2.7</td>
-<td>8.11</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>苹果</td>
-<td>5s</td>
-<td>5.2.7</td>
-<td>8.11</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>苹果</td>
-<td>5</td>
-<td>5.2.7</td>
-<td>8.11</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>苹果</td>
-<td>4s</td>
-<td>5.2.7</td>
-<td>8.11</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>苹果</td>
-<td>4</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>google</td>
-<td>nexus 5</td>
-<td>*</td>
-<td>yun os 3</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>*</td>
-</tr>
-<tr>
-<td>google</td>
-<td>nexus 5</td>
-<td>*</td>
-<td>安卓 5</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>*</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>N7100</td>
-<td>4.9</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>*</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>NOTE4</td>
-<td>4.9</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>模式二点最大化crash</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>NOTE3</td>
-<td>4.9</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×</td>
-<td>*</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>S4</td>
-<td>5.2.7.3</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>模式二，播放有问题 </td>
-</tr>
-<tr>
-<td>三星</td>
-<td>I9300</td>
-<td>4.3</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>S3</td>
-<td>5.2.8.2</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>三星</td>
-<td>S5</td>
-<td>5.2.7.3</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>魅族</td>
-<td>MX2</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>魅族</td>
-<td>MX4 PRO</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>魅族</td>
-<td>魅蓝Note</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>魅族</td>
-<td>MX3（安装不上）</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>华为</td>
-<td>荣耀6</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>模式二可能播放不了</td>
-</tr>
-<tr>
-<td>华为</td>
-<td>mate7</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>模式二可能播放不了 </td>
-</tr>
-<tr>
-<td>华为</td>
-<td>c8816</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>进度条拖动会跳</td>
-</tr>
-<tr>
-<td>华为</td>
-<td>荣耀3c</td>
-<td>*</td>
-<td>4.4.2</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>×一直展示loading的图片</td>
-<td>模式二播放不了</td>
-</tr>
-<tr>
-<td>华为</td>
-<td>C8813</td>
-<td>*</td>
-<td>4.1.1</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>高清视频不能播放</td>
-</tr>
-<tr>
-<td>HTC</td>
-<td>MAX</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>*</td>
-</tr>
-<tr>
-<td>HTC</td>
-<td>816w</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>VIVO</td>
-<td>Find5</td>
-<td>*</td>
-<td>4.1.1</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>VIVO</td>
-<td>X3</td>
-<td>*</td>
-<td>4.2.2</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>小米</td>
-<td>2S</td>
-<td>*</td>
-<td>4.3</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>高清的播放不了</td>
-</tr>
-<tr>
-<td>小米</td>
-<td>3</td>
-<td>*</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>*</td>
-</tr>
-<tr>
-<td>小米</td>
-<td>4</td>
-<td>*</td>
-<td>4.4.4</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>*</td>
-</tr>
-<tr>
-<td>索尼</td>
-<td>M512</td>
-<td>*</td>
-<td>4.4.2</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>索尼</td>
-<td>xperia 36l</td>
-<td>*</td>
-<td>4.1.2</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>*</td>
-</tr>
-<tr>
-<td>nubia</td>
-<td>nx403</td>
-<td>*</td>
-<td>4.2.2</td>
-<td>√</td>
-<td>×</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td>模式一，模式二播放均有问题</td>
-</tr>
-<tr>
-<td>锤子</td>
-<td>*</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-<td></td>
-</tr>
-<tr>
-<td>oppo</td>
-<td>x907</td>
-<td>*</td>
-<td>4.0.3</td>
-<td>很难点到</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>*</td>
-</tr>
-<tr>
-<td>nexus5</td>
-<td>*</td>
-<td>*</td>
-<td>*</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>√</td>
-<td>第二种模式crash</td>
-</tr>
-</tbody>
-</table>
-<p>注：模式1为video，模式2为glue native播放器</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
-<ul>
-<li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈]]>
-    </summary>
-    
-      <category term="视频" scheme="http://taobaofed.org/tags/%E8%A7%86%E9%A2%91/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
