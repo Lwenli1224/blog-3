@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-01-06T03:57:56.000Z</updated>
+  <updated>2017-01-13T08:25:06.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,85 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[淘宝双促中的 RAX]]></title>
+    <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
+    <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
+    <published>2017-01-13T03:53:44.000Z</published>
+    <updated>2017-01-13T08:25:06.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 RAX"></p>
+<p>引子</p>
+<p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">RAX</a>。本文会全部使用新的概念去描述。首先简单介绍一下 RAX 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
+<h2 id="RAX"><a href="#RAX" class="headerlink" title="RAX"></a>RAX</h2><p>RAX 是一个基于 React 方式的跨容器的 JS 框架</p>
+<ul>
+<li>React：你会用 React，那么你会很快上手 RAX</li>
+<li>跨容器：Browser、WEEX、Node.js</li>
+</ul>
+<p><img src="https://gw.alicdn.com/tps/TB1GloTOVXXXXa1XVXXXXXXXXXX-1455-368.jpg_500x500.jpg" alt=""></p>
+<p>gzip 大小 8k，与 Angular、React、Vue 相比更加轻量。在服务端也有更优的渲染性能，1553 op/s。作为双促页面的底层核心框架，让今年的淘宝双促的 native 100% 成为可能。</p>
+<h2 id="组件与模块"><a href="#组件与模块" class="headerlink" title="组件与模块"></a>组件与模块</h2><h3 id="体系提供的能力"><a href="#体系提供的能力" class="headerlink" title="体系提供的能力"></a>体系提供的能力</h3><p>RAX 核心框架之上，有一个支撑业务的基础体系。模拟浏览器行为和业务基础功能的 API、最基础的简单标签 Components、以及基础 UI 组件 RAXUI。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1oWxhPXXXXXc_XpXXXXXXXXXX-763-431.jpg_500x500.jpg" alt=""></p>
+<p>Components 对应最基础的 HTML 标签，提供了最基础的标签能力，开发同学可以通过 Components 标签搭建出最基础的组件以及模块和页面。</p>
+<p>通过最基础的标签组成通用 UI 组件 RAXUI，除了 UI 组件，双促中使用的页面核心渲染逻辑也是基于 Components 标签搭建出来的。RAXUI 成为了大促模块搭建的基础、rax-page 则是页面渲染的基础。通过上层对数据请求的封装、缓存策略、页面渲染顺序的控制等组织成了斑马联路中使用的 PI，让页面可以在斑马环境中运作。</p>
+<h3 id="RAXUI-组件"><a href="#RAXUI-组件" class="headerlink" title="RAXUI 组件"></a>RAXUI 组件</h3><p><img src="https://gw.alicdn.com/tps/TB19PE1OVXXXXcsaXXXXXXXXXXX-1020-699.jpg_500x500.jpg" alt=""></p>
+<p>RAXUI 是 RAX 上层的组件生态，包含了业务中常用的组件，比如横向滚动轮播（slider）、icon、tab 导航头（tabheader）、视频播放（player）等。</p>
+<p>上图中列出了部分 RAXUI 组件，通过 rax-picture、rax-slider、rax-tabheader、rax-gotop  等可以组成一个常见的带电梯长列表页面，如下图。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1499MOVXXXXcIXXXXXXXXXXXX-641-436.png_500x500.jpg" alt=""></p>
+<p>RAXUI 组件已经涵盖了大部分业务中需要的组件场景，为开发提供了一定的便利。</p>
+<h3 id="对开发者的影响"><a href="#对开发者的影响" class="headerlink" title="对开发者的影响"></a>对开发者的影响</h3><p><img src="https://gw.alicdn.com/tps/TB1eGRnPXXXXXXcXpXXXXXXXXXX-587-465.jpg_500x500.jpg" alt=""></p>
+<p>一个淘宝大促页面模块的开发与往年有很大不同，除了开始使用 React 的写法外，还有一套模块与页面渲染 PI 的约定。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1bbcPOVXXXXc9aXXXXXXXXXXX-722-362.jpg_500x500.jpg" alt=""></p>
+<p>大促模块分为两类，滚动容器外部的 app 级模块和 滚动容器内的 page 级模块。在 page 级模块的开发过程中需要遵循一些与页面渲染相关的约定，来实现特定逻辑和特定渲染策略。例如 moduleRenderMode 来制定模块类型、getModuleRowHeight 来获取模块高度，以及通过 props 透传的工具方法等。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Module</span> <span class="title">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 模块行高</span></span><br><span class="line">  static getModuleRowHeight = (attrs) =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">100</span>；</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 无限重复的模块</span></span><br><span class="line">  static moduleRenderMode = <span class="string">'repeat'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 事件通信</span></span><br><span class="line">  static contextTypes = &#123;</span><br><span class="line">    page: PropTypes.<span class="keyword">object</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  componentWillMount() &#123;</span><br><span class="line">    let page = <span class="keyword">this</span>.context.page;</span><br><span class="line">    <span class="keyword">if</span> (page &amp;&amp; <span class="keyword">this</span>.props.isFirstRepeatModule) &#123;</span><br><span class="line">      let moduleName = <span class="keyword">this</span>.props.moduleName;</span><br><span class="line">      <span class="comment">// 模拟异步请求数据</span></span><br><span class="line">      setTimeout(() =&gt; &#123;</span><br><span class="line">          <span class="comment">// 重置模块数据</span></span><br><span class="line">          <span class="keyword">this</span>.props.setDataSource([<span class="string">'异步数据1'</span>, <span class="string">'异步数据2'</span>]);</span><br><span class="line">      &#125;, <span class="number">3000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (&lt;View&gt;<span class="keyword">data</span> : &#123;<span class="keyword">this</span>.props.<span class="keyword">data</span>&#125;&lt;/View&gt;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个简单的长列表模块示例，包含了部分约定的内容。对于这些约定规则表现出的不同渲染策略，下文中会详细列出。</p>
+<h2 id="双促页面的通用渲染逻辑"><a href="#双促页面的通用渲染逻辑" class="headerlink" title="双促页面的通用渲染逻辑"></a>双促页面的通用渲染逻辑</h2><p><img src="https://gw.alicdn.com/tps/TB1Z1tqPXXXXXb.XXXXXXXXXXXX-730-448.jpg_500x500.jpg" alt=""></p>
+<p>双促中的页面核心渲染逻辑依赖 rax-page，这个仓库主要负责不同容器上样式差异的抹平、页面级别的事件通信、页面滚动容器的实现、页面模块渲染、页面性能优化、业务级的通用埋点、以及部分页面级的通用功能。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1Byg3OVXXXXb3XVXXXXXXXXXX-736-444.jpg_500x500.jpg" alt=""></p>
+<p>上文中有提到，模块分为 app 级别和 page 级别两类。在页面渲染过程中 app 级别的模块会直接渲染。先解释两个概念</p>
+<ul>
+<li>Page：页面的外层包裹容器，主要功能包括不同容器上样式差异的抹平、页面级别的事件通信。</li>
+<li>Block：页面级的滚动容器，用来控制模块的渲染与页面的滚动。</li>
+</ul>
+<p>双促的 Block 是页面唯一的全屏滚动容器，所有需要跟随页面滚动的模块都在 Block 内，被定义为 page 级模块。对于页面渲染层面的优化也主要是在 Block 这一层。下面主要介绍一下渲染策略上 WEEX 与 H5 的不同，以及这样做带来的收益。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1la3YOVXXXXbVaXXXXXXXXXXX-718-529.jpg_500x500.jpg" alt=""></p>
+<p>WEEX 页面的渲染主要依赖 WEEX 原生提供的 list 标签。在页面的滚动过程中，list 内部非当前可视区域的 cell 标签会被回收，保证整个列表渲染内容不会过多。</p>
+<p>借助 list + cell 的方案，为了达到更大的收益，在 WEEX 上的实现上就需要拆分出更多的 cell（后面讲双促中的长列表渲染中会详细说明）。一次性渲染出说有的模块必然会很慢，为了让用户能更快的看到页面，在 WEEX 上的策略是首屏优先渲染，渲染完成后一次性渲染非首屏模块。这样做的好处是页面可以看到的时候就可以向下顺畅的滑动。</p>
+<p>此处和天猫双 11 会场页面不同，天猫的方案是优先加载首屏，非首屏不加载。在页面向下滚动时在首屏底部的 loadmore 时机一次性渲染第二屏幕。淘宝双促会场页面在 WEEX 的渲染策略不同，主要解决的问题时首屏电梯的跳转，与向下快速滑动过程中的体验流畅。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1Ba75OVXXXXcaXVXXXXXXXXXX-698-515.jpg_500x500.jpg" alt=""></p>
+<p>H5 页面的渲染策略与 WEEX 完全不同。吸收了 WEEX 页面渲染的部分思路，同时也沿用了往年淘宝大促页面渲染的经验。</p>
+<p>对于 H5 页面的渲染，同样区分首屏和非首屏。不同的是首屏渲染结束后非首屏的模块不会继续渲染，甚至模块标签都不会出现在页面上。</p>
+<p>这里引入一个站位容器的概念。非首屏的模块默认只渲染出一个和模块真实高度相同的容器。当容器出现在可视区域时（也就是容器的 appear 时机）用真实模块替换掉占位容器。这样做的好处是有效的减少了页面的节点数。当页面电梯跳转到指定楼层时，非可视区域内的模块也不会渲染。</p>
+<h2 id="双促中的长列表渲染"><a href="#双促中的长列表渲染" class="headerlink" title="双促中的长列表渲染"></a>双促中的长列表渲染</h2><p>上文中简单介绍了页面整体渲染的思路，这部分主要讲一下会场中应用最多的长列表的渲染策略。</p>
+<p>首先了解一下淘宝双促中的长列表模块，也就是 repeat 类型的模块。一个模块中包含了许多个重复相同样式的行，这样的一个模块可以自身无限加载，一个页面中可以有许多这样的模块。</p>
+<p>那么问题来了</p>
+<ul>
+<li>list 下更细化的 cell 性能会更好，这样一个多行模块渲染性能肯定是有问题的</li>
+<li>页面底部会出发到达底部的事件，显然页面有多个无限加载的列表，这个方案就不适用了</li>
+</ul>
+<p>为解决这两个问题，也主要是 WEEX 上的渲染问题，我们借助了一些 WEEX 页面渲染的方案。<br>在 Block 容器内的元素，绑定 appear 事件后都可以在进入可视区域或离开可视区域时做一些事情。利用这个机制加上 cell 细化拆分的性能优化方案，就是 repeat 类型模块的基本渲染思路。</p>
+<p><img src="https://gw.alicdn.com/tps/TB1OPISOVXXXXaRXVXXXXXXXXXX-570-501.jpg_500x500.jpg" alt=""></p>
+<p><strong>占位容器的替换与模块的拆分</strong></p>
+<p>WEEX 下占位容器是一个高度撑开的 cell，在 repeat 类型模块渲染时，占位容器首先会被替换成真实的单个模块。这个模块可以进行自己业务逻辑的处理，比如请求数据。在模块渲染数据时，会将数据发送给页面的 Block，Block 判断这是一组 repeat 数据时进行真实数据的渲染</p>
+<p><img src="https://gw.alicdn.com/tps/TB1VFM7OVXXXXavXVXXXXXXXXXX-424-387.jpg_500x500.jpg" alt=""></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>RAX 第一次接受淘宝双促的考验，在 native 化、性能、稳定性等多个方面表现优异，达成了预定的目标。在双促中沉淀下的经验也将陆续反哺给其他业务和活动中，在未来会有更多的场景使用 RAX，RAX 体系也将不断完善。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 RAX"></p>
+<p>引子</p>
+<p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <]]>
+    </summary>
+    
+      <category term="RAX" scheme="http://taobaofed.org/tags/RAX/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[编写「可读」代码的实践]]></title>
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -137,7 +211,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -298,7 +372,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -335,9 +409,9 @@
     
       <category term="nodejs" scheme="http://taobaofed.org/tags/nodejs/"/>
     
-      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
-    
       <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
+    
+      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
     
       <category term="广州" scheme="http://taobaofed.org/tags/%E5%B9%BF%E5%B7%9E/"/>
     
@@ -350,7 +424,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -546,7 +620,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -613,7 +687,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -713,7 +787,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -838,7 +912,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -942,7 +1016,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -1013,7 +1087,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -1096,7 +1170,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -1149,7 +1223,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -1210,7 +1284,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -1317,7 +1391,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -1373,7 +1447,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -1452,7 +1526,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -1548,7 +1622,7 @@
     <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
     <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
     <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
 <p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
 <p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
@@ -1696,7 +1770,7 @@
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -1793,7 +1867,7 @@
     <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
     <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
     <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
+    <updated>2017-01-13T08:25:06.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
 <h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
 <p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
@@ -1864,109 +1938,6 @@
       <category term="ES6" scheme="http://taobaofed.org/tags/ES6/"/>
     
       <category term="JavaScript" scheme="http://taobaofed.org/tags/JavaScript/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[性能优化：memoization]]></title>
-    <link href="http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/"/>
-    <id>http://taobaofed.org/blog/2016/07/14/performance-optimization-memoization/</id>
-    <published>2016-07-14T04:01:25.000Z</published>
-    <updated>2017-01-06T03:57:56.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
-<p><code>memoization</code>适用于递归计算场景，例如 <a href="http://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="external">fibonacci 数值</a> 的计算。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process $'</span>, process.pid);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'fibonacci recursive version with n = '</span>, n);</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="comment">//console.log(count);</span></span><br><span class="line">  <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> n;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fibonacci(n - <span class="number">1</span>) + fibonacci(n - <span class="number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
-<p>如果使用这种递归的写法去计算第 50 个 fibonacci 数值，需要执行 40730022147 次。随着执行次数的增加，执行所需时间成指数上涨：</p>
-<p><img src="https://gtms04.alicdn.com/tps/i4/TB1d7ebKpXXXXXdXVXXue9FUVXX-1917-2180.png" alt=""></p>
-<p><code>memoization</code>的技巧在于将计算过的结果『缓存』下来，避免重复计算带来的成本，例如将计算 fibonacci 的代码改写为如下形式：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> N = process.env.N || <span class="number">50</span>;</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fibonacci = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> memo = &#123;&#125;;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    count++;</span><br><span class="line">    <span class="keyword">let</span> value;</span><br><span class="line">    <span class="keyword">if</span> (n <span class="keyword">in</span> memo) &#123;</span><br><span class="line">      value = memo[n];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">        value = n;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        value = f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      memo[n] = value;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> f;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">fibonacci(N);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br></pre></td></tr></table></figure>
-<p>计算第 50 个 fibonacci 值只需要 99 次，执行时间为 0.06 秒，只有递归版本执行时间（546.41 秒）的万分之一，使用的内存（RSS 值 20111360）只有递归版本（RSS 值为 36757504）的 54%。</p>
-<blockquote>
-<p> 值得注意的是：这里闭包使用的<code>memo</code>对象有可能造成内存泄露。</p>
-</blockquote>
-<p><img src="https://gtms01.alicdn.com/tps/i1/TB1Q88ZKpXXXXcmaXXX9gOTNXXX-1922-768.png" alt=""></p>
-<h3 id="处理多个参数"><a href="#处理多个参数" class="headerlink" title="处理多个参数"></a>处理多个参数</h3><p>如果需要处理多个参数，需要把缓存的内容变成多维数据结构，或者把多个参数结合起来作为一个索引。</p>
-<p>例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> N = process.env.N || <span class="number">50</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fibonacci = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> memo = &#123;&#125;;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">x, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> value;</span><br><span class="line">    memo[x] = memo[x] || &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (x <span class="keyword">in</span> memo &amp;&amp; n <span class="keyword">in</span> memo[x]) &#123;</span><br><span class="line">      value = memo[x][n];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">        value = n;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        value = f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      memo[x][n] = value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> f;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line">fibonacci(<span class="string">'a'</span>, N);</span><br><span class="line">fibonacci(<span class="string">'b'</span>, N);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br></pre></td></tr></table></figure>
-<p>上面执行了两次<code>fibonacci</code>函数，假设执行多次：</p>
-<p><img src="https://gtms01.alicdn.com/tps/i1/TB1hgewKpXXXXXLXpXXASkp1VXX-1954-918.png" alt=""></p>
-<p>可以看到内存的增长也是有限的，并且最终控制在了<code>22097920</code>这个值。下面是另一种处理多个参数的情况（将多个参数组成一个索引）：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> N = process.env.N || <span class="number">50</span>;</span><br><span class="line"><span class="keyword">let</span> count;</span><br><span class="line"><span class="keyword">let</span> memo = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> slice = <span class="built_in">Array</span>.prototype.slice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fibonacci = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  count = <span class="number">0</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">x, n</span>) </span>&#123;</span><br><span class="line">    count++;</span><br><span class="line">    <span class="keyword">let</span> args = slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">let</span> value;</span><br><span class="line">    memo[x] = memo[x] || &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> (args <span class="keyword">in</span> memo) &#123;</span><br><span class="line">      value = memo[args];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(n == <span class="number">0</span> || n == <span class="number">1</span>) &#123;</span><br><span class="line">        value = n;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        value = f(x, n - <span class="number">1</span>) + f(x, n - <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      memo[args] = value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> f;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">  count = <span class="number">0</span>;</span><br><span class="line">  result = fibonacci(<span class="string">'#'</span> + i, i);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'final count'</span>, count);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'result of #'</span> + i, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>与上面版本相比，内存有所增加，速度有所下降：</p>
-<p><img src="https://gtms02.alicdn.com/tps/i2/TB1x71oKpXXXXcEXpXXj7Qt5VXX-3824-2270.png" alt="50 次对比" title="50 次对比"></p>
-<p><img src="https://gtms03.alicdn.com/tps/i3/TB1TTt8KpXXXXc9XVXX4nXcUXXX-3832-2300.png" alt="100 次对比" title="100 次对比"></p>
-<p><img src="https://gtms04.alicdn.com/tps/i4/TB18uugKpXXXXb9XFXXX9u8OXXX-3820-2304.png" alt="1000 次对比" title="1000 次对比"></p>
-<h3 id="自动memoization"><a href="#自动memoization" class="headerlink" title="自动memoization"></a>自动<code>memoization</code></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">memoize</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> memo = &#123;&#125;;</span><br><span class="line">  <span class="keyword">let</span> slice = <span class="built_in">Array</span>.prototype.slice;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> args = slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">    <span class="keyword">if</span> (args <span class="keyword">in</span> memo) &#123;</span><br><span class="line">      <span class="keyword">return</span> memo[args];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> memo[args] = func.apply(<span class="keyword">this</span>, args);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是需要注意的是，并不是所有函数都可以自动<code>memoization</code>，只有<code>referential transparency</code>（引用透明）的函数可以。所谓<code>referential transparency</code>的函数是指：函数的输出完全由其输入决定，且不会有副作用的函数。下面的函数就是一个反例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> bar = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// foo 函数的结果还受到全局变量 bar 的影响</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">baz</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> baz + bar;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="number">1</span>);</span><br><span class="line">bar++;</span><br><span class="line">foo(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
-<p>对比自动<code>memoization</code>前后的两个版本：</p>
-<p><img src="https://gtms02.alicdn.com/tps/i2/TB1soOyKpXXXXaPXVXX28mEJXXX-3814-420.png" alt=""></p>
-<p>自动<code>memoization</code>处理后的版本有所提高，但相比手动完全<code>memoization</code>的版本效率还是差了很多。</p>
-<p>其实<code>memoization</code>这个词来自人工智能研究领域，其词源为拉丁语<code>memorandum</code>，这个词的创造者为<a href="http://www.aiai.ed.ac.uk/~dm/dm.html" target="_blank" rel="external">Donald Michie</a>，这种函数的设计初衷是为了提升机器学习的性能。随着函数式编程语言（Functional Programming，简称 FP）的兴起，例如 JavaScript、Haskell 以及 Erlang，这种用法才变得越来越流行。在前端编程中，可以使用<code>memoization</code>去处理各种需要递归计算的场景，例如缓存 canvas 动画的计算结果。</p>
-<p>上面自动<code>memoization</code>的结果并不理想，可以参考<code>underscore</code>和<code>lodash</code>的<code>memoize</code>来做优化。</p>
-<p>使用<a href="https://github.com/lodash/lodash/blob/145c3abb34ae327679d90d18804c7b955398c390/vendor/underscore/underscore.js#L777" target="_blank" rel="external"><code>lodash</code>的<code>memoize</code></a>方法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * @filename: fibonacci-memoization-with-lodash.js</span><br><span class="line"> */</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"><span class="keyword">let</span> _ = <span class="built_in">require</span>(<span class="string">'lodash'</span>);</span><br><span class="line"><span class="keyword">let</span> memoize = _.memoize;</span><br><span class="line"><span class="keyword">let</span> fibonacci = <span class="built_in">require</span>(<span class="string">'./fibonacci-recursive.js'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> newFibonacci = memoize(fibonacci);</span><br><span class="line"><span class="keyword">let</span> result = newFibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'result'</span>, result);</span><br></pre></td></tr></table></figure>
-<p>对比结果：</p>
-<p><img src="http://gtms01.alicdn.com/tps/i1/TB1pHCxKpXXXXcsXVXXT7Jp5pXX-3760-400.png" alt=""></p>
-<p>可以看到<code>lodash</code>的<code>memoize</code>方法减少了一半执行时间。进一步优化：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> <span class="title">memoize</span>(<span class="params">func, context</span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">memoizeArg</span>(<span class="params">argPos</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> cache = &#123;&#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (argPos == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(<span class="built_in">arguments</span>[argPos] <span class="keyword">in</span> cache)) &#123;</span><br><span class="line">          cache[<span class="built_in">arguments</span>[argPos]] = func.apply(context, <span class="built_in">arguments</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cache[<span class="built_in">arguments</span>[argPos]];</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(<span class="built_in">arguments</span>[argPos] <span class="keyword">in</span> cache)) &#123;</span><br><span class="line">          cache[<span class="built_in">arguments</span>[argPos]] = memoizeArg(argPos - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cache[<span class="built_in">arguments</span>[argPos]].apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> arity = func.arity || func.length;</span><br><span class="line">  <span class="keyword">return</span> memoizeArg(arity - <span class="number">1</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><img src="http://gtms01.alicdn.com/tps/i1/TB1q4SZKpXXXXcRXXXXusZkMpXX-1918-320.png" alt=""></p>
-<blockquote>
-<p> 科普下：<code>function arity</code>指的是一个函数接受的参数个数，这是一个被废弃的属性，现在应使用<code>Function.prototype.length</code>。<br> <a href="https://stackoverflow.com/questions/4848149/get-a-functions-arity" target="_blank" rel="external">https://stackoverflow.com/questions/4848149/get-a-functions-arity</a></p>
-</blockquote>
-<p>zakas 的版本更加快，甚至比我们将<code>fibonacci</code>手动<code>memoization</code>的版本还快：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">50</span>;</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">memoizer</span>(<span class="params">fundamental, cache</span>) </span>&#123;</span><br><span class="line">  cache = cache || &#123;&#125;;</span><br><span class="line">  <span class="keyword">let</span> shell = <span class="function"><span class="keyword">function</span>(<span class="params">arg</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!cache.hasOwnProperty(arg)) &#123;</span><br><span class="line">      cache[arg] = fundamental(shell, arg);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cache[arg];</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">return</span> shell;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fibonacci = memoizer(<span class="function"><span class="keyword">function</span>(<span class="params">recur, n</span>) </span>&#123;</span><br><span class="line">  count++;</span><br><span class="line">  <span class="keyword">return</span> recur(n - <span class="number">1</span>) + recur(n - <span class="number">2</span>);</span><br><span class="line">&#125;, &#123;</span><br><span class="line">  <span class="number">0</span>: <span class="number">0</span>,</span><br><span class="line">  <span class="number">1</span>: <span class="number">1</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result = fibonacci(n);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'count'</span>, count);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'result'</span>, result);</span><br></pre></td></tr></table></figure>
-<p><img src="http://gtms02.alicdn.com/tps/i2/TB1taHXKpXXXXXqXXXXHSJCLpXX-1916-570.png" alt=""></p>
-<p>但是上面这些函数都存在问题，如果输入数目过大，会引发调用栈超过限制异常：<code>RangeError: Maximum call stack size exceeded</code>。</p>
-<p>一种解决的方法就是将递归（<code>recursion</code>）修改为迭代（<code>iteration</code>）。例如下面这样的归并排序算法：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> n = process.env.N || <span class="number">100</span>;</span><br><span class="line"><span class="keyword">let</span> isMemoized = process.env.M;</span><br><span class="line"><span class="keyword">let</span> test = [];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span>(<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> result = [];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (left.length &gt; <span class="number">0</span> &amp;&amp; right.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (left[<span class="number">0</span>] &lt; right[<span class="number">0</span>]) &#123;</span><br><span class="line">      result.push(left.shift());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result.push(right.shift());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result.concat(left).concat(right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeSort</span>(<span class="params">items</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (items.length == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> items;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> middle = <span class="built_in">Math</span>.floor(items.length / <span class="number">2</span>);</span><br><span class="line">    <span class="keyword">let</span> left = items.slice(<span class="number">0</span>, middle);</span><br><span class="line">    <span class="keyword">let</span> right = items.slice(middle);</span><br><span class="line">    <span class="keyword">return</span> merge(mergeSort(left), mergeSort(right));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">  test.push(<span class="built_in">Math</span>.random() * <span class="number">10</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> result;</span><br><span class="line"><span class="keyword">if</span> (isMemoized) &#123;</span><br><span class="line">  <span class="keyword">let</span> memoize = <span class="built_in">require</span>(<span class="string">'./zakas-memo.js'</span>);</span><br><span class="line">  mergeSort = memoize(mergeSort);</span><br><span class="line">  result = mergeSort(test);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  result = mergeSort(test);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'process memory usage'</span>, process.memoryUsage());</span><br></pre></td></tr></table></figure>
-<p><img src="http://gtms01.alicdn.com/tps/i1/TB1L8uRKpXXXXbkXFXXDHvXMXXX-3822-622.png" alt=""></p>
-<p>而上面的排序函数在经过<code>memoization</code>后虽然不会抛出<code>RangeError: Maximum call stack size exceeded</code>的异常，但是在极端情况下也会因为内存不够分配导致失败：</p>
-<p><img src="https://gtms02.alicdn.com/tps/i2/TB1XrjXKpXXXXaxXXXXrdqLOXXX-1926-1882.png" alt=""></p>
-<p>解决<code>RangeError: Maximum call stack size exceeded</code>异常的一种方法是将递归的代码改写为迭代的代码，例如<code>fibonacci</code>的递归式写法为：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> <span class="title">fibonacci</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">  n = <span class="built_in">parseInt</span>(n);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'n = '</span>, n);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">isNaN</span>(n)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> first = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> prev = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">let</span> sum;</span><br><span class="line">    <span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">      sum = n;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">2</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        sum = first + prev;</span><br><span class="line">        first = prev;</span><br><span class="line">        prev = sum;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'i = '</span> + i + <span class="string">':'</span> + <span class="string">' sum = '</span> + sum);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="他山之石"><a href="#他山之石" class="headerlink" title="他山之石"></a>他山之石</h3><p>在 JavaScript 中我们是通过函数的形式来是实现函数的<code>memoization</code>，在 Python 中还可以用另一种被称为<code>decorator</code>的形式：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">memoize</span><span class="params">(f)</span>:</span></span><br><span class="line">    memo = &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">helper</span><span class="params">(x)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> x <span class="keyword">not</span> <span class="keyword">in</span> memo:</span><br><span class="line">            memo[x] = f(x)</span><br><span class="line">        <span class="keyword">return</span> memo[x]</span><br><span class="line">    <span class="keyword">return</span> helper</span><br><span class="line"></span><br><span class="line"><span class="meta">@memoize</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">elif</span> n == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> fib(n - <span class="number">1</span>) + fib(n - <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">print(fib(<span class="number">100</span>))</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><a href="https://www.sitepoint.com/implementing-memoization-in-javascript/" target="_blank" rel="external">https://www.sitepoint.com/implementing-memoization-in-javascript/</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Referential_transparency_(computer_science" target="_blank" rel="external">Referential transparency</a>)</li>
-<li><a href="https://addyosmani.com/blog/faster-javascript-memoization/" target="_blank" rel="external">https://addyosmani.com/blog/faster-javascript-memoization/</a></li>
-<li><a href="http://unscriptable.com/index.php/2009/05/01/a-better-javascript-memoizer/" target="_blank" rel="external">http://unscriptable.com/index.php/2009/05/01/a-better-javascript-memoizer/</a></li>
-<li><a href="http://www.nczonline.net/blog/2009/01/27/speed-up-your-javascript-part-3/" target="_blank" rel="external">http://www.nczonline.net/blog/2009/01/27/speed-up-your-javascript-part-3/</a></li>
-<li><a href="http://books.google.co.uk/books?id=PXa2bby0oQ0C&amp;pg=PA44&amp;lpg=PA44&amp;dq=crockford+memoization&amp;source=bl&amp;ots=HImnm6r1iH&amp;sig=lrdT9Sk4F4yQ-xQ-TLTx4SpLkuk&amp;hl=en&amp;ei=C-hyTvaIEofB8QO21Nn_DQ&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=4&amp;ved=0CDMQ6AEwAw#v=onepage&amp;q&amp;f=false" target="_blank" rel="external">http://books.google.co.uk/books?id=PXa2bby0oQ0C&amp;pg=PA44&amp;lpg=PA44&amp;dq=crockford+memoization&amp;source=bl&amp;ots=HImnm6r1iH&amp;sig=lrdT9Sk4F4yQ-xQ-TLTx4SpLkuk&amp;hl=en&amp;ei=C-hyTvaIEofB8QO21Nn_DQ&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=4&amp;ved=0CDMQ6AEwAw#v=onepage&amp;q&amp;f=false</a></li>
-<li><a href="http://my.safaribooksonline.com/book/programming/javascript/9781449399115/functions/function_propertiesma_memoization_patter#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODE0NDkzOTkxMTUvNzY=" target="_blank" rel="external">http://my.safaribooksonline.com/book/programming/javascript/9781449399115/functions/function_propertiesma_memoization_patter#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODE0NDkzOTkxMTUvNzY=</a></li>
-<li>memoize function javascript | npm memoize | lodash memoize | underscore memoize</li>
-<li><a href="http://unscriptable.com/2009/05/01/a-better-javascript-memoizer/" target="_blank" rel="external">http://unscriptable.com/2009/05/01/a-better-javascript-memoizer/</a></li>
-<li>programming optimization techniques</li>
-<li><a href="http://blog.stevenlevithan.com/archives/timed-memoization" target="_blank" rel="external">http://blog.stevenlevithan.com/archives/timed-memoization</a></li>
-<li><a href="https://github.com/addyosmani/memoize.js" target="_blank" rel="external">https://github.com/addyosmani/memoize.js</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Arity" target="_blank" rel="external">function arity</a></li>
-<li><a href="https://philogb.github.io/blog/2008/09/05/memoization-in-javascript/" target="_blank" rel="external">https://philogb.github.io/blog/2008/09/05/memoization-in-javascript/</a></li>
-<li><a href="https://stackoverflow.com/questions/6184869/what-is-difference-between-memoization-and-dynamic-programming" target="_blank" rel="external">https://stackoverflow.com/questions/6184869/what-is-difference-between-memoization-and-dynamic-programming</a></li>
-<li><a href="http://www.python-course.eu/python3_memoization.php" target="_blank" rel="external">http://www.python-course.eu/python3_memoization.php</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Iteration" target="_blank" rel="external">https://en.wikipedia.org/wiki/Iteration</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Iterated_function" target="_blank" rel="external">https://en.wikipedia.org/wiki/Iterated_function</a></li>
-<li><a href="https://www.ics.uci.edu/~eppstein/161/960109.html" target="_blank" rel="external">https://www.ics.uci.edu/~eppstein/161/960109.html</a></li>
-<li><a href="https://classes.soe.ucsc.edu/cmpe012/Summer09/labs/lab8-Recursion-vs-Iteration/" target="_blank" rel="external">https://classes.soe.ucsc.edu/cmpe012/Summer09/labs/lab8-Recursion-vs-Iteration/</a></li>
-<li>google: iterative merge sort</li>
-<li>google: maximum call stack size exceeded | avoid maximum recursive</li>
-<li><a href="http://www.python-course.eu/python3_decorators.php" target="_blank" rel="external">http://www.python-course.eu/python3_decorators.php</a></li>
-<li><a href="https://www.cs.cornell.edu/courses/cs3110/2011sp/lectures/lec22-memoization/memo.htm" target="_blank" rel="external">https://www.cs.cornell.edu/courses/cs3110/2011sp/lectures/lec22-memoization/memo.htm</a></li>
-<li>dynamic programming</li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1wxWIKVXXXXXOapXXXXXXXXXX-900-500.jpg" alt="性能优化：memoization"></p>
-<p><code>memoization</code>适用于递归计算场景，]]>
-    </summary>
-    
-      <category term="性能优化" scheme="http://taobaofed.org/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
-    
-      <category term="javascript" scheme="http://taobaofed.org/tags/javascript/"/>
-    
-      <category term="memoization" scheme="http://taobaofed.org/tags/memoization/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
