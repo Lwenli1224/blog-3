@@ -179,7 +179,7 @@
 <p>但在 JSON Schema 中，由于字段的描述不仅仅是类型，更多的约束条件，可以确保模拟数据更接近于真实数据。</p>
 <h3 id="4-用于校验数据，实现自动化测试"><a href="#4-用于校验数据，实现自动化测试" class="headerlink" title="4. 用于校验数据，实现自动化测试"></a>4. 用于校验数据，实现自动化测试</h3><p>接口数据的校验工作，往往依赖于测试代码逻辑和用例。如果用 JSON Schema 描述一个数据接口，就不需要再编写测试代码了，所有的逻辑都可以移植到 JSON Schema 中维护。配合 <code>jsv</code>、<code>tv4</code> 等二方校验工具，接口测试可以真正自动化。</p>
 <h2 id="基本约束"><a href="#基本约束" class="headerlink" title="基本约束"></a>基本约束</h2><p>在 JSON Schema 的世界里，一个空对象，可以描述和校验任意形式的 JSON 数据：</p>
-<figure class="highlight clojure"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
 <p>下面的三份数据，如果用空对象来校验的话，都是符合要求的：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">250</span><br></pre></td></tr></table></figure>
 <figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"我是一个字符串"</span></span><br></pre></td></tr></table></figure>
@@ -219,7 +219,7 @@
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2016/01/25/jsonschema/" data-id="cixvjoqsj0035gbqez4ynaako" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2016/01/25/jsonschema/" data-id="ciyy4dalu003ij1qe1ig9i31w" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/josn/">josn</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/schema/">schema</a></li></ul>
@@ -291,12 +291,18 @@
   
   <div class="widgets-container">
     
-      
-  <div class="widget-wrap widget-wechat">
-    <a href="javascript:; ">
-      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
-    </a>
-  </div>
+      <div class="widget-wrap widget-open-source">
+  <!--<h3 class="widget-title">开源产品</h3>-->
+  
+  <a href="https://github.com/alibaba/rax" target="_blank">
+    <img src="//gw.alicdn.com/tfs/TB1uiW9PpXXXXcLXFXXXXXXXXXX-280-100.jpg" width="280" alt="A universal React-compatible render engine." title="A universal React-compatible render engine.">
+  </a>
+  
+  <a href="https://github.com/taobaofed/react-web" target="_blank">
+    <img src="//gw.alicdn.com/tfs/TB1yUyQPpXXXXbKaXXXXXXXXXXX-280-100.jpg" width="280" alt="A framework for building web apps with React Native compatible API." title="A framework for building web apps with React Native compatible API.">
+  </a>
+  
+</div>
 
     
       
@@ -426,6 +432,15 @@
 
     
       
+  <div class="widget-wrap widget-wechat">
+    <h3 class="widget-title">微信公众号</h3>
+    <a href="https://github.com/alibaba/rax ">
+      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
+    </a>
+  </div>
+
+    
+      
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
@@ -450,10 +465,6 @@
     <h3 class="widget-title">链接</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="http://ued.taobao.org/blog/">淘宝UED</a>
-          </li>
         
           <li>
             <a href="http://www.nodejs.club/">Node地下铁</a>
