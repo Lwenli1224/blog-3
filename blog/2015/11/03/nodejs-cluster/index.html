@@ -170,7 +170,7 @@
 </blockquote>
 <p>回想以前用 php 开发 web 服务器的时候，每个 request 都在单独的线程中处理，即使某一个请求发生很严重的错误也不会影响到其它请求。Node.js 会在一个线程中处理大量请求，如果处理某个请求时产生一个没有被捕获到的异常将导致整个进程的退出，已经接收到的其它连接全部都无法处理，对一个 web 服务器来说，这绝对是致命的灾难。</p>
 <p>应用部署到多核服务器时，为了充分利用多核 CPU 资源一般启动多个 Node.js 进程提供服务，这时就会使用到 Node.js 内置的 cluster 模块了。相信大多数的 Node.js 开发者可能都没有直接使用到 cluster，cluster 模块对 child_process 模块提供了一层封装，可以说是为了发挥服务器多核优势而量身定做的。简单的一个 fork，不需要开发者修改任何的应用代码便能够实现多进程部署。当下最热门的带有负载均衡功能的 Node.js 应用进程管理器 pm2 便是最好的一个例子，开发的时候完全不需要关注多进程场景，剩余的一切都交给 pm2 处理，与开发者的应用代码完美分离。</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">pm2</span> <span class="selector-tag">start</span> <span class="selector-tag">app</span><span class="selector-class">.js</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pm2 <span class="literal">start</span> app.js</span><br></pre></td></tr></table></figure>
 <p>pm2 确实非常强大，但本文并不讲解 pm2 的工作原理，而是从更底层的进程通信讲起，为大家揭秘使用 Node.js 开发 web 应用时，使用 cluster 模块实现多进程部署的原理。</p>
 <h2 id="fork"><a href="#fork" class="headerlink" title="fork"></a>fork</h2><p>说到多进程当然少不了 fork ,在 un*x 系统中，fork 函数为用户提供最底层的多进程实现。</p>
 <blockquote>
@@ -205,7 +205,7 @@
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2015/11/03/nodejs-cluster/" data-id="ciyy4dana004xj1qezj6vwe5n" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2015/11/03/nodejs-cluster/" data-id="ciyz6z92t004rtrqe9k0lxge7" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cluster/">cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多进程/">多进程</a></li></ul>
