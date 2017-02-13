@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-01-13T08:25:06.000Z</updated>
+  <updated>2017-02-13T02:45:09.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,27 +15,90 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title><![CDATA[淘宝双促中的 RAX]]></title>
+    <title><![CDATA[Why Rax?]]></title>
+    <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
+    <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
+    <published>2017-02-10T10:17:45.000Z</published>
+    <updated>2017-02-13T02:45:09.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kIfQPpXXXXXaaXXXXXXXXXXX-900-500.jpg" alt="Why Rax?"></p>
+<blockquote>
+<p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
+</blockquote>
+<p>从今年 1 月 12 日在 Weex Conf 上宣布 <a href="https://github.com/alibaba/rax" target="_blank" rel="external">Rax</a> 开源，至今已过去一个月左右的时间，这段时间里，Rax 拿到 2400+ 的 star, 我们深知这对一个开源产品来说是微不足道的，但是从中可以发现的是「前端或者 Weex 社区对于类 React 的技术方案是有很大需求的」。同时，结合近期 GitHub 上的相关 <a href="https://github.com/alibaba/rax/issues?q=is%3Aissue+is%3Aclosed" target="_blank" rel="external">issue</a>, 大抵上就有了这样一篇完整介绍 Rax 的文章。</p>
+<h2 id="淘宝无线端的发展历程"><a href="#淘宝无线端的发展历程" class="headerlink" title="淘宝无线端的发展历程"></a>淘宝无线端的发展历程</h2><p>在前端这条道路上，淘宝 FED 一直以来的使命就是「用技术为体验提供无限可能」，Rax 自然也是在追求体验的道路上发展出来的。</p>
+<p>从 2014 年开始，结合阿里双十一双十二的数据变化，无论从用户访问量还是最终成交量上都可以清晰的看到：「移动端已然是当下业务的主要阵地」，当业务重心向移动端偏移时，技术也在悄然发生变化，传统而成熟的 PC 端技术方案俨然已经无法满足移动端对体验性能、开发效率等各个方面的要求，这也开启了我们在无线端上的技术探索之路。</p>
+<h3 id="KIMI"><a href="#KIMI" class="headerlink" title="KIMI"></a>KIMI</h3><p>2014 年伊始，算是阿里无线业务起步的阶段，那时候大家把无线页面还称为 H5, 诸如 KISSY, jQuery 之类的库对于无线页面来说尺寸太大、加载太慢，于是我们基于社区成熟的 Zepto 迅速打造了 KIMI 这个核心库，然后围绕业务不断完善 KIMI 的组件生态以及包含工程化、性能检测等一系列生态。这套生态伴随着我们走过了将近两年时间，至今仍可以在一些页面上找到 KIMI 的影子。</p>
+<p>然而，KIMI 始终是一个 Web 端的解决方案，即便可以通过一些方案去调用 native 的原生方法，也无法跨域无线端上 Web 体验不及 native 体验这样一个既定事实。于是，如何能让页面达到 native 的体验成为我们的下一个探索点。</p>
+<h3 id="React-Web"><a href="#React-Web" class="headerlink" title="React Web"></a>React Web</h3><p>说起 native 的体验，最直观的方案就是直接去写 native 代码，然而 native 的开发模式一直存在一些难以解决的问题：</p>
+<ul>
+<li>成本与效率：iOS, Andriod, Web 三端需要不同的技术团队各自开发一套，成本大，效率低</li>
+<li>灵活性：受限于 AppStore 的审核机制，版本发布周期较长，难以满足业务需求</li>
+</ul>
+<p>所以，我们需要一套基于 Web 的开发模式但可以产出 native 页面的解决方案，效率与体验兼得。在这个思路下，阿里也有过一些尝试，不过都没有形成最终的解决方案，这里就不再详细讲述了。直到 2015 年中期，Facebook 开源了 React Native(RN), 虽然初期只有 iOS 的版本，但丝毫不影响其对整个无线开发方案的巨大冲击。RN 基本完美解决了需要编写两端代码的问题，同时还有一个非常活跃完善的 React 社区，因此这个方案也得到了诸多开发者的青睐。</p>
+<p>接着，我们也快速在手淘里尝试了 RN 的方案，受限于 RN 的兼容性问题以及用户可能在浏览器端打开页面，因此整个页面必须要有能力降级到 Web 版本。这时候回想下 RN 的口号：Learn once, write anywhere. 但这对于我们来说，或许还不够，我们真正需要的是：Write once, run everywhere.</p>
+<p>因此我们开始探索如何让 RN 的代码运行在 Web 端，这就是 <a href="https://github.com/taobaofed/react-web" target="_blank" rel="external">React Web</a> 方案。</p>
+<h3 id="Rax"><a href="#Rax" class="headerlink" title="Rax"></a>Rax</h3><p>2015 年双十一，Weex 的方案开始逐步使用，经过这次试水，证明了这套方案未来的场景及可行性，接着 2016 年 Weex 开始进入快速发展的阶段。但是使用 Weex 就意味着必须用 Vue 的语法，这对于整个团队来说是一个不小的挑战：PC 场景下的项目，小伙伴们普遍基于 React 开发，已经有了相当多的经验与沉淀。如果无线的项目要采用一个不同方案（Vue）去做，强推未必会不奏效，但是小伙伴们大概会伤心吧。</p>
+<p>于是我们尝试将 React 与 Weex 结合起来，但是由于方案太过 hack 导致各种问题，遂无奈放弃。接着 Rax 的方案应运而生：「Rax 基于 React 的标准，支持在不同容器中渲染，当前最重要的容器即 Weex 和 Web」。</p>
+<h2 id="Rax-体系"><a href="#Rax-体系" class="headerlink" title="Rax 体系"></a>Rax 体系</h2><h3 id="Rax-与-React"><a href="#Rax-与-React" class="headerlink" title="Rax 与 React"></a>Rax 与 React</h3><blockquote>
+<p>React 是一种标准，Rax 是对该标准的一个实现。</p>
+</blockquote>
+<p>社区里很多人关心 Rax 与 React 的优缺点以及相互取代的可能性，事实上，从上文的发展历程就可以看出来，Rax  只是无线端的解决方案，与 React 并无冲突。事实上淘宝 PC 端的新项目，依然主要是基于 React，并且我们也有一套基于 React 的解决方案名为 ICE，通过一系列的工具帮助开发者提高效率，此处不再展开。</p>
+<p>当然，Rax 跟 Preact 之类的方案也有本质区别，前者偏向于解决多端问题，后者偏向于解决性能问题，具体可参考下文「Rax 的特点」。</p>
+<h3 id="Rax-的特点"><a href="#Rax-的特点" class="headerlink" title="Rax 的特点"></a>Rax 的特点</h3><h4 id="1-设计上支持不同容器"><a href="#1-设计上支持不同容器" class="headerlink" title="1. 设计上支持不同容器"></a>1. 设计上支持不同容器</h4><p>Rax 在设计上抽象出 Driver 的概念，用来支持在不同容器中渲染，比如目前所支持的：Web, Weex, Node.js. 基于 Driver 的概念，未来即使出现更多的容器（如 VR 等），Rax 也可以从容应对。Rax 在设计上尽量抹平各个端的差异性，这也使得开发者在差异性和兼容性方面再也不需要投入太多精力了。</p>
+<p>详细内容可参考 <a href="https://github.com/alibaba/rax/blob/master/docs/driver-spec.md" target="_blank" rel="external">Rax Driver Spec</a>.</p>
+<h4 id="2-体积足够小"><a href="#2-体积足够小" class="headerlink" title="2. 体积足够小"></a>2. 体积足够小</h4><p>如上文所说，Rax 是一个面向无线端的解决方案，因此自身的体积对于性能来讲就显得非常重要。Rax 压缩 + gzip 后的体积是 8.0kb, 相比 React 的 43.7kb, 对于无线端友好了很多。</p>
+<h4 id="3-支持返回多个同级节点"><a href="#3-支持返回多个同级节点" class="headerlink" title="3. 支持返回多个同级节点"></a>3. 支持返回多个同级节点</h4><p>任何用过 React 的同学大概都踩过同一个坑：方法返回了多个同级节点导致报错。在设计上 React 只能返回单个节点，因此页面上或多或少会产生一些冗余的节点，这在 PC 端并没有太多问题，然而在无线 Android 端嵌套层级越多，应用的 crash 率会不断提高，这一点在低端 Android 机上表现尤其明显。因此 Rax 支持了返回多个同级节点的功能，如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;createElement, Component, render&#125; <span class="keyword">from</span> <span class="string">'rax'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map((item) =&gt; &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;item&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span>;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一特性可以有效减少页面的嵌套层级，从而减少应用因嵌套层级过多而出现的 crash 问题。</p>
+<h4 id="4-标准化"><a href="#4-标准化" class="headerlink" title="4. 标准化"></a>4. 标准化</h4><p>在上文里，我们不断的提各个端的一致性，一致则必有规范可依，Rax 遵循 W3C 标准，比如在 Weex 容器中已经可以直接调用 <code>navigator</code>, <code>document</code>, <code>location</code>, <code>alert</code> 等 W3C 的标准 API.</p>
+<p>当然，受限于各个端的差异，标准化的道路还很长，「更标准化」这也是 Rax 未来的重要目标之一。</p>
+<h3 id="RAXUI"><a href="#RAXUI" class="headerlink" title="RAXUI"></a>RAXUI</h3><p>Rax 旨在解决多端一致的问题，这帮助我们无需关注各个端的差异性，实现「Write once, run everywhere」的愿景。然而在前端开发领域，开发人员需要直面的还是 UI 体系，不同项目间夜以继日的开发着功能类似的组件，想想就觉得头疼，因此 Rax 在最基础的元件 <a href="https://github.com/alibaba/rax/tree/master/packages/rax-components/src" target="_blank" rel="external">rax-components</a> 之上实现了一套官方的 UI 组件，即 RAXUI.</p>
+<p><img src="https://gw.alicdn.com/tps/TB1499MOVXXXXcIXXXXXXXXXXXX-641-436.png" alt=""></p>
+<p>RAXUI 是 RAX 上层的一套通用 UI 组件，帮助开发者快速完成模块和页面的开发。比如 Picture 组件是对元件里的 Image 做了一层封装，包含图片优化、H5 懒加载等更多功能，TabHeader 组件可以帮助开发者便捷的实现横向滚动导航… RAXUI 不仅能降低业务的开发成本，同时为了保证产品质量，RAXUI 在兼容性、性能、设计规范等很多方面都有更多更完善的考虑。在不久的将来，这套 UI 体系也会逐渐向社区开放。</p>
+<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>Write once, run everywhere. 这是口号，亦是目标。Rax 未来会在更多的端上不断探索，比如 VR/AR, 甚至之前微博上有同学提出的是否可以用 Rax 写微信小程序，也是一个蛮有意思的想法。</p>
+<p>对于开发者来说，当越来越多的端不断出现在眼前时，我们应该如何应对？是通过不断的踩坑来整理一份长长的 checklist, 然后做项目时一一对照？ 或者让我们一起来探索 Rax? </p>
+<p>Rax 团队敬上。</p>
+<hr>
+<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ul>
+<li><a href="https://github.com/alibaba/rax" target="_blank" rel="external">github</a></li>
+<li><a href="https://github.com/alibaba/rax/issues" target="_blank" rel="external">issue 反馈</a></li>
+<li><a href="http://taobaofed.org/blog/2017/01/13/rax-in-act/">淘宝双促中的 Rax</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kIfQPpXXXXXaaXXXXXXXXXXX-900-500.jpg" alt="Why Rax?"></p>
+<blockquote>
+<p><a href="https://github.com/al]]>
+    </summary>
+    
+      <category term="Rax" scheme="http://taobaofed.org/tags/Rax/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[淘宝双促中的 Rax]]></title>
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 RAX"></p>
+    <updated>2017-02-13T02:45:09.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
-<p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">RAX</a>。本文会全部使用新的概念去描述。首先简单介绍一下 RAX 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
-<h2 id="RAX"><a href="#RAX" class="headerlink" title="RAX"></a>RAX</h2><p>RAX 是一个基于 React 方式的跨容器的 JS 框架</p>
+<p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
+<h2 id="Rax"><a href="#Rax" class="headerlink" title="Rax"></a>Rax</h2><p>Rax 是一个基于 React 方式的跨容器的 JS 框架</p>
 <ul>
-<li>React：你会用 React，那么你会很快上手 RAX</li>
+<li>React：你会用 React，那么你会很快上手 Rax</li>
 <li>跨容器：Browser、WEEX、Node.js</li>
 </ul>
 <p><img src="https://gw.alicdn.com/tps/TB1GloTOVXXXXa1XVXXXXXXXXXX-1455-368.jpg_500x500.jpg" alt=""></p>
 <p>gzip 大小 8k，与 Angular、React、Vue 相比更加轻量。在服务端也有更优的渲染性能，1553 op/s。作为双促页面的底层核心框架，让今年的淘宝双促的 native 100% 成为可能。</p>
-<h2 id="组件与模块"><a href="#组件与模块" class="headerlink" title="组件与模块"></a>组件与模块</h2><h3 id="体系提供的能力"><a href="#体系提供的能力" class="headerlink" title="体系提供的能力"></a>体系提供的能力</h3><p>RAX 核心框架之上，有一个支撑业务的基础体系。模拟浏览器行为和业务基础功能的 API、最基础的简单标签 Components、以及基础 UI 组件 RAXUI。</p>
+<h2 id="组件与模块"><a href="#组件与模块" class="headerlink" title="组件与模块"></a>组件与模块</h2><h3 id="体系提供的能力"><a href="#体系提供的能力" class="headerlink" title="体系提供的能力"></a>体系提供的能力</h3><p>Rax 核心框架之上，有一个支撑业务的基础体系。模拟浏览器行为和业务基础功能的 API、最基础的简单标签 Components、以及基础 UI 组件 RAXUI。</p>
 <p><img src="https://gw.alicdn.com/tps/TB1oWxhPXXXXXc_XpXXXXXXXXXX-763-431.jpg_500x500.jpg" alt=""></p>
 <p>Components 对应最基础的 HTML 标签，提供了最基础的标签能力，开发同学可以通过 Components 标签搭建出最基础的组件以及模块和页面。</p>
 <p>通过最基础的标签组成通用 UI 组件 RAXUI，除了 UI 组件，双促中使用的页面核心渲染逻辑也是基于 Components 标签搭建出来的。RAXUI 成为了大促模块搭建的基础、rax-page 则是页面渲染的基础。通过上层对数据请求的封装、缓存策略、页面渲染顺序的控制等组织成了斑马联路中使用的 PI，让页面可以在斑马环境中运作。</p>
 <h3 id="RAXUI-组件"><a href="#RAXUI-组件" class="headerlink" title="RAXUI 组件"></a>RAXUI 组件</h3><p><img src="https://gw.alicdn.com/tps/TB19PE1OVXXXXcsaXXXXXXXXXXX-1020-699.jpg_500x500.jpg" alt=""></p>
-<p>RAXUI 是 RAX 上层的组件生态，包含了业务中常用的组件，比如横向滚动轮播（slider）、icon、tab 导航头（tabheader）、视频播放（player）等。</p>
+<p>RAXUI 是 Rax 上层的组件生态，包含了业务中常用的组件，比如横向滚动轮播（slider）、icon、tab 导航头（tabheader）、视频播放（player）等。</p>
 <p>上图中列出了部分 RAXUI 组件，通过 rax-picture、rax-slider、rax-tabheader、rax-gotop  等可以组成一个常见的带电梯长列表页面，如下图。</p>
 <p><img src="https://gw.alicdn.com/tps/TB1499MOVXXXXcIXXXXXXXXXXXX-641-436.png_500x500.jpg" alt=""></p>
 <p>RAXUI 组件已经涵盖了大部分业务中需要的组件场景，为开发提供了一定的便利。</p>
@@ -74,15 +137,15 @@
 <p><strong>占位容器的替换与模块的拆分</strong></p>
 <p>WEEX 下占位容器是一个高度撑开的 cell，在 repeat 类型模块渲染时，占位容器首先会被替换成真实的单个模块。这个模块可以进行自己业务逻辑的处理，比如请求数据。在模块渲染数据时，会将数据发送给页面的 Block，Block 判断这是一组 repeat 数据时进行真实数据的渲染</p>
 <p><img src="https://gw.alicdn.com/tps/TB1VFM7OVXXXXavXVXXXXXXXXXX-424-387.jpg_500x500.jpg" alt=""></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>RAX 第一次接受淘宝双促的考验，在 native 化、性能、稳定性等多个方面表现优异，达成了预定的目标。在双促中沉淀下的经验也将陆续反哺给其他业务和活动中，在未来会有更多的场景使用 RAX，RAX 体系也将不断完善。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Rax 第一次接受淘宝双促的考验，在 native 化、性能、稳定性等多个方面表现优异，达成了预定的目标。在双促中沉淀下的经验也将陆续反哺给其他业务和活动中，在未来会有更多的场景使用 Rax，Rax 体系也将不断完善。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 RAX"></p>
+    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <]]>
     </summary>
     
-      <category term="RAX" scheme="http://taobaofed.org/tags/RAX/"/>
+      <category term="Rax" scheme="http://taobaofed.org/tags/Rax/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
@@ -93,7 +156,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -211,7 +274,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -372,7 +435,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -409,9 +472,9 @@
     
       <category term="nodejs" scheme="http://taobaofed.org/tags/nodejs/"/>
     
-      <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
-    
       <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
+    
+      <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
     
       <category term="广州" scheme="http://taobaofed.org/tags/%E5%B9%BF%E5%B7%9E/"/>
     
@@ -424,7 +487,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -620,7 +683,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -687,7 +750,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -787,7 +850,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -912,7 +975,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -1016,7 +1079,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -1087,7 +1150,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -1170,7 +1233,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -1223,7 +1286,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -1284,7 +1347,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -1391,7 +1454,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -1447,7 +1510,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -1526,7 +1589,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -1622,7 +1685,7 @@
     <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
     <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
     <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
 <p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
 <p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
@@ -1770,7 +1833,7 @@
     <link href="http://taobaofed.org/blog/2016/07/29/puzzled-by-link/"/>
     <id>http://taobaofed.org/blog/2016/07/29/puzzled-by-link/</id>
     <published>2016-07-29T03:50:30.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
+    <updated>2017-02-13T02:45:09.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1eKetLXXXXXalXVXXXXXXXXXX-900-500.jpg" alt="纠结的链接：ln、ln -s、fs.symlink、require"></p>
 <p>最近在使用 <code>fs.symlink</code> 实现软链时，发现<a href="https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback" target="_blank" rel="external">文档</a>里面写的是：<code>fs.symlink(target, path)</code>；然而 <code>man ln</code> 的时候显示的是：<code>ln source_file target_file</code>；而且，<code>require</code> 模块的时候其实还会处理软链但是处理的又不是想象中那样。于是，我彻底被相关东西绕晕。这篇文章算是我的学习笔记，希望对你有帮助。</p>
 <a id="more"></a>
@@ -1857,87 +1920,6 @@
       <category term="链接" scheme="http://taobaofed.org/tags/%E9%93%BE%E6%8E%A5/"/>
     
       <category term="require" scheme="http://taobaofed.org/tags/require/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[ES6 你可能不知道的事 - 基础篇]]></title>
-    <link href="http://taobaofed.org/blog/2016/07/22/es6-basics/"/>
-    <id>http://taobaofed.org/blog/2016/07/22/es6-basics/</id>
-    <published>2016-07-22T03:32:30.000Z</published>
-    <updated>2017-01-13T08:25:06.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
-<h2 id="序"><a href="#序" class="headerlink" title="序"></a>序</h2><p>ES6，或许应该叫 ES2015（2015 年 6 月正式发布），对于大多数前端同学都不陌生。</p>
-<p>首先这篇文章不是工具书，不会去过多谈概念，而是想聊聊关于每个特性 <strong>你可能不知道的事</strong>，希望能为各位同学 <strong>正确使用</strong> ES6，提供一些指导。</p>
-<p>对于 ES6，有些同学已经在项目中有过深入使用了，有些则刚刚开始认识他，但不论你是属于哪一类，相信这篇文章都有适合你的部分。针对文章中的问题或不同意见，欢迎随时拍砖、指正。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="Let-Const"><a href="#Let-Const" class="headerlink" title="Let + Const"></a>Let + Const</h3><p>这个大概是开始了解 ES6 后，我们第一个感觉自己完全明白并兴致勃勃的开始使用的特性。</p>
-<p>以如下方式使用的同学请举下手？</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义常量</span></span><br><span class="line"><span class="keyword">const</span> REG_GET_INPUT = <span class="regexp">/^\d&#123;1,3&#125;$/</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义配置项</span></span><br><span class="line"><span class="keyword">let</span> config = &#123;</span><br><span class="line">  isDev : <span class="literal">false</span>,</span><br><span class="line">  pubDir: <span class="string">'./admin/'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入 gulp</span></span><br><span class="line"><span class="keyword">let</span> gulp    = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入gulp相关插件</span></span><br><span class="line"><span class="keyword">let</span> concat  = <span class="built_in">require</span>(<span class="string">'gulp-concat'</span>);</span><br><span class="line"><span class="keyword">let</span> uglify  = <span class="built_in">require</span>(<span class="string">'gulp-uglify'</span>);</span><br><span class="line"><span class="keyword">let</span> cssnano = <span class="built_in">require</span>(<span class="string">'gulp-cssnano'</span>);</span><br></pre></td></tr></table></figure>
-<p>很多人看完概念之后，第一印象都是：“<code>const</code> 是表示不可变的值，而 <code>let</code> 则是用来替换原来的 <code>var</code> 的。”</p>
-<p>所以就会出现上面代码中的样子；一段代码中出现大量的 <code>let</code>，只有部分常量用 <code>const</code> 去做定义，这样的使用方式是错误的。</p>
-<h4 id="你可能不知道的事"><a href="#你可能不知道的事" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><p><code>const</code> 的定义是<strong>不可重新赋值</strong>的值，与不可变的值(immutable value)不同；<code>const</code> 定义的 Object，在定义之后仍可以修改其属性。</p>
-<p>所以其实他的使用场景很广，包括常量、配置项以及引用的组件、定义的 “大部分” 中间变量等，都应该以<code>const</code>做定义。反之就 <code>let</code> 而言，他的使用场景应该是相对较少的，我们只会在 loop(for，while 循环)及少量必须重定义的变量上用到他。</p>
-<blockquote>
-<p>猜想：就执行效率而言，<code>const</code> 由于不可以重新赋值的特性，所以可以做更多语法静态分析方面的优化，从而有更高的执行效率。</p>
-</blockquote>
-<p>所以上面代码中，所有使用 <code>let</code> 的部分，其实都应该是用 <code>const</code> 的。</p>
-<h3 id="Template-Strings（字符串模板）"><a href="#Template-Strings（字符串模板）" class="headerlink" title="Template Strings（字符串模板）"></a>Template Strings（字符串模板）</h3><p>字符串模板是我刚接触ES6时最喜欢的特性之一，他语法简洁，语义明确，而且很好的解决了之前字符串拼接麻烦的问题。</p>
-<p>因为他并不是 “必须” 的，而且原有的字符串拼接思维根深蒂固，导致我们很容易忽视掉他。</p>
-<h4 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h4><p>我们先来看看他的一般使用场景：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> start = <span class="string">'hi all'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> getName = () =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'jelly'</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> conf = &#123;</span><br><span class="line">  fav: <span class="string">'Coding'</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模板</span></span><br><span class="line"><span class="keyword">const</span> msg = <span class="string">`<span class="subst">$&#123;start&#125;</span>, my name is <span class="subst">$&#123;getName()&#125;</span>, <span class="subst">$&#123;conf.fav&#125;</span> is my favourite`</span>;</span><br></pre></td></tr></table></figure>
-<h4 id="你可能不知道的事-1"><a href="#你可能不知道的事-1" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 与引号混用</span></span><br><span class="line"><span class="keyword">const</span> wantToSay = <span class="string">`I'm a "tbfed"`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 支持多行文本</span></span><br><span class="line"><span class="keyword">const</span> slogan = </span><br><span class="line"><span class="string">`</span><br><span class="line">I have a dream today!</span><br><span class="line">`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 比较适合写HTML</span></span><br><span class="line"><span class="keyword">const</span> resultTpl = </span><br><span class="line"><span class="string">`</span><br><span class="line">  &lt;section&gt;</span><br><span class="line">    &lt;div&gt;...&lt;/div&gt;</span><br><span class="line">  &lt;/section&gt;</span><br><span class="line">`</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="Enhanced-Object-Literals（增强的对象字面量）"><a href="#Enhanced-Object-Literals（增强的对象字面量）" class="headerlink" title="Enhanced Object Literals（增强的对象字面量）"></a>Enhanced Object Literals（增强的对象字面量）</h3><p>增强的对象字面量是 ES6 中的升华功能，他设计了很多简写，这些简写不但保留了明确的语义，还减少了我们多余的代码量。</p>
-<p>当他的使用成为一个习惯时，我们会看到自己代码变得更为优雅。</p>
-<h4 id="你可能不知道的事-2"><a href="#你可能不知道的事-2" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> _bookNum = <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> basicConfig = &#123;</span><br><span class="line">  level: <span class="number">5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> config = &#123;</span><br><span class="line">  <span class="comment">// 直接指定原型对象</span></span><br><span class="line">  __proto__: basicConfig,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 属性简写</span></span><br><span class="line">  _bookNum,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 方法简写</span></span><br><span class="line">  getBookNum() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.bookNum;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="Arrows-and-Lexical-This（箭头函数）"><a href="#Arrows-and-Lexical-This（箭头函数）" class="headerlink" title="Arrows and Lexical This（箭头函数）"></a>Arrows and Lexical This（箭头函数）</h3><p>箭头函数是ES6中的一个新的语法特性，他的用法简单，形态优雅，备受人们青睐。</p>
-<p>大多数同学初识这个特性时，更多的仅仅用它作为函数定义的简写，这其实就有些屈才了。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 未使用箭头函数的写法</span></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  addOptions: <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">  </span><br><span class="line">    options.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">name, opts</span>)</span>&#123;</span><br><span class="line">      </span><br><span class="line">      self[name] = self.addChild(name, opts);</span><br><span class="line">      </span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用箭头函数后的写法</span></span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  </span><br><span class="line">  addOptions: <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  </span><br><span class="line">    options.forEach((name, opts) =&gt; &#123;</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">this</span>[name] = <span class="keyword">this</span>.addChild(name, opts);</span><br><span class="line">      </span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以注意到上下两段代码的区别。</p>
-<p>在未使用箭头函数前，我们在过程函数中使用父级 <code>this</code>，需要将其显式缓存到另一个中间变量中，因为过程函数有独立的 <code>this</code> 变量，会覆盖父级；使用箭头函数后，不但简写了一个过程函数（ <code>forEach</code> 的参数），还省略掉了 <code>this</code> 的中间变量的定义。</p>
-<p><em><strong>原因：箭头函数没有独立执行上下文（ <code>this</code> ），所以其内部引用 <code>this</code> 对象会直接访问父级。</strong></em></p>
-<blockquote>
-<p>插播：原来我们定义这个中间变量还有一个有趣的现象，就是明明千奇百怪，例如 <code>self, that, me, _that, _me, Self...</code>，快站出来说说你用过哪个，还是哪几个~</p>
-</blockquote>
-<p>当然，从这块我们也可以看出，箭头函数是无法替代全部 <code>function</code> 的使用场景的，例如我们需要有独立 <code>this</code> 的函数。</p>
-<h4 id="你可能不知道的事-3"><a href="#你可能不知道的事-3" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><ol>
-<li>箭头函数不但没有独立 <code>this</code>，他也没有独立的 <code>arguments</code>，所以如果需要取不定参的时候，要么使用 <code>function</code>，要么用  ES6 的另一个新特性 <strong>rest</strong>（具体在 rest 中会有详解）。</li>
-<li>箭头函数语法很灵活，在只有一个参数或者只有一句表达式做方法体时，可以省略相应括号。</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 完整写法</span></span><br><span class="line"><span class="keyword">const</span> getOptions = (name, key) =&gt; &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 省略参数括号</span></span><br><span class="line"><span class="keyword">const</span> getOptions = key =&gt; &#123;</span><br><span class="line">  ... </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 省略参数和方法体括号</span></span><br><span class="line"><span class="keyword">const</span> getOptions = key =&gt; <span class="built_in">console</span>.log(key);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 无参数或方法体，括号不能省略</span></span><br><span class="line"><span class="keyword">const</span> noop = () =&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
-<p>有个简单小栗子，这一灵活的语法在写连续的Promise链式调用时，可以使代码更加优雅</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">gitPromise</span><br><span class="line">  .then(() =&gt; git.add())</span><br><span class="line">  .then(() =&gt; git.commit())</span><br><span class="line">  .then(() =&gt; git.log())</span><br><span class="line">  .then((msg) =&gt; &#123;</span><br><span class="line">      ...</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(() =&gt; git.push())</span><br><span class="line">  .catch((err) =&gt; &#123;</span><br><span class="line">      utils.error(err);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
-<h3 id="Destructuring（解构）"><a href="#Destructuring（解构）" class="headerlink" title="Destructuring（解构）"></a>Destructuring（解构）</h3><p>解构这个特性可以简单解读为分别定义，用于一次定义多个变量，常常用于分解方法返回对象为多个变量，分别使用。<br>使用过ES6的同学应该或多或少接触过这个特性，但是你可能不知道它如下几个用法：</p>
-<h4 id="你可能不知道的事-4"><a href="#你可能不知道的事-4" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> bookSet = [<span class="string">'UED'</span>, <span class="string">'TB fed'</span>, <span class="string">'Not find'</span>];</span><br><span class="line"><span class="keyword">const</span> bookCollection = () =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;book1: <span class="string">'UED'</span>, book2: <span class="string">'TB fed'</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 解构也可以设置默认值</span></span><br><span class="line"><span class="keyword">const</span> &#123;book1, book3 = <span class="string">'Not find'</span>&#125; = bookCollection();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 解构数组时候是可以跳过其中某几项的</span></span><br><span class="line"><span class="keyword">const</span> [book1,,book3] = bookSet;  <span class="comment">// book1 = 'UED', book3 = 'Not find'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 解构可以取到指定对象的任何属性，包括它包含的方法</span></span><br><span class="line"><span class="keyword">const</span> &#123;length: setLength&#125; = bookSet;  <span class="comment">// setLength = 3</span></span><br></pre></td></tr></table></figure>
-<h3 id="Rest-Spread"><a href="#Rest-Spread" class="headerlink" title="Rest + Spread"></a>Rest + Spread</h3><p>Rest 和 Spread 主要是应用 <code>...</code> 运算符，完成值的聚合和分解。</p>
-<h4 id="你可能不知道的事-5"><a href="#你可能不知道的事-5" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 1. rest 得到的是一个真正的数组而不是一个伪数组</span></span><br><span class="line"><span class="keyword">const</span> getOptions = <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(args.join); <span class="comment">// function</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. rest 可以配合箭头函数使用，达到取得所有参数的目的</span></span><br><span class="line"><span class="keyword">const</span> getOptions = (...args) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(args); <span class="comment">// array</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. spread 可以用于解构时，聚合所得的值</span></span><br><span class="line"><span class="keyword">const</span> [opt1, ...opts] = [<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>, <span class="string">'four'</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. spread 可以用于数组定义</span></span><br><span class="line"><span class="keyword">const</span> opts = [<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>, <span class="string">'four'</span>];</span><br><span class="line"><span class="keyword">const</span> config = [<span class="string">'other'</span>, ...opts];</span><br></pre></td></tr></table></figure>
-<h3 id="Classes"><a href="#Classes" class="headerlink" title="Classes"></a>Classes</h3><p>ES6 中实现的一个语法糖，用于简化基于原型集成实现类定义的场景。<br>虽然有很多人不太喜欢这个特性，认为它作为一个简单增强扩展，并没有其他语言 class 应有的特点。<br>但是就我自己观点来看，还是感觉这样一种写法确实比原有的原型继承的写法语义更清晰、明确，而且语法更简单。</p>
-<p>同样，可能有些用法是你之前容易忽略掉的，在此做个补充。</p>
-<h4 id="你可能不知道的事-6"><a href="#你可能不知道的事-6" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 1. 静态变量</span></span><br><span class="line"><span class="comment">// ES6 的类定义实现了静态方法的定义，但静态变量呢？</span></span><br><span class="line"><span class="comment">// 可以用如下方式实现: </span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TbFedMembers</span></span>&#123;</span><br><span class="line">  <span class="keyword">static</span> get HuaChen()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'jelly'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">TbFedMembers.HuaChen; <span class="comment">// "化辰"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 私有属性（私有属性有多种实现方式，只谈及其中一种）</span></span><br><span class="line"><span class="comment">// 闭包</span></span><br><span class="line"><span class="keyword">const</span> TbFedMembers = (() =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> HuaChen = <span class="string">'jelly'</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> <span class="class"><span class="keyword">class</span></span>&#123;</span><br><span class="line">    getOneMemberName()&#123;</span><br><span class="line">      <span class="keyword">return</span> HuaChen;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-<h3 id="Promises"><a href="#Promises" class="headerlink" title="Promises"></a>Promises</h3><p>Promise 不只是一个对象、一个语法，他更是一种异步编程方式的变化<br>相信使用过 ES6 的同学都已经开始尝试了 Promise，甚至在不支持ES6的时候，已经开始使用一些基于 Promise 思想的开源框架。</p>
-<p>那么我们之前用 Promise 究竟用的对么？有什么需要注意的点呢？</p>
-<h4 id="你可能不知道的事-7"><a href="#你可能不知道的事-7" class="headerlink" title="你可能不知道的事"></a>你可能不知道的事</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 1. 多个异步任务同时执行用 Promise.all，顺序执行使用链式调用</span></span><br><span class="line"><span class="comment">// Promise.all</span></span><br><span class="line"><span class="built_in">Promise</span></span><br><span class="line">  .all([jsBuildPromise, cssBuildPromise])</span><br><span class="line">  .then(() =&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// chain</span></span><br><span class="line">jsBuildPromise</span><br><span class="line">  .then(() =&gt; cssBuildPromise)</span><br><span class="line">  .then(() =&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. Promise 的链式调用需要每一个过程返回一个 Promise 对象才能保证顺序执行</span></span><br><span class="line">gitPromise</span><br><span class="line">  .then(() =&gt; git.add())  <span class="comment">// 正确，箭头函数简写</span></span><br><span class="line">  .then(() =&gt; &#123;</span><br><span class="line">    git.commit(); <span class="comment">// 错误，函数返回 undefined，会立即执行下一过程</span></span><br><span class="line">  &#125;)</span><br><span class="line">  .then(() =&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> git.log(); <span class="comment">// 正确</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. Promise 需要调用 catch 方法来捕获错误，而且过程内的错误不会阻塞后续代码执行</span></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(() =&gt; &#123;</span><br><span class="line">  f;  <span class="comment">// not define error !</span></span><br><span class="line">&#125;)</span><br><span class="line">.catch((err) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(err)  <span class="comment">// show 'f is not define'</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'error test'</span>);  <span class="comment">// 此行可以被正常执行</span></span><br></pre></td></tr></table></figure>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>基础篇主要是讲了我们最常用的一些特性，后续如果大家感兴趣，还可以再来个 “进阶篇”，最后，希望文章中的部分内容可以对大家理解和使用 ES6 有所帮助。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://www.stackoverflow.com" target="_blank" rel="external">https://www.stackoverflow.com</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></li>
-<li><a href="https://babeljs.io/docs/learn-es2015/" target="_blank" rel="external">https://babeljs.io/docs/learn-es2015/</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="external">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a></li>
-<li><a href="https://ponyfoo.com/articles/es6-spread-and-butter-in-depth" target="_blank" rel="external">https://ponyfoo.com/articles/es6-spread-and-butter-in-depth</a></li>
-<li><a href="http://12devs.co.uk/articles/promises-an-alternative-way-to-approach-asynchronous-javascript/" target="_blank" rel="external">http://12devs.co.uk/articles/promises-an-alternative-way-to-approach-asynchronous-javascript/</a></li>
-<li><a href="http://www.2ality.com/2015/01/es6-destructuring.html" target="_blank" rel="external">http://www.2ality.com/2015/01/es6-destructuring.html</a></li>
-<li><a href="http://www.datchley.name/es6-rest-spread-defaults-and-destructuring/" target="_blank" rel="external">http://www.datchley.name/es6-rest-spread-defaults-and-destructuring/</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1HPI1KVXXXXbBXpXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 基础篇"></p>
-<h2 id="序"><a href="#序" class="head]]>
-    </summary>
-    
-      <category term="ES6" scheme="http://taobaofed.org/tags/ES6/"/>
-    
-      <category term="JavaScript" scheme="http://taobaofed.org/tags/JavaScript/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
