@@ -21,7 +21,7 @@
 
 讨论内容的定义域本文并不是《jQuery API 赏析》，当我们谈论 API 的设计">
 <meta property="og:image" content="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg">
-<meta property="og:updated_time" content="2017-02-16T07:59:22.000Z">
+<meta property="og:updated_time" content="2017-02-16T11:00:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从达标到卓越 —— API 设计之道">
 <meta name="twitter:description" content="新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。
@@ -492,9 +492,9 @@
 <p>考虑到 <code>tmallShop</code> 和 <code>shop</code> 之间是一个继承的关系，<code>tmallShop</code> 完全可以当一个普通的 <code>shop</code> 来用，执行后者的所有逻辑。用 Java 的表达方式来说就是：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a tmallShop is a shop</span></span><br><span class="line">Shop tmallShop = <span class="keyword">new</span> TmallShop();</span><br><span class="line">tmallShop.doSomeShopStuff();</span><br></pre></td></tr></table></figure>
 <p>将这个逻辑关系反映到 JSON 接口中，合理的做法是新增一个 <code>subType</code> 字段，用来标记 <code>tmallShop</code>，而它的 <code>type</code> 仍然保持为 <code>shop</code>。这样一来，即使原来的前端代码完全不修改，仍然可以正常运行，除了无法渲染出一些天猫店铺的特征。</p>
-<p>这里还有一个非常类似的正面案例，是 ABS 搭建系统设计的模块 JSON Schema：</p>
+<p>这里还有一个非常类似的正面案例，是 ABS 搭建系统（淘宝 FED 出品的站点搭建系统）设计的模块 JSON Schema：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// json</span></span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">    <span class="string">"format"</span>: <span class="string">"enum"</span></span><br><span class="line">  &#125;, &#123;</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">    <span class="string">"format"</span>: <span class="string">"URL"</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<p>同样采用了 <code>type</code> 为主类型，<code>format</code> 作为扩展字段。在实际开发中，的确也很方便扩展各种新逻辑。</p>
+<p>同样采用了 <code>type</code> 为主类型，而扩展字段在这里变成了 <code>format</code>，用来容纳一些扩展特性。在实际开发中，的确也很方便新增各种新的数据结构逻辑。</p>
 <h3 id="控制-API-的抽象级别"><a href="#控制-API-的抽象级别" class="headerlink" title="控制 API 的抽象级别"></a>控制 API 的抽象级别</h3><p>API 能扩展的前提是什么？是接口足够抽象。这样才能够加上各种具体的定语、装饰更多功能。用日常语言举个例子：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// abstract</span></span><br><span class="line">I want to go to a place.</span><br><span class="line"><span class="comment">// when</span></span><br><span class="line">&#123;Today, Tomorrow, Jan. <span class="number">1</span>st&#125; I want to go to a place.</span><br><span class="line"><span class="comment">// where</span></span><br><span class="line">I want to go to &#123;mall, cafe, bed&#125;.</span><br><span class="line"></span><br><span class="line"><span class="comment">// concrete, no extends any more</span></span><br><span class="line">Today I want to go to a cafe <span class="keyword">for</span> my business.</span><br></pre></td></tr></table></figure>
 <p>所以，在设计 API 时要高抽象，不要陷入具体的实现，不要陷入具体的需求，要高屋建瓴。</p>
@@ -554,7 +554,7 @@
 </ul>
 <p>老旧版本很可能还在运行，但维护者已经没时间精力再去管这些历史遗物，这时明确地指出某些版本不再维护，对开发者和用户都好。当然，同时别忘了给出升级文档，指导老用户如何迁移到新版本。还有一个更好的做法是，在我们开启一个新版本之际，就确定好上一个版本的寿命终点，提前知会到用户。</p>
 <p>还有一个技术上的注意事项，那就是：<strong>大版本间最好有明确的隔离</strong>。对于一个复杂的技术产品来说，API 只是最终直接面向用户的接口，背后还有特定的环境、工具组、依赖包等各种支撑，互相之间并不能混用。</p>
-<p>比如，前面提到的 Rax 方案，新版依赖新的 weex 容器，以及新体系内的所有组件库、工具库，如果直接在老容器下跑新 API，就会出现兼容方面的问题。</p>
+<p>比如，曾经的经典前端库 KISSY。在业界技术方案日新月异的大潮下，KISSY 6 版本已经强依赖了 TNPM（阿里内网的 NPM）、DEF 套件组（淘宝 FED 的前端工具套件），虽然和之前的 1.4 版本相比 API 的变化并不大，但是仍然不能在老环境下直接使用 6 版本的代码库……这一定程度上降低了自由组合的灵活度，但事实上随着业务问题场景的复杂度提升，解决方案本身会需要更定制化，因此，将环境、工具等上下游关联物随代码一起打包，做成一整个技术方案，这正是业界的现状。</p>
 <p>所以，隔离大版本，制定好 API 支持策略，让我们的产品更专业，让用户免去后顾之忧。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上，便是我从业以来感悟到的一些「道」，三个进阶层次、几十个细分要点，不知有没有给读者您带来一丁点启发。</p>
 <p>但实际上，<strong>大道至简</strong>。我一直认为，程序开发和平时的说话写字其实没有太大区别，无非三者 ——</p>
@@ -580,7 +580,7 @@
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/" data-id="ciz83itlc0008zrqebrmnq16m" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/" data-id="ciz8a08fk0010r3qes4sguzgu" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/API-设计/">API 设计</a></li></ul>
