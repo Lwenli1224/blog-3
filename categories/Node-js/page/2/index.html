@@ -143,6 +143,45 @@
   <article class="article article-summary">
     <div class="article-summary-inner">
       
+<a href="/blog/2016/03/18/error-handling-in-koa/" class="thumbnail">
+  
+    <span style="background-image:url(https://img.alicdn.com/tps/TB1WJcvLVXXXXX5XFXXXXXXXXXX-900-500.jpg
+)" alt="如何优雅的在 koa 中处理错误" class="thumbnail-image"></span>
+  
+</a>
+
+      <div class="article-meta">
+        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
+        <p class="date"><time datetime="2016-03-18T03:44:08.000Z" itemprop="datePublished">2016-03-18</time></p>
+      </div>
+      <h2 class="article-title">
+        <a href="/blog/2016/03/18/error-handling-in-koa/" class="title">如何优雅的在 koa 中处理错误</a>
+      </h2>
+      <p class="article-excerpt">
+        
+        
+
+软件开发时，有 80% 的代码在处理各种错误。 ——某著名开发者
+
+想让自己的代码健壮，错误处理是必不可少的。这篇文章将主要介绍 koa 框架中错误处理的实现（其实主要是 co 的实现），使用 koa 框架开发 web 应用时进行错误处理的一些方法。
+基础在 Node.js 中，错误处理的方法主要有下面几种：
+
+和其他同步语言类似的 throw / try / catch 方法
+callbac
+      </p>
+    </div>
+  </article>
+
+    
+  
+    
+    
+    
+    
+        
+  <article class="article article-summary">
+    <div class="article-summary-inner">
+      
 <a href="/blog/2016/03/10/graphql-in-depth/" class="thumbnail">
   
     <span style="background-image:url(https://img.alicdn.com/tps/i2/TB11UwELpXXXXahXFXX2AXZ8pXX-900-500.png
@@ -166,10 +205,14 @@
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -203,14 +246,10 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -241,10 +280,14 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -274,14 +317,10 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -313,10 +352,14 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -352,14 +395,10 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -391,10 +430,14 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
+      </div>
+    
   
     
     
     
+    
+      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -424,14 +467,10 @@ Unix 的哲学：一个程序只做一件事，并做好。程序要能协作。
   </article>
 
     
-      </div>
-    
   
     
     
     
-    
-      <div class="article-row">
     
         
   <article class="article article-summary">
@@ -461,51 +500,7 @@ Dragonfly 使用 Node.js 开发，稳定性保障是一边实践探索、一边�
   </article>
 
     
-  
-    
-    
-      
-        </div></section>
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year"><i class="icon fa fa-calendar-o"></i>2015</a>
-        </div>
-        <div class="archives">
-    
-    
-    
-      <div class="article-row">
-    
-        
-  <article class="article article-summary">
-    <div class="article-summary-inner">
-      
-<a href="/blog/2015/12/31/nodejs-drain/" class="thumbnail">
-  
-    <span style="background-image:url(https://img.alicdn.com/tps/TB1vXPdLXXXXXXBXVXXXXXXXXXX-900-500.jpg
-)" alt="探究 Node.js 中的 drain 事件" class="thumbnail-image"></span>
-  
-</a>
-
-      <div class="article-meta">
-        <p class="category"><a class="article-category-link" href="/categories/Node-js/">Node.js</a></p>
-        <p class="date"><time datetime="2015-12-31T02:05:22.000Z" itemprop="datePublished">2015-12-31</time></p>
       </div>
-      <h2 class="article-title">
-        <a href="/blog/2015/12/31/nodejs-drain/" class="title">探究 Node.js 中的 drain 事件</a>
-      </h2>
-      <p class="article-excerpt">
-        
-        
-起因最近在用 Node.js 写一些网络请求相关的代码时，频繁在一些开源代码中看到 drain 事件的使用，于是我也依葫芦画瓢写到了自己的代码里面：
-12345socket.on('drain', function()&#123;	console.log('drain event fired.');&#125;);socket.write('some data.');
-实际放到线上测试的时候发现
-      </p>
-    </div>
-  </article>
-
     
   
   
@@ -596,7 +591,7 @@ Dragonfly 使用 Node.js 开发，稳定性保障是一边实践探索、一边�
             </div>
             
             <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-category"><a class="article-category-link" href="/categories/无线开发/">无线开发</a></p>
               <p class="item-title"><a href="/blog/2017/02/10/why-rax/" class="title">Why Rax?</a></p>
               
               <p class="item-author">by 大果</p>
@@ -619,7 +614,7 @@ Dragonfly 使用 Node.js 开发，稳定性保障是一边实践探索、一边�
             </div>
             
             <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-category"><a class="article-category-link" href="/categories/无线开发/">无线开发</a></p>
               <p class="item-title"><a href="/blog/2017/01/13/rax-in-act/" class="title">淘宝双促中的 Rax</a></p>
               
               <p class="item-author">by 亚城</p>
@@ -692,7 +687,7 @@ Dragonfly 使用 Node.js 开发，稳定性保障是一边实践探索、一边�
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">17</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">38</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
