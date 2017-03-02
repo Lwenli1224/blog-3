@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-02-16T11:00:54.000Z</updated>
+  <updated>2017-03-02T06:21:42.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,64 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[浅析 requestAnimationFrame]]></title>
+    <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
+    <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
+    <published>2017-03-02T05:25:09.000Z</published>
+    <updated>2017-03-02T06:21:42.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
+<p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
+<p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
+<ul>
+<li>如何确定正确的时间间隔（浏览器、机器硬件的性能各不相同）？</li>
+<li>毫秒的不精确性怎么解决？</li>
+<li>如何避免过度渲染（渲染频率太高、tab 不可见等等）？</li>
+</ul>
+<p>开发者可以用很多方式来减轻这些问题的症状，但是彻底解决，这个、基本、很难。</p>
+<p>归根到底，问题的根源在于<strong>时机</strong>。对于前端开发者来说，setTimeout 和 setInterval 提供的是一个等长的定时器循环（timer loop），但是对于浏览器内核对渲染函数的响应以及何时能够发起下一个动画帧的时机，是完全不了解的。对于浏览器内核来讲，它能够了解发起下一个渲染帧的合适时机，但是对于任何 setTimeout 和 setInterval 传入的回调函数执行，都是一视同仁的，它很难知道哪个回调函数是用于动画渲染的，因此，优化的时机非常难以掌握。悖论就在于，写 JavaScript 的人了解一帧动画在哪行代码开始，哪行代码结束，却不了解应该何时开始，应该何时结束，而在内核引擎来说，事情却恰恰相反，所以二者很难完美配合，直到 requestAnimationFrame 出现。</p>
+<p>本人很喜欢 requestAnimationFrame 这个名字，因为起得非常直白 – request animation frame，对于这个 API 最好的解释就是名字本身了。这样一个 API，你传入的 API 不是用来渲染一帧动画，你上街都不好意思跟人打招呼。</p>
+<p>由于本人是个喜欢阅读代码的人，为了体现自己好学的态度，特意读了下 Chrome 的代码去了解它是怎么实现 requestAnimationFrame 的（代码基于 Android 4.4）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> Document::requestAnimationFrame(PassRefPtr&lt;RequestAnimationFrameCallback&gt; callback)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (!m_scriptedAnimationController) &#123;</span><br><span class="line">    m_scriptedAnimationController = ScriptedAnimationController::create(<span class="keyword">this</span>);</span><br><span class="line">    <span class="comment">// We need to make sure that we don't start up the animation controller on a background tab, for example.</span></span><br><span class="line">      <span class="keyword">if</span> (!page())</span><br><span class="line">        m_scriptedAnimationController-&gt;suspend();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> m_scriptedAnimationController-&gt;registerCallback(callback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>仔细看看就觉得底层实现意外地简单，生成一个 ScriptedAnimationController 的实例，然后注册这个 callback。那我们就看看 ScriptAnimationController 里面做了些什么：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ScriptedAnimationController::serviceScriptedAnimations(<span class="keyword">double</span> monotonicTimeNow)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> (!m_callbacks.size() || m_suspendCount)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">double</span> highResNowMs = <span class="number">1000.0</span> * m_document-&gt;loader()-&gt;timing()-&gt;monotonicTimeToZeroBasedDocumentTime(monotonicTimeNow);</span><br><span class="line">    <span class="keyword">double</span> legacyHighResNowMs = <span class="number">1000.0</span> * m_document-&gt;loader()-&gt;timing()-&gt;monotonicTimeToPseudoWallTime(monotonicTimeNow);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// First, generate a list of callbacks to consider.  Callbacks registered from this point</span></span><br><span class="line">    <span class="comment">// on are considered only for the "next" frame, not this one.</span></span><br><span class="line">    <span class="function">CallbackList <span class="title">callbacks</span><span class="params">(m_callbacks)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Invoking callbacks may detach elements from our document, which clears the document's</span></span><br><span class="line">    <span class="comment">// reference to us, so take a defensive reference.</span></span><br><span class="line">    RefPtr&lt;ScriptedAnimationController&gt; protector(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; callbacks.size(); ++i) &#123;</span><br><span class="line">        RequestAnimationFrameCallback* callback = callbacks[i].get();</span><br><span class="line">      <span class="keyword">if</span> (!callback-&gt;m_firedOrCancelled) &#123;</span><br><span class="line">        callback-&gt;m_firedOrCancelled = <span class="literal">true</span>;</span><br><span class="line">        InspectorInstrumentationCookie cookie = InspectorInstrumentation::willFireAnimationFrame(m_document, callback-&gt;m_id);</span><br><span class="line">        <span class="keyword">if</span> (callback-&gt;m_useLegacyTimeBase)</span><br><span class="line">          callback-&gt;handleEvent(legacyHighResNowMs);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">          callback-&gt;handleEvent(highResNowMs);</span><br><span class="line">        InspectorInstrumentation::didFireAnimationFrame(cookie);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove any callbacks we fired from the list of pending callbacks.</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; m_callbacks.size();) &#123;</span><br><span class="line">      <span class="keyword">if</span> (m_callbacks[i]-&gt;m_firedOrCancelled)</span><br><span class="line">        m_callbacks.remove(i);</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        ++i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (m_callbacks.size())</span><br><span class="line">      scheduleAnimation();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数自然就是执行回调函数的地方了。那么动画是如何被触发的呢？我们需要快速地看一串函数（一个从下往上的 call stack）：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> PageWidgetDelegate::animate(Page* page, <span class="keyword">double</span> monotonicFrameBeginTime)</span><br><span class="line">&#123;</span><br><span class="line">  FrameView* view = mainFrameView(page);</span><br><span class="line">  <span class="keyword">if</span> (!view)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  view-&gt;serviceScriptedAnimations(monotonicFrameBeginTime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> WebViewImpl::animate(<span class="keyword">double</span> monotonicFrameBeginTime)</span><br><span class="line">&#123;</span><br><span class="line">  TRACE_EVENT0(<span class="string">"webkit"</span>, <span class="string">"WebViewImpl::animate"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!monotonicFrameBeginTime)</span><br><span class="line">      monotonicFrameBeginTime = monotonicallyIncreasingTime();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Create synthetic wheel events as necessary for fling.</span></span><br><span class="line">  <span class="keyword">if</span> (m_gestureAnimation) &#123;</span><br><span class="line">    <span class="keyword">if</span> (m_gestureAnimation-&gt;animate(monotonicFrameBeginTime))</span><br><span class="line">      scheduleAnimation();</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      m_gestureAnimation.clear();</span><br><span class="line">      <span class="keyword">if</span> (m_layerTreeView)</span><br><span class="line">        m_layerTreeView-&gt;didStopFlinging();</span><br><span class="line"></span><br><span class="line">      <span class="function">PlatformGestureEvent <span class="title">endScrollEvent</span><span class="params">(PlatformEvent::GestureScrollEnd,</span><br><span class="line">          m_positionOnFlingStart, m_globalPositionOnFlingStart, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line">          <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">false</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">      mainFrameImpl()-&gt;frame()-&gt;eventHandler()-&gt;handleGestureScrollEnd(endScrollEvent);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!m_page)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  PageWidgetDelegate::animate(m_page.get(), monotonicFrameBeginTime);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (m_continuousPaintingEnabled) &#123;</span><br><span class="line">    ContinuousPainter::setNeedsDisplayRecursive(m_rootGraphicsLayer, m_pageOverlays.get());</span><br><span class="line">    m_client-&gt;scheduleAnimation();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RenderWidget::AnimateIfNeeded() &#123;</span><br><span class="line">  <span class="keyword">if</span> (!animation_update_pending_)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Target 60FPS if vsync is on. Go as fast as we can if vsync is off.</span></span><br><span class="line">  base::TimeDelta animationInterval = IsRenderingVSynced() ? base::TimeDelta::FromMilliseconds(<span class="number">16</span>) : base::TimeDelta();</span><br><span class="line"></span><br><span class="line">  base::Time now = base::Time::Now();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// animation_floor_time_ is the earliest time that we should animate when</span></span><br><span class="line">  <span class="comment">// using the dead reckoning software scheduler. If we're using swapbuffers</span></span><br><span class="line">  <span class="comment">// complete callbacks to rate limit, we can ignore this floor.</span></span><br><span class="line">  <span class="keyword">if</span> (now &gt;= animation_floor_time_ || num_swapbuffers_complete_pending_ &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    TRACE_EVENT0(<span class="string">"renderer"</span>, <span class="string">"RenderWidget::AnimateIfNeeded"</span>)</span><br><span class="line">    animation_floor_time_ = now + animationInterval;</span><br><span class="line">    <span class="comment">// Set a timer to call us back after animationInterval before</span></span><br><span class="line">    <span class="comment">// running animation callbacks so that if a callback requests another</span></span><br><span class="line">    <span class="comment">// we'll be sure to run it at the proper time.</span></span><br><span class="line">    animation_timer_.Stop();</span><br><span class="line">    animation_timer_.Start(FROM_HERE, animationInterval, <span class="keyword">this</span>, &amp;RenderWidget::AnimationCallback);</span><br><span class="line">    animation_update_pending_ = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (is_accelerated_compositing_active_ &amp;&amp; compositor_) &#123;</span><br><span class="line">      compositor_-&gt;Animate(base::TimeTicks::Now());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">double</span> frame_begin_time = (base::TimeTicks::Now() - base::TimeTicks()).InSecondsF();</span><br><span class="line">      webwidget_-&gt;animate(frame_begin_time);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  TRACE_EVENT0(<span class="string">"renderer"</span>, <span class="string">"EarlyOut_AnimatedTooRecently"</span>);</span><br><span class="line">  <span class="keyword">if</span> (!animation_timer_.IsRunning()) &#123;</span><br><span class="line">    <span class="comment">// This code uses base::Time::Now() to calculate the floor and next fire</span></span><br><span class="line">    <span class="comment">// time because javascript's Date object uses base::Time::Now().  The</span></span><br><span class="line">    <span class="comment">// message loop uses base::TimeTicks, which on windows can have a</span></span><br><span class="line">    <span class="comment">// different granularity than base::Time.</span></span><br><span class="line">    <span class="comment">// The upshot of all this is that this function might be called before</span></span><br><span class="line">    <span class="comment">// base::Time::Now() has advanced past the animation_floor_time_.  To</span></span><br><span class="line">    <span class="comment">// avoid exposing this delay to javascript, we keep posting delayed</span></span><br><span class="line">    <span class="comment">// tasks until base::Time::Now() has advanced far enough.</span></span><br><span class="line">    base::TimeDelta delay = animation_floor_time_ - now;</span><br><span class="line">    animation_timer_.Start(FROM_HERE, delay, <span class="keyword">this</span>, &amp;RenderWidget::AnimationCallback);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>特别说明：RenderWidget 是在 <code>./content/renderer/render_widget.cc</code> 中（content::RenderWidget）而非在 <code>./core/rendering/RenderWidget.cpp</code> 中。笔者最早读 RenderWidget.cpp 还因为其中没有任何关于 animation 的代码而困惑了很久。</p>
+</blockquote>
+<p>看到这里其实 requestAnimationFrame 的实现原理就很明显了：</p>
+<ul>
+<li>注册回调函数</li>
+<li>浏览器更新时触发 animate</li>
+<li>animate 会触发所有注册过的 callback</li>
+</ul>
+<p>这里的工作机制可以理解为所有权的转移，把触发帧更新的时间所有权交给浏览器内核，与浏览器的更新保持同步。这样做既可以避免浏览器更新与动画帧更新的不同步，又可以给予浏览器足够大的优化空间。<br>在往上的调用入口就很多了，很多函数（RenderWidget::didInvalidateRect，RenderWidget::CompleteInit等）会触发动画检查，从而要求一次动画帧的更新。</p>
+<p>这里一张图说明 requestAnimationFrame 的实现机制（来自<a href="http://www.chromium.org/developers/design-documents/rendering-architecture-diagrams" target="_blank" rel="external">官方</a>）：<br><img src="https://gw.alicdn.com/tfs/TB1lHxIPVXXXXXpXFXXXXXXXXXX-1636-1230.png" alt="chromium_request_anim_frame"></p>
+<blockquote>
+<p>题图：<a href="https://unsplash.com/photos/PEfMW274zGM" target="_blank" rel="external">https://unsplash.com/photos/PEfMW274zGM</a> By Kai Oberhäuser</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
+<p>相信现在绝大多数人在 JavaScript 中绘制动画]]>
+    </summary>
+    
+      <category term="JavaScript" scheme="http://taobaofed.org/tags/JavaScript/"/>
+    
+      <category term="requestAnimationFrame" scheme="http://taobaofed.org/tags/requestAnimationFrame/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[从达标到卓越 —— API 设计之道]]></title>
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -453,7 +506,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kIfQPpXXXXXaaXXXXXXXXXXX-900-500.jpg" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -516,7 +569,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -590,7 +643,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -708,7 +761,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -869,7 +922,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -921,7 +974,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -1117,7 +1170,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -1184,7 +1237,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -1284,7 +1337,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -1409,7 +1462,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -1513,7 +1566,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -1584,7 +1637,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -1667,7 +1720,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -1720,7 +1773,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -1781,7 +1834,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -1888,7 +1941,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -1944,7 +1997,7 @@
     <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
     <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
     <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
 <p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
 <p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
@@ -2023,7 +2076,7 @@
     <link href="http://taobaofed.org/blog/2016/08/12/optimized-react-components/"/>
     <id>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</id>
     <published>2016-08-12T02:44:11.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
+    <updated>2017-03-02T06:21:42.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1P4h_LpXXXXbGXpXXXXXXXXXX-900-500.jpg" alt="高性能 React 组件"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="组件的重新渲染"><a href="#组件的重新渲染" class="headerlink" title="组件的重新渲染"></a>组件的重新渲染</h2><p>说到 React 组件，肯定离不开组件的 props 和 state，我们可以在 props 和 state 存放任何类型的数据，通过改变 props 和 state，去控制整个组件的状态。当 props 和 state 发生变化时，React 会重新渲染整个组件，组件重新渲染的过程可简化如下图：</p>
 <p><img src="http://img1.tbcdn.cn/L1/461/1/c3c7f7f478d86c40530967b5b0fc12037bc71d22" alt="1"></p>
@@ -2109,154 +2162,6 @@
       <category term="React" scheme="http://taobaofed.org/tags/React/"/>
     
       <category term="性能优化" scheme="http://taobaofed.org/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[论版本号的正确打开方式]]></title>
-    <link href="http://taobaofed.org/blog/2016/08/04/instructions-of-semver/"/>
-    <id>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</id>
-    <published>2016-08-04T09:48:27.000Z</published>
-    <updated>2017-02-16T11:00:54.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
-<p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM 包的特定版本的依赖指定、git 的 daily 版本号分支……</p>
-<p>面对如此多的场景，版本号的命名却存在很大问题。举些例子：</p>
-<ul>
-<li>开始写一个新项目 / 模块时，不管三七二十一，都从 <code>0.0.1</code> 起版本，直到项目不再维护时，版本还停留在 <code>0.0.48</code>，前两位永远都是 0。</li>
-<li>API 变化巨大，而版本号雷打不动一步一个脚印。一个二方包从 <code>0.0.8</code> 升级到 <code>0.0.9</code> 就引起了整个项目的崩溃。</li>
-<li>依赖二方 / 三方包时，不知道该依赖哪个版本，有时随便指定了一个，有时则直接依赖了 <code>*</code>。</li>
-</ul>
-<hr>
-<h2 id="版本号的命名"><a href="#版本号的命名" class="headerlink" title="版本号的命名"></a>版本号的命名</h2><h3 id="SemVer"><a href="#SemVer" class="headerlink" title="SemVer"></a>SemVer</h3><p>根据国际主流的惯例，我们使用「语义化版本（<a href="http://semver.org/" target="_blank" rel="external">Semantic Versioning</a>）」的命名方式，有时简称 SemVer。</p>
-<p>语义化版本号（以下简称「版本号」）的格式是：<code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</code>。即使用三位非负整数，以点号 <code>.</code> 连接。</p>
-<p>如：<code>1.4.15</code>、<code>6.2.0</code>。</p>
-<h3 id="每一位版本号的含义"><a href="#每一位版本号的含义" class="headerlink" title="每一位版本号的含义"></a>每一位版本号的含义</h3><ol>
-<li><code>&lt;major&gt;</code> 即主版本号，俗称大版本升级。改动到主版本号时，标志着 API 发生了巨大变化，包括但不限于新增特性、修改机制、删除功能， <strong>一般不兼容上一个主版本号</strong>。</li>
-<li><code>&lt;minor&gt;</code> 即次版本号，俗称小版本升级。当我们进行常规的新增或修改功能时，改动次版本号，但是 <strong>必须是向前兼容的</strong>。这也意味着我们 <strong>不能直接删除某个功能</strong>。如若必要，我们可以在 <a href="http://guide.taobao.net/6.changelog.php" target="_blank" rel="external">changelog</a> 中标记某项功能为「即将删除（Deprecated）」，然后在下一个大版本中将其彻底删除。</li>
-<li><code>&lt;patch&gt;</code> 即修订号，俗称 bug 修复。顾名思义，如果仅仅为了修复或调整一些小问题，我们就只改动修订号。</li>
-</ol>
-<p>所以，当我们明确了每一位的含义和作用后，就不会陷入「每次只改最末位」的尴尬中了。</p>
-<p>那如何判断一个修改应该是改动修订号还是次版本号呢？视情况而定。比如对于「修改了 app 图标」这件事来说，如果只是调整了图标的间距位置，那么可以认作问题修复；如果把整个图标换了，配上了不同的标语，那么这应该是一次功能改动。</p>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>版本号前不要加 <code>v</code>。</li>
-<li>不要在数字前补 <code>0</code>。错误示例：<code>01.12.03</code>。</li>
-<li>每一位版本号按照 +1 的速度递增，不要在版本号之间跳跃。</li>
-<li>主版本号停留在 <code>0</code> 的版本号，即 <code>0.x.x</code> 应当视作还在内部开发阶段的代码。如果代码有公共 API，此时不宜对外公开。</li>
-<li><code>1.0.0</code> 的版本号用于界定公共 API 的形成。</li>
-<li>当次版本号递增时，修订号归零；当主版本号递增时，次版本号、修订号归零。</li>
-<li>进行新的开发时，版本号从 <code>0.1.0</code> 开始。</li>
-<li>如果不小心把一个不兼容的改版当成了次版本号发行，应当发行一个新的次版本号来更正这个问题并且恢复向下兼容。注意 <strong>不能去修改已发行的版本</strong>。</li>
-</ul>
-<h3 id="一个典型的版本号发展示例"><a href="#一个典型的版本号发展示例" class="headerlink" title="一个典型的版本号发展示例"></a>一个典型的版本号发展示例</h3><ol>
-<li><code>0.1.0</code></li>
-<li><code>0.1.1</code></li>
-<li><code>0.1.2</code></li>
-<li><code>0.2.0</code></li>
-<li><code>1.0.0</code></li>
-<li><code>1.1.0</code></li>
-<li><code>1.1.1</code></li>
-<li>……</li>
-</ol>
-<h3 id="快速修改版本号"><a href="#快速修改版本号" class="headerlink" title="快速修改版本号"></a>快速修改版本号</h3><p>如果一个包发布在 NPM / TNPM 中，可以快速修改其版本号。会自动触发一个 git 提交。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 递增一个修订号</span><br><span class="line">npm version patch</span><br><span class="line"></span><br><span class="line"># 递增一个次版本号</span><br><span class="line">npm version minor</span><br><span class="line"></span><br><span class="line"># 递增一个主版本号</span><br><span class="line">npm version major</span><br></pre></td></tr></table></figure>
-<h2 id="预发版本号"><a href="#预发版本号" class="headerlink" title="预发版本号"></a>预发版本号</h2><p>在常规的版本号命名之上还有一个特殊类别，叫做预发版本号（prerelease version）。它表示当前版本是一个不稳定的版本，使用它时需要注意风险。</p>
-<p>预发版本号的格式是 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;tag&gt;</code>，即前半部分和常规版本号相同，然后跟上连接符 <code>-</code>，后面再跟上字母数字点号连接符（[0-9A-Za-z-.]）。</p>
-<p>一个典型的预发版本号形如 <code>1.0.0-beta.1</code>。建议使用这种 <code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;stage&gt;.&lt;num&gt;</code> 的形式。其中 <code>&lt;stage&gt;</code> 一般选用：<code>alpha</code>、<code>beta</code>、<code>rc</code>。</p>
-<p>预发版本号是常规版本号的附属，因此在版本的大小比较上，仍然先比较常规版本号部分；对于预发标记部分的比较，则是根据 ASCII 字母表中的顺序来进行。</p>
-<h3 id="一个典型的预发版本号发展示例"><a href="#一个典型的预发版本号发展示例" class="headerlink" title="一个典型的预发版本号发展示例"></a>一个典型的预发版本号发展示例</h3><ol>
-<li><code>0.9.0</code></li>
-<li><code>1.0.0-alpha.1</code></li>
-<li><code>1.0.0-alpha.2</code></li>
-<li><code>1.0.0-beta.1</code></li>
-<li><code>1.0.0-rc.1</code></li>
-<li><code>1.0.0</code></li>
-<li><code>1.0.1</code></li>
-<li>……</li>
-</ol>
-<h2 id="依赖的版本号标记法"><a href="#依赖的版本号标记法" class="headerlink" title="依赖的版本号标记法"></a>依赖的版本号标记法</h2><p>我们广泛使用的 NPM 本身也遵从 SemVer 版本号命名，除了包版本本身的定义之外，最重要的是对三方包依赖的版本号的定义，不当的写法将导致一系列潜在的问题。</p>
-<h3 id="指定可用的版本号范围"><a href="#指定可用的版本号范围" class="headerlink" title="指定可用的版本号范围"></a>指定可用的版本号范围</h3><p>在 NPM 包的 deps 系列字段中，经常出现形如 <code>~1.0.4</code>、<code>^2.1.1</code> 这样的标记法，这种标记法标记的是「版本号范围（version range）」，它表示依赖的三方包其版本号只要落在定义版本号范围内，即算合法。另外，当运行 <code>npm update</code> 时，依赖的包将升级到版本号范围支持的最高版本。</p>
-<p>版本号范围的标记符号有很多种，诸如比较符号 <code>&gt;=</code>、<code>&lt;</code> 等；连接符 <code>-</code>；通配符 <code>x</code>、<code>*</code>；模糊符 <code>^</code>、<code>~</code>。具体的用法可参考 <a href="https://docs.npmjs.com/misc/semver" target="_blank" rel="external">NPM 官方文档</a>，这里仅给出常用的标记方式。</p>
-<table>
-<thead>
-<tr>
-<th>含义</th>
-<th>最简写法</th>
-<th>使用通配符的写法</th>
-<th>使用模糊符的写法</th>
-<th>表达的版本号范围</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>仅跟进修复版本</td>
-<td><code>1.0</code></td>
-<td><code>1.0.x</code></td>
-<td><code>~1.0.4</code></td>
-<td><code>&gt;=1.0.4 &lt;1.1.0</code></td>
-</tr>
-<tr>
-<td>跟进每个小版本更新</td>
-<td><code>1</code></td>
-<td><code>1.x</code>、<code>1.x.x</code></td>
-<td><code>^1.0.4</code></td>
-<td><code>&gt;=1.0.4 &lt;2.0.0</code></td>
-</tr>
-<tr>
-<td>始终升级到最新版</td>
-<td><code>*</code></td>
-<td><code>*</code></td>
-<td><code>*</code></td>
-<td><code>&gt;=0.0.0</code></td>
-</tr>
-</tbody>
-</table>
-<p>我们建议在写法上采用 <strong>「使用通配符的写法」</strong>，并且一般情况下 <strong>「跟进每个小版本更新」</strong>，但 <strong>不「始终升级到最新版」</strong>，即书写为 <code>1.x</code>。由于 <code>&lt;major&gt;</code> 位版本是不向下兼容的，所以在大版本的控制上，仍然采用人为干预以保证安全。</p>
-<h3 id="不同的-deps-字段"><a href="#不同的-deps-字段" class="headerlink" title="不同的 deps 字段"></a>不同的 deps 字段</h3><p>NPM 包中的依赖有几种形式的字段：<code>dependencies</code>、<code>devDependencies</code>、<code>peerDependencies</code>。以下简要介绍下各字段的不同含义，以及使用场景。</p>
-<table>
-<thead>
-<tr>
-<th>字段</th>
-<th>含义</th>
-<th>依赖被安装的时机</th>
-<th>使用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>dependencies</code></td>
-<td>运行时依赖，包的调用者需要使用到的依赖</td>
-<td>执行 <code>npm install</code> 后会把当前包的 <code>dependencies</code> 字段中的所有依赖项安装到 <code>./node_modules</code> 目录。<br> 执行 <code>npm install xxx</code> 后会把 xxx 安装到 <code>./node_modules</code> 下，同时会安装 xxx 的 <code>dependencies</code> 字段依赖项到 <code>./node_modules/xxx/node_modules</code> 目录。  <br> 执行 <code>npm install xxx --save</code> 后会额外把 xxx 作为依赖存到当前包的 <code>dependencies</code> 字段中。</td>
-<td>所有程序运行需要用到的依赖代码，如 lodash 等。</td>
-</tr>
-<tr>
-<td><code>devDependencies</code></td>
-<td>开发时依赖，包的开发维护者需要使用到的依赖</td>
-<td>执行 <code>npm install</code> 后也会把当前包的 <code>devDependencies</code> 字段中的所有依赖项安装到 <code>./node_modules</code> 目录。<br> 执行 <code>npm install xxx</code> 后会把 xxx 安装到 <code>./node_modules</code> 下，但不会安装 xxx 的 <code>devDependencies</code> 字段依赖项。 <br> 执行 <code>npm install xxx --save-dev</code> 后会额外把 xxx 作为开发时依赖存到当前包的 <code>devDependencies</code> 字段中。</td>
-<td>一般是一些开发调试的辅助工具，如测试工具 mocha、构建工具 gulp 等。</td>
-</tr>
-<tr>
-<td><code>peerDependencies</code></td>
-<td>略</td>
-<td>略</td>
-<td>仅在 <a href="https://nodejs.org/en/blog/npm/peer-dependencies/" target="_blank" rel="external">特定场景</a> 下有用，默认不使用此字段。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ol>
-<li><a href="http://semver.org/" target="_blank" rel="external">Semantic Versioning</a></li>
-<li><a href="https://docs.npmjs.com/misc/semver" target="_blank" rel="external">NPM SemVer</a></li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="https://img.alicdn.com/tps/TB18IDkLXXXXXbeXpXXXXXXXXXX-900-500.png" alt="论版本号的正确打开方式"></p>
-<p>版本号广泛运用于开发的各种场景：NPM 包的版本定义、对 NPM ]]>
-    </summary>
-    
-      <category term="版本号" scheme="http://taobaofed.org/tags/%E7%89%88%E6%9C%AC%E5%8F%B7/"/>
-    
-      <category term="SemVer" scheme="http://taobaofed.org/tags/SemVer/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
