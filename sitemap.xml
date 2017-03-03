@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/10/nodejs-cluster-2/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+    <loc>http://taobaofed.org/blog/2017/02/10/why-rax/</loc>
+    <lastmod>2017-03-03T06:50:29.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/23/a-strange-bug-research-at-taobao-home-page/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/10/nodejs-cluster-2/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -22,12 +22,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/auto-layout-in-h5-project/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/02/22/canvas-performance/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/23/a-strange-bug-research-at-taobao-home-page/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -37,12 +32,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/02/buy-component/</loc>
+    <loc>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/02/buy-component/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -57,27 +52,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/03/deep-into-node-2/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/23/develop-tvos-app-with-javascript/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/10/29/deep-into-node-1/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/10/27/enter-the-door-of-nodejs/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/08/efficient-node-dev-cli-setup/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -87,22 +62,22 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/12/23/develop-tvos-app-with-javascript/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/12/03/deep-into-node-2/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/10/28/disaster-recovery-at-taobao-home-page/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/07/22/es6-basics/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/16/es7-decorator/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/11/03/es6-advanced/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/08/efficient-node-dev-cli-setup/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -112,17 +87,27 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/11/03/es6-advanced/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/10/27/enter-the-door-of-nodejs/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2016/01/19/feders-should-kown-some-docker-1/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/07/find-back-the-lost-es6-features-in-nodejs/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/16/es7-decorator/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/21/feders-should-kown-some-docker-2/</loc>
+    <loc>http://taobaofed.org/blog/2016/07/22/es6-basics/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -132,12 +117,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/10/frontend-test-platform/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/21/feders-should-kown-some-docker-2/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/07/find-back-the-lost-es6-features-in-nodejs/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -152,27 +137,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/18/how-does-the-ball-falling-into-the-appointed-hole/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/10/frontend-test-platform/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/16/h5-performance-optimization-and-domain-convergence/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/12/html-minify-service/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/26/graphql-basics-server-implementation/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -182,22 +152,32 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/12/16/h5-performance-optimization-and-domain-convergence/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/21/internationalization/</loc>
+    <loc>http://taobaofed.org/blog/2016/04/15/how-to-find-memory-leak/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/12/html-minify-service/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/06/jstracker-data-processing/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/18/how-does-the-ball-falling-into-the-appointed-hole/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -207,12 +187,22 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/08/karma-origin/</loc>
+    <loc>http://taobaofed.org/blog/2016/08/04/instructions-of-semver/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/01/kissy-badminton-open/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/21/internationalization/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/01/25/jsonschema/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/06/jstracker-data-processing/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -222,7 +212,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/17/kissy-version-solution/</loc>
+    <loc>http://taobaofed.org/blog/2016/01/08/karma-origin/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/12/01/kissy-badminton-open/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -237,7 +237,17 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/03/17/kissy-version-solution/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/11/04/mobile-rem-problem/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/02/22/canvas-performance/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -252,6 +262,11 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2015/12/22/node-subway-ep1/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
@@ -262,7 +277,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/05/05/new-compiler-for-android/</loc>
+    <loc>http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -272,27 +287,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/04/01/node-subway-shanghai/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/04/08/node-web-framework-design/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/03/nodejs-cluster/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/05/nodejs-errors/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -302,7 +297,27 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/28/anim-train/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/15/nodejs-cluster-cov/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/10/28/auto-layout-in-h5-project/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/03/nodejs-cluster/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/01/26/nodejs-ipc/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/05/nodejs-errors/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -317,22 +332,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/24/nodejs-php-process-manager/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/01/26/nodejs-ipc/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/10/30/nodejs-timer/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/24/nodejs-php-process-manager/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -342,17 +347,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/01/25/jsonschema/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2015/12/29/nodejs-unit-tests-workflow/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/11/17/nvm-or-n/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -362,17 +357,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/08/12/optimized-react-components/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/17/nvm-or-n/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/04/05/optimize-in-tbhome/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -382,17 +377,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2017/01/13/rax-in-act/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/04/25/performance-composite/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/</loc>
+    <loc>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -402,7 +392,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/08/24/react-key/</loc>
+    <loc>http://taobaofed.org/blog/2017/01/13/rax-in-act/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/05/03/promise-anti-patterns/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -417,7 +412,17 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</loc>
+    <loc>http://taobaofed.org/blog/2016/08/24/react-key/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2015/11/25/react-native-android-debug/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://taobaofed.org/blog/2016/03/11/react-web-intro/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -427,12 +432,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/17/seller-bigpipe/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/25/seller-bigpipe-coding/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/17/seller-bigpipe/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -447,12 +452,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/30/the-communication-scheme-of-react-native-in-ios/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2015/12/18/think-to-def/</loc>
+    <loc>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -462,17 +462,17 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/12/30/the-communication-scheme-of-react-native-in-ios/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2016/03/23/the-growth-of-front-end/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://taobaofed.org/blog/2016/03/11/react-web-intro/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/18/think-to-def/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -482,7 +482,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/25/react-native-android-debug/</loc>
+    <loc>http://taobaofed.org/blog/2015/10/28/try-catch-runing-problem/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -497,7 +497,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/02/waterfall-analyze/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/14/velocity-new-york-2015-frontend/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -507,7 +507,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/14/velocity-new-york-2015-frontend/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/02/waterfall-analyze/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -527,7 +527,7 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/11/20/webkit-remote-debug-test/</loc>
+    <loc>http://taobaofed.org/blog/2015/12/21/webgl-handbook/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -537,17 +537,12 @@
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/12/21/webgl-handbook/</loc>
-    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
-  </url>
-  
-  <url>
     <loc>http://taobaofed.org/blog/2016/09/09/webpack-flow/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2017/02/10/why-rax/</loc>
+    <loc>http://taobaofed.org/blog/2015/11/20/webkit-remote-debug-test/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
@@ -562,12 +557,17 @@
   </url>
   
   <url>
+    <loc>http://taobaofed.org/blog/2015/12/28/anim-train/</loc>
+    <lastmod>2017-03-02T06:21:42.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
   <url>
-    <loc>http://taobaofed.org/blog/2015/10/28/try-catch-runing-problem/</loc>
+    <loc>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</loc>
     <lastmod>2017-03-02T06:21:42.000Z</lastmod>
   </url>
   
