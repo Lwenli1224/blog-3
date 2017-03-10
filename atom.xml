@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-03-06T05:06:39.000Z</updated>
+  <updated>2017-03-10T05:32:44.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,145 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[认识 TypeScript]]></title>
+    <link href="http://taobaofed.org/blog/2017/03/09/head-first-typescript/"/>
+    <id>http://taobaofed.org/blog/2017/03/09/head-first-typescript/</id>
+    <published>2017-03-08T23:17:52.000Z</published>
+    <updated>2017-03-10T05:32:44.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
+<p>这是一个系列文章，一共会有三篇：</p>
+<ol>
+<li>[本篇] 认识 TypeScript - 简单描述 TypeScript 的定位、特点。</li>
+<li>TypeScript 语法学习 - 比较文档化的讲述 TypeScript 的使用方式。</li>
+<li>TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、React 工程 —— 中应用 TypeScript。</li>
+</ol>
+<p>最近几个月有幸体验了 TypeScript，它对大型软件 —— 大型 JavaScript 软件 —— 开发来说真是一把利刃。就像我斜后方那个男人一样，写了 TypeScript 就不想再写 JavaScript 了 —— 真乃取其精华去其糟粕啊！</p>
+<p>没想到我一个 Linux 的老用户 Copyleft 的忠实拥护者，也会像今天这样喜欢用 M$ 出的东西，17 岁到 19 岁的我一定会鄙视死现在的我。</p>
+<h2 id="背景认识"><a href="#背景认识" class="headerlink" title="背景认识"></a>背景认识</h2><p>TypeScript 是微软开发一款开源的编程语言，本质上是向 JavaScript 增加静态类型系统。它是 JavaScript 的超集，所有现有的 JavaScript 都可以不加改变就在其中使用。它是为大型软件开发而设计的，它最终编译产生 JavaScript，所以可以运行在浏览器、Node.js 等等的运行时环境。</p>
+<h2 id="什么是类型系统"><a href="#什么是类型系统" class="headerlink" title="什么是类型系统"></a>什么是类型系统</h2><p>下面是摘自 <code>《 Types And Programming Languages 》</code> 中的定义： </p>
+<blockquote>
+<p>A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute.</p>
+</blockquote>
+<p>第一个重点是 <code>Proving the absence of certain program behaviors</code>，所以我们亦可将类型检查器看做一个程序推理工具，可以静态的证明程序成立。</p>
+<p>另一个重点是 <code>Classifying phrases according to the kinds of values they compute</code>，对词语（比如变量）的值的性质进行分类，比如说 TypeScript 中的 <code>Interface</code> 、 <code>Class</code> 等能力。</p>
+<h2 id="静态类型系统是什么"><a href="#静态类型系统是什么" class="headerlink" title="静态类型系统是什么"></a>静态类型系统是什么</h2><p>增加<code>静态</code>这个定语，是为了和运行时的类型检查机制加以区分，强调<code>静态类型系统</code>是在编译时进行类型分析。</p>
+<p>JavaScript 不是一个静态编译语言,不存在编译这一步骤。但从 <code>程序推理工具</code> 的角度来看，JavaScript 的配套中还是有不少的，比如 <code>ESLint</code> 这个不完备的 <code>程序推理工具</code>。</p>
+<h2 id="静态类型系统与-Lint-工具的关系"><a href="#静态类型系统与-Lint-工具的关系" class="headerlink" title="静态类型系统与 Lint 工具的关系"></a>静态类型系统与 Lint 工具的关系</h2><p>我们先看 <code>ESLint</code> 的定义：</p>
+<blockquote>
+<p>Code linting is a type of static analysis that is frequently used to find problematic patterns or code that doesn’t adhere to certain style guidelines. </p>
+</blockquote>
+<h3 id="区别一"><a href="#区别一" class="headerlink" title="区别一"></a>区别一</h3><p>同样强调 <code>Static Analysis</code>，不过更强调 <code>Certain Style Guidelines</code> ，<code>Lint 工具</code>是一种团队协作时的风格规范工具。</p>
+<h3 id="区别二"><a href="#区别二" class="headerlink" title="区别二"></a>区别二</h3><p><code>静态类型类型分析</code>和 <code>Lint 工具</code> 的区别在于 <code>Lint 工具</code> 没有 <code>Classifying phrases according to the kinds of values they compute</code>。</p>
+<p><code>Lint 工具</code>无法基于类型对程序进行静态分析，但两者都有基于 <code>CFG （控制流图，Control Flow Graph）</code>对程序进行分析的能力。比如 TypeScript 的控制流分析、<code>ESLint</code> 的 <code>complexity</code> （当你想写个比较复杂的迭代算法时，这个规则就是个渣） 规则等。</p>
+<h2 id="TypeScript-和-JavaScript-的关系"><a href="#TypeScript-和-JavaScript-的关系" class="headerlink" title="TypeScript 和 JavaScript 的关系"></a>TypeScript 和 JavaScript 的关系</h2><p>和一些基于 JavaScript 的激进语言不同（比如 CoffeeScript），TypeScript 的语法设计首先考虑的就是兼容 JavaScript，或者说对 JavaScript 的语法做扩展。基本上是在 JavaScript 的基础之上增加了一些类型标记语法，以实现静态类型分析。把这些类型标注语法去掉之后，仍是一个标准的 JavaScript 语言。</p>
+<p>TypeScript 同样也在做一些新语法编译到老语法的事情（就像 Babel 做的）， 基本实现常用的 <code>EcmaScript Stage 1</code> 以上的语法特性。</p>
+<h2 id="类型系统的益处"><a href="#类型系统的益处" class="headerlink" title="类型系统的益处"></a>类型系统的益处</h2><h3 id="侦测错误"><a href="#侦测错误" class="headerlink" title="侦测错误"></a>侦测错误</h3><p>静态类型分析首要优点就是能尽早的发现逻辑错误，而不是上线之后才发现。比如我们在 JavaScript 中经常发生的问题，函数返回值含混。在开发过程中坚信一个函数返回字符串，但到了线上接受了真实数据却返回了 <code>undefined</code>。看似一个简单错误，却可能给公司造成数以万计的损失。</p>
+<p>看个例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过分数获取图标</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getRankIcon</span>(<span class="params">score</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(score &gt;= <span class="number">100</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(score &gt;= <span class="number">500</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(score &gt;= <span class="number">1500</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> icon = getRankIcon(<span class="number">5</span>);</span><br><span class="line"><span class="keyword">const</span> iconArray = icon.split();</span><br></pre></td></tr></table></figure>
+<p>脆弱的 JS 啊，执行一下，Ops！</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">node</span> <span class="title">taste</span>.js</span><br><span class="line">TypeError: Cannot <span class="keyword">read</span> <span class="keyword">property</span><span class="title"> </span>'split' of undefined</span><br></pre></td></tr></table></figure>
+<p>相同的逻辑我们用 <code>tsc</code> 编译一下（甚至不需要增加任何的类型标注）。直接静态分析出来程序有一个 <code>undefined</code> 。</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc --strictNullChecks taste.ts</span><br><span class="line">x.ts(<span class="number">11</span>,<span class="number">19</span>): <span class="keyword">error</span> TS2532: <span class="built_in">Object</span> <span class="keyword">is</span> possibly <span class="comment">'undefined'.</span></span><br></pre></td></tr></table></figure>
+<p>另一个重要的用处是作为维护工具（重构辅助工具），假如我们有一个很通用的函数，在工程里用的到处都是，有一天我们要在这个函数最前面增加一个参数。TypeScript 中你只需要改那个函数就好了，然后再执行静态类型分析，所有和这个函数参数不匹配的地方都会提示出来。但是，在 JavaScript 里，这个改动很有可能被忽略或者漏掉，打包也不会报错，然后发布后线上就挂了……</p>
+<h3 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h3><p>类型系统的另一个优点是强化规范编程，TypeScript 提供了简便的方式定义接口。这一点在大型软件开发时尤为重要，一个系统模块可以抽象的看做一个 TypeScript 定义的接口。</p>
+<p>用带清晰接口的模块来结构化大型系统，这是一种更为抽象的设计形式。接口设计（讨论）与最终实现方式无关，对接口思考得越抽象越有利。</p>
+<p>换句话说就是让设计脱离实现，最终体现出一种 <code>IDL（接口定义语言，Interface Define Language）</code>，让程序设计回归本质。</p>
+<p>看个例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">interface Avatar &#123;</span><br><span class="line">  cdnUrl: string; <span class="comment">// 用户头像在 CDN 上的地址</span></span><br><span class="line">  filePath: string; <span class="comment">// 用户头像在对象存储上的路径</span></span><br><span class="line">  fileSize: number; <span class="comment">// 文件大小</span></span><br><span class="line">&#125;</span><br><span class="line">interface UserProfile &#123;</span><br><span class="line">  cuid?: string; <span class="comment">// 用户识别 ID，可选</span></span><br><span class="line">  avatar?: Avatar; <span class="comment">// 用户形象，可选</span></span><br><span class="line">  name: string; <span class="comment">// 用户名，必选</span></span><br><span class="line">  gender: string; <span class="comment">// 用户性别，必选</span></span><br><span class="line">  age: number; <span class="comment">// 用户年龄，必选</span></span><br><span class="line">&#125;</span><br><span class="line">interface UserModel &#123;</span><br><span class="line">  createUser(profile: UserProfile): string; <span class="comment">// 创建用户</span></span><br><span class="line">  getUser(cuid: string): UserProfile; <span class="comment">// 根据 cuid 获取用户</span></span><br><span class="line">  listFollowers(cuid: string): UserProfile[]; <span class="comment">// 获取所有关注者</span></span><br><span class="line">  followByCuid(cuid: string, who: string): string; <span class="comment">// 关注某人</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那我实现上述 <code>Interface</code> 也只需如下进行。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserModelImpl</span> <span class="title">implements</span> <span class="title">UserModel</span> </span>&#123;</span><br><span class="line">   createUser(profile: UserProfile): string &#123;</span><br><span class="line">     <span class="comment">// do something</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 把 UserModel 定义的都实现</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><p>读程序时类型标注也有用处，不止是说人在读的时候。基于类型定义 IDE 可以对我们进行很多辅助，比如找到一个函数所有的使用，编写代码时对参数进行提示等等。</p>
+<p>更重要的是这种文档能力不像纯人工维护的注释一样，稍不留神就忘了更新注释，最后注释和程序不一致。</p>
+<p>更强大的是，可以自动根据类型标注产生文档，甚至都不需要编写注释（详细的人类语言描述还是要写注释的）。</p>
+<p>首先安装全局的 <code>typedoc</code> 命令。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm <span class="keyword">install</span> -g typedoc</span><br></pre></td></tr></table></figure>
+<p>然后我们尝试对上面抽象的 <code>Interface</code> 产生文档。</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; typedoc taste.ts --<span class="keyword">module</span> commonjs --<span class="keyword">out</span> <span class="meta">doc</span></span><br></pre></td></tr></table></figure>
+<p>然后下面就是效果了。</p>
+<p><img src="https://gw.alicdn.com/tfs/TB1G_7nPVXXXXX1XXXXXXXXXXXX-935-1277.jpg" alt=""></p>
+<h2 id="编写第一个-TypeScript-程序"><a href="#编写第一个-TypeScript-程序" class="headerlink" title="编写第一个 TypeScript 程序"></a>编写第一个 TypeScript 程序</h2><p>这一节会介绍如何开始体验 TypeScript，下一节开始会介绍一些有特点、有趣的例子。</p>
+<h3 id="前置准备"><a href="#前置准备" class="headerlink" title="前置准备"></a>前置准备</h3><p>安装 TypeScript。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> -g typescript</span><br></pre></td></tr></table></figure>
+<p>初始化工作区。</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> learning-typescript</span><br><span class="line"><span class="built_in">cd</span> learning-typescript</span><br></pre></td></tr></table></figure>
+<p>新建第一个测试文件。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">touch</span> <span class="selector-tag">taste</span><span class="selector-class">.ts</span></span><br></pre></td></tr></table></figure>
+<h3 id="第一个例子"><a href="#第一个例子" class="headerlink" title="第一个例子"></a>第一个例子</h3><p>我们刚才已经新建了一个名为 <code>taste.ts</code> 的文件，对 TypeScript 的后缀名为 <code>ts</code>，那我们写点什么进去吧！</p>
+<p>taste.ts</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">text: string</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(text);</span><br><span class="line">&#125;</span><br><span class="line">say(<span class="string">'hello!'</span>);</span><br></pre></td></tr></table></figure>
+<p>然后执行命令（tsc 是刚才 npm 装的 typescript 中带的）。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">tsc</span> <span class="selector-tag">taste</span><span class="selector-class">.ts</span></span><br></pre></td></tr></table></figure>
+<p>然后我们得到一个编译后的文件 <code>taste.js</code>，内容如下。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">text</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(text);</span><br><span class="line">&#125;</span><br><span class="line">say(<span class="string">'hello!'</span>);</span><br></pre></td></tr></table></figure>
+<p>可以看到，只是简单去除了 text 后面的类型标注，然后我们用 <code>node</code> 执行 <code>taste.js</code>。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">taste</span>.js</span><br><span class="line">// hello!</span><br></pre></td></tr></table></figure>
+<p>完美执行，让我再改写东西看看？</p>
+<p>taste.ts</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">text: string</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(text);</span><br><span class="line">&#125;</span><br><span class="line">say(<span class="number">969</span>);</span><br></pre></td></tr></table></figure>
+<p>然后再执行 <code>tsc taste.ts</code>，然后就类型检查就报错了。这就是 TypeScript 的主要功能 —— 静态类型检查。</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts </span><br><span class="line">taste.ts(<span class="number">4</span>,<span class="number">5</span>): error TS2345: Argument <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'969'</span> <span class="keyword">is</span> <span class="keyword">not</span> assignable <span class="keyword">to</span> parameter <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'string'</span>.</span><br></pre></td></tr></table></figure>
+<h2 id="有趣的例子-基于控制流的分析"><a href="#有趣的例子-基于控制流的分析" class="headerlink" title="有趣的例子 - 基于控制流的分析"></a>有趣的例子 - 基于控制流的分析</h2><p>看一个 JavaScript 的例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getDefaultValue</span> (<span class="params">key, emphasis</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ret;</span><br><span class="line">  <span class="keyword">if</span>(key === <span class="string">'name'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'GuangWong'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(key=== <span class="string">'gender'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'Man'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> (key === <span class="string">'age'</span>) &#123;</span><br><span class="line">    ret = <span class="number">23</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Unkown key '</span> + info.type);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(emphasis) &#123;</span><br><span class="line">    ret = ret.toUpperCase();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getDefaultValue(<span class="string">'name'</span>); <span class="comment">// GuangWong</span></span><br><span class="line">getDefaultValue(<span class="string">'gender'</span>, <span class="literal">true</span>) <span class="comment">// MAN</span></span><br><span class="line">getDefaultValue(<span class="string">'age'</span>) <span class="comment">// Error: toUpperCase is not a function</span></span><br></pre></td></tr></table></figure>
+<p>这是一个简单的函数，第一个参数 <code>key</code> 用来获得一个默认值。第二参数 <code>emphasis</code> 为了某些场景下要大写强调，只需要传入 <code>true</code> 即可自动将结果转成大写。 </p>
+<p>但是我不小心将 <code>age</code> 的值写成了数字字面量，如果我调用 <code>getDefaultValue(&#39;age&#39;)</code> 就会在运行时报错。这个有可能是软件上线了之后才发生，直接导致业务不可用。</p>
+<p>TypeScript 就能避免这类问题，我们只需要进行一个简单的标注。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getDefaultValue</span> (<span class="params">key, emphasis?</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ret: string;</span><br><span class="line">  <span class="keyword">if</span>(key === <span class="string">'name'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'GuangWong'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(key === <span class="string">'gender'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'Man'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key === <span class="string">'age'</span>) &#123;</span><br><span class="line">    ret = <span class="number">23</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Unkown key '</span> + key);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(emphasis) &#123;</span><br><span class="line">    ret = ret.toUpperCase();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getDefaultValue(<span class="string">'name'</span>); <span class="comment">// GuangWong</span></span><br><span class="line">getDefaultValue(<span class="string">'gender'</span>, <span class="literal">true</span>) <span class="comment">// MAN</span></span><br><span class="line">getDefaultValue(<span class="string">'age'</span>) <span class="comment">// Error: toUpperCase is not a function</span></span><br></pre></td></tr></table></figure>
+<p>在 <code>tsc</code> 编译时，逻辑错误会自动报出来。妈妈再也不怕我的逻辑混乱了！ </p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">x.ts(<span class="number">8</span>,<span class="number">5</span>): error TS2322: <span class="keyword">Type</span> <span class="string">'23'</span> <span class="keyword">is</span> <span class="keyword">not</span> assignable <span class="keyword">to</span> <span class="keyword">type</span> <span class="string">'string'</span>.</span><br></pre></td></tr></table></figure>
+<h2 id="有趣的例子-Interface"><a href="#有趣的例子-Interface" class="headerlink" title="有趣的例子 - Interface"></a>有趣的例子 - Interface</h2><p>JavaScript 的类型我们称为鸭子类型。</p>
+<blockquote>
+<p>当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。</p>
+</blockquote>
+<p>鸭子类型总是有点损的感觉，不如叫做面向接口编程。所以 JavaScript 就是一门面向接口编程的语言，TypeScript 中相对应的就是 <code>Interface</code>。</p>
+<p>接下来看个例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">interface Profile &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  gender: <span class="string">'man'</span> | <span class="string">'woman'</span>;</span><br><span class="line">  age: number;</span><br><span class="line">  height?: number;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">printProfile</span>(<span class="params">profile: Profile</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'name'</span>, profile.name);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'gender'</span>, profile. gender);</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'age'</span>, profile.age);</span><br><span class="line">  <span class="keyword">if</span>(profile.height) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'height'</span>, profile.height);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">printProfile(&#123;name: <span class="string">'GuangWong'</span>, gender: <span class="string">'man'</span>, age: <span class="number">23</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>使用 <code>tsc</code> 编译一切完美，那我们尝试下面的调用。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">printProfile</span>(&#123;<span class="attribute">name</span>: <span class="string">'GuangWong'</span>, age: <span class="number">23</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>使用 <code>tsc</code> 编译，报错了！说没有传属性 <code>gender</code>。不过 <code>height</code> 也没传怎么没报错呢？因为 <code>height?: number</code>，其中的 <code>?</code> 表示这个是可选的。</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">x.ts(<span class="number">19</span>,<span class="number">14</span>): error TS2345: Argument <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'&#123; name: string; age: number; &#125;'</span> <span class="keyword">is</span> <span class="keyword">not</span> assignable <span class="keyword">to</span> parameter <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'Profile'</span>.</span><br><span class="line">  <span class="keyword">Property</span> <span class="string">'gender'</span> <span class="keyword">is</span> missing <span class="keyword">in</span> <span class="keyword">type</span> <span class="string">'&#123; name: string; age: number; &#125;'</span>.</span><br></pre></td></tr></table></figure>
+<p>接下来我们试着传个非 <code>number</code> 的 <code>height</code> 试试看。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printProfile(&#123;height: <span class="string">'190cm'</span>, name: <span class="string">'GuangWong'</span>, gender: <span class="string">'man'</span>, age: <span class="number">23</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>使用 <code>tsc</code> 编译，报错了！<code>string</code> 类型无法赋值给 <code>number</code> 类型。</p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">x.ts(<span class="number">17</span>,<span class="number">14</span>): error TS2345: Argument <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'&#123; height: string; name: string; gender: "man"; age: number; &#125;'</span> <span class="keyword">is</span> <span class="keyword">not</span> assignable <span class="keyword">to</span> parameter <span class="keyword">of</span> <span class="keyword">type</span> <span class="string">'Profile'</span>.</span><br><span class="line">  Types <span class="keyword">of</span> <span class="keyword">property</span> <span class="string">'height'</span> are incompatible.</span><br><span class="line">    <span class="keyword">Type</span> <span class="string">'string'</span> <span class="keyword">is</span> <span class="keyword">not</span> assignable <span class="keyword">to</span> <span class="keyword">type</span> <span class="string">'number'</span>.</span><br></pre></td></tr></table></figure>
+<h2 id="有趣的例子-Implements"><a href="#有趣的例子-Implements" class="headerlink" title="有趣的例子 - Implements"></a>有趣的例子 - Implements</h2><p>这也是 <code>Interface</code> 的应用，假设我们有这么一个 <code>Interface</code>，是某个架构师写的让我来实现一种事物，比如榴莲。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type Fell = <span class="string">'good'</span> | <span class="string">'bad'</span>;</span><br><span class="line">interface Eatable &#123;</span><br><span class="line">  calorie: number;</span><br><span class="line">  looks(): Fell;</span><br><span class="line">  taste(): Fell;</span><br><span class="line">  flavour(): Fell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我只需要简单的实现  <code>Eatable</code> 即可，即 <code>implements Eatable</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Durian</span> <span class="title">implements</span> <span class="title">Eatable</span> </span>&#123;</span><br><span class="line">  calorie = <span class="number">1000</span>;</span><br><span class="line">  looks(): Fell &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'good'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  taste(): Fell &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'good'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  flavour(): Fell &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'bad'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我删掉 <code>flavour</code> 的实现，那就会报错了！说我错误的实现了 <code>Eatable</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">x.ts(8,7): error TS2420: Class &apos;Durian&apos; incorrectly implements interface &apos;Eatable&apos;.</span><br><span class="line">  Property &apos;flavour&apos; is missing in type &apos;Durian&apos;.</span><br></pre></td></tr></table></figure>
+<h2 id="有趣的例子-函数重载"><a href="#有趣的例子-函数重载" class="headerlink" title="有趣的例子 - 函数重载"></a>有趣的例子 - 函数重载</h2><p>什么重载啊、多态啊、分派啊，在 JavaScript 里都是不存在的！那都是都是我们 Hacking 出来，Ugly！</p>
+<p>TypeScript 对函数重载有一定的支持，不过因为 TypeScript 不扩展 JavaScript 的运行时机制，还是需要我们来处理根据宗参分派的问题（说白了就是运行时类型判断）。</p>
+<p>下面是 TypeScript 文档中的一个例子。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> suits = [<span class="string">"hearts"</span>, <span class="string">"spades"</span>, <span class="string">"clubs"</span>, <span class="string">"diamonds"</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pickCard</span>(<span class="params">x: &#123;suit: string; card: number; &#125;[]</span>): <span class="title">number</span>;</span><br><span class="line"><span class="title">function</span> <span class="title">pickCard</span>(<span class="params">x: number</span>): </span>&#123;suit: string; card: number; &#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pickCard</span>(<span class="params">x</span>): <span class="title">any</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Check to see if we're working with an object/array</span></span><br><span class="line">    <span class="comment">// if so, they gave us the deck and we'll pick the card</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> x == <span class="string">"object"</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> pickedCard = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * x.length);</span><br><span class="line">        <span class="keyword">return</span> pickedCard;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Otherwise just let them pick the card</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> x == <span class="string">"number"</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> pickedSuit = <span class="built_in">Math</span>.floor(x / <span class="number">13</span>);</span><br><span class="line">        <span class="keyword">return</span> &#123; suit: suits[pickedSuit], card: x % <span class="number">13</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myDeck = [&#123; suit: <span class="string">"diamonds"</span>, card: <span class="number">2</span> &#125;, &#123; suit: <span class="string">"spades"</span>, card: <span class="number">10</span> &#125;, &#123; suit: <span class="string">"hearts"</span>, card: <span class="number">4</span> &#125;];</span><br><span class="line"><span class="keyword">let</span> pickedCard1 = myDeck[pickCard(myDeck)];</span><br><span class="line">alert(<span class="string">"card: "</span> + pickedCard1.card + <span class="string">" of "</span> + pickedCard1.suit);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> pickedCard2 = pickCard(<span class="number">15</span>);</span><br><span class="line">alert(<span class="string">"card: "</span> + pickedCard2.card + <span class="string">" of "</span> + pickedCard2.suit);</span><br></pre></td></tr></table></figure>
+<p>这样至少在函数头的描述上清晰多了，而且函数的各个分派函数的类型定义也可以明确的标记出来了。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>第一篇就先这样简单介绍 TypeScript 吧，详细的语法、工程应用接下来的篇幅中再详细介绍。</p>
+<ol>
+<li>如果大家对 TypeScript 真的有兴趣的话，可以移步官方文档继续学习。<br><a href="http://www.typescriptlang.org/docs/tutorial.html" target="_blank" rel="external">http://www.typescriptlang.org/docs/tutorial.html</a></li>
+<li>如果大家对类型系统的理论比较感兴趣的，建议把 <code>《 Types And Programming Languages 》</code> 买了并看了。</li>
+</ol>
+<blockquote>
+<p>题图：<a href="https://unsplash.com/photos/HbbHfXvb6Xw" target="_blank" rel="external">https://unsplash.com/photos/HbbHfXvb6Xw</a> By Nirzar Pangarkar</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
+<p>这是一个系列文章，一共会有三篇：</p>
+<ol>
+<li>[本篇] 认识 ]]>
+    </summary>
+    
+      <category term="TypeScript" scheme="http://taobaofed.org/tags/TypeScript/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[致未来的实习生]]></title>
     <link href="http://taobaofed.org/blog/2017/03/03/to-my-future-friend/"/>
     <id>http://taobaofed.org/blog/2017/03/03/to-my-future-friend/</id>
     <published>2017-03-03T01:14:01.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg" alt="致未来的实习生"></p>
 <p>岁月如歌，你的人生即将翻开新的篇章，也许你需要一份展现自我的优秀简历，也许你需要一份属于自己的未来规划，也许你需要一个优秀的导师帮助你成长。淘宝前端团队有很多优秀的 FEDer，他们和你们一样富有激情和梦想，对于过去也有过徘徊和迷茫。优秀的他们用自己的激情和努力完成了学生到专业攻城师的华丽转身，成为淘宝的 FEDer、最新技术的弄潮儿、团队不可或缺的重要成员。来听听他们的经历和建议，以及 Winter 老师带来的面试官视角，希望对同学们有所帮助。</p>
 <h2 id="那一年，我是如何“挤”进淘宝的"><a href="#那一年，我是如何“挤”进淘宝的" class="headerlink" title="那一年，我是如何“挤”进淘宝的"></a>那一年，我是如何“挤”进淘宝的</h2><p><img style="margin: 0;" src="http://gtms02.alicdn.com/tfs/TB1pjeUPVXXXXcgXFXXXXXXXXXX-770-1034.jpg" width="400"></p>
@@ -134,7 +268,7 @@
     <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
     <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
     <published>2017-03-02T05:25:09.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
 <p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
 <p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
@@ -187,7 +321,7 @@
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -621,7 +755,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1LxebPVXXXXaHXpXXXXXXXXXX-900-500.png" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -684,7 +818,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -758,7 +892,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -876,7 +1010,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -1037,7 +1171,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -1089,7 +1223,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -1285,7 +1419,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -1352,7 +1486,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -1452,7 +1586,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -1577,7 +1711,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -1681,7 +1815,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -1752,7 +1886,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -1835,7 +1969,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -1888,7 +2022,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
@@ -1949,7 +2083,7 @@
     <link href="http://taobaofed.org/blog/2016/09/09/webpack-flow/"/>
     <id>http://taobaofed.org/blog/2016/09/09/webpack-flow/</id>
     <published>2016-09-09T04:02:58.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1_ZnHNXXXXXXBXpXXXXXXXXXX-900-500.jpg" alt="细说 webpack 之流程篇"></p>
 <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>目前，几乎所有业务的开发构建都会用到 webpack 。的确，作为模块加载和打包神器，只需配置几个文件，加载各种 loader 就可以享受无痛流程化开发。但对于 webpack 这样一个复杂度较高的插件集合，它的整体流程及思想对我们来说还是很透明的。那么接下来我会带你了解 webpack 这样一个构建黑盒，首先来谈谈它的流程。</p>
 <h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h5 id="1-webstorm-中配置-webpack-webstorm-debugger-script"><a href="#1-webstorm-中配置-webpack-webstorm-debugger-script" class="headerlink" title="1. webstorm 中配置 webpack-webstorm-debugger-script"></a>1. webstorm 中配置 webpack-webstorm-debugger-script</h5><p>在开始了解之前，必须要能对 webpack 整个流程进行 debug ，配置过程比较简单。</p>
@@ -2056,7 +2190,7 @@
     <link href="http://taobaofed.org/blog/2016/08/24/react-key/"/>
     <id>http://taobaofed.org/blog/2016/08/24/react-key/</id>
     <published>2016-08-24T11:38:35.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
+    <updated>2017-03-10T05:32:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1sJ2wMVXXXXbyaXXXXXXXXXXX-900-500.jpg" alt="React 实践心得：key 属性的原理和用法"></p>
 <p>我们知道，React 元素可以具有一个特殊的属性 key，这个属性不是给用户自己用的，而是给 React 自己用的。如果我们动态地创建 React 元素，而且 React 元素内包含数量或顺序不确定的子元素时，我们就需要提供 key 这个特殊的属性。</p>
 <p>如果你有下面这样的代码：</p>
@@ -2102,85 +2236,6 @@
     </summary>
     
       <category term="React" scheme="http://taobaofed.org/tags/React/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[React 实践心得：react-redux 之 connect 方法详解]]></title>
-    <link href="http://taobaofed.org/blog/2016/08/18/react-redux-connect/"/>
-    <id>http://taobaofed.org/blog/2016/08/18/react-redux-connect/</id>
-    <published>2016-08-18T07:15:12.000Z</published>
-    <updated>2017-03-06T05:06:39.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
-<p>Redux 是「React 全家桶」中极为重要的一员，它试图为 React 应用提供「可预测化的状态管理」机制。Redux 本身足够简单，除了 React，它还能够支持其他界面框架。所以如果要将 Redux 和 React 结合起来使用，就还需要一些额外的工具，其中最重要的莫过于 react-redux 了。</p>
-<p>react-redux 提供了两个重要的对象，<code>Provider</code> 和 <code>connect</code>，前者使 React 组件可被连接（connectable），后者把 React 组件和 Redux 的 store 真正连接起来。react-redux 的文档中，对 <code>connect</code> 的描述是一段晦涩难懂的英文，在初学 redux 的时候，我对着这段文档阅读了很久，都没有全部弄明白其中的意思（大概就是，单词我都认识，连起来啥意思就不明白了的感觉吧）。</p>
-<p>在使用了一段时间 redux 后，本文尝试再次回到这里，给<a href="https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options" target="_blank" rel="external">这段文档</a>（同时摘抄在附录中）一个靠谱的解读。</p>
-<h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><p>首先回顾一下 redux 的基本用法。如果你还没有阅读过 redux 的文档，你一定要先去<a href="https://github.com/reactjs/redux/blob/master/docs/README.md" target="_blank" rel="external">阅读一下</a>。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> reducer = (state = &#123;count: <span class="number">0</span>&#125;, action) =&gt; &#123;</span><br><span class="line">  <span class="keyword">switch</span> (action.type)&#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'INCREASE'</span>: <span class="keyword">return</span> &#123;count: state.count + <span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'DECREASE'</span>: <span class="keyword">return</span> &#123;count: state.count - <span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">default</span>: <span class="keyword">return</span> state;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> actions = &#123;</span><br><span class="line">  increase: () =&gt; (&#123;type: <span class="string">'INCREASE'</span>&#125;),</span><br><span class="line">  decrease: () =&gt; (&#123;type: <span class="string">'DECREASE'</span>&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = createStore(reducer);</span><br><span class="line"></span><br><span class="line">store.subscribe(() =&gt;</span><br><span class="line">  <span class="built_in">console</span>.log(store.getState())</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">store.dispatch(actions.increase()) <span class="comment">// &#123;count: 1&#125;</span></span><br><span class="line">store.dispatch(actions.increase()) <span class="comment">// &#123;count: 2&#125;</span></span><br><span class="line">store.dispatch(actions.increase()) <span class="comment">// &#123;count: 3&#125;</span></span><br></pre></td></tr></table></figure>
-<p>通过 <code>reducer</code> 创建一个 <code>store</code>，每当我们在 <code>store</code> 上 <code>dispatch</code> 一个 <code>action</code>，<code>store</code> 内的数据就会相应地发生变化。</p>
-<p>我们当然可以<strong>直接</strong>在 React 中使用 Redux：在最外层容器组件中初始化 <code>store</code>，然后将 <code>state</code> 上的属性作为 <code>props</code> 层层传递下去。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Component</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  componentWillMount()&#123;</span><br><span class="line">    store.subscribe((state)=&gt;<span class="keyword">this</span>.setState(state))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Comp</span> <span class="attr">state</span>=<span class="string">&#123;this.state&#125;</span></span><br><span class="line">                 <span class="attr">onIncrease</span>=<span class="string">&#123;()</span>=&gt;</span>store.dispatch(actions.increase())&#125;</span><br><span class="line">                 onDecrease=&#123;()=&gt;store.dispatch(actions.decrease())&#125;</span><br><span class="line">    /&gt;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>但这并不是最佳的方式。最佳的方式是使用 react-redux 提供的 <code>Provider</code> 和 <code>connect</code> 方法。</p>
-<h2 id="使用-react-redux"><a href="#使用-react-redux" class="headerlink" title="使用 react-redux"></a>使用 react-redux</h2><p>首先在最外层容器中，把所有内容包裹在 <code>Provider</code> 组件中，将之前创建的 <code>store</code> 作为 <code>prop</code> 传给 <code>Provider</code>。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> App = () =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">Provider</span> <span class="attr">store</span>=<span class="string">&#123;store&#125;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">Comp</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Provider</span>&gt;</span></span></span><br><span class="line">  )</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><code>Provider</code> 内的任何一个组件（比如这里的 <code>Comp</code>），如果需要使用 <code>state</code> 中的数据，就必须是「被 connect 过的」组件——使用 <code>connect</code> 方法对「你编写的组件（<code>MyComp</code>）」进行包装后的产物。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">// content...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Comp = connect(...args)(MyComp);</span><br></pre></td></tr></table></figure>
-<p>可见，<code>connect</code> 方法是重中之重。</p>
-<h2 id="connect-详解"><a href="#connect-详解" class="headerlink" title="connect 详解"></a><code>connect</code> 详解</h2><p>究竟 <code>connect</code> 方法到底做了什么，我们来一探究竟。</p>
-<p>首先看下函数的签名：</p>
-<blockquote>
-<p>connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])</p>
-</blockquote>
-<p><code>connect()</code> 接收四个参数，它们分别是 <code>mapStateToProps</code>，<code>mapDispatchToProps</code>，<code>mergeProps</code>和<code>options</code>。</p>
-<h3 id="mapStateToProps-state-ownProps-stateProps"><a href="#mapStateToProps-state-ownProps-stateProps" class="headerlink" title="mapStateToProps(state, ownProps) : stateProps"></a><code>mapStateToProps(state, ownProps) : stateProps</code></h3><p>这个函数允许我们将 <code>store</code> 中的数据作为 <code>props</code> 绑定到组件上。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapStateToProps = (state) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    count: state.count</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个函数的第一个参数就是 Redux 的 <code>store</code>，我们从中摘取了 <code>count</code> 属性。因为返回了具有 <code>count</code> 属性的对象，所以 <code>MyComp</code> 会有名为 <code>count</code> 的 <code>props</code> 字段。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>计数：&#123;this.props.count&#125;次<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Comp = connect(...args)(MyComp);</span><br></pre></td></tr></table></figure>
-<p>当然，你不必将 <code>state</code> 中的数据原封不动地传入组件，可以根据 <code>state</code> 中的数据，动态地输出组件需要的（最小）属性。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapStateToProps = (state) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    greaterThanFive: state.count &gt; <span class="number">5</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>函数的第二个参数 <code>ownProps</code>，是 <code>MyComp</code> 自己的 <code>props</code>。有的时候，<code>ownProps</code> 也会对其产生影响。比如，当你在 <code>store</code> 中维护了一个用户列表，而你的组件 <code>MyComp</code> 只关心一个用户（通过 <code>props</code> 中的 <code>userId</code> 体现）。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapStateToProps = (state, ownProps) =&gt; &#123;</span><br><span class="line">  <span class="comment">// state 是 &#123;userList: [&#123;id: 0, name: '王二'&#125;]&#125;</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    user: _.find(state.userList, &#123;id: ownProps.userId&#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">static</span> PropTypes = &#123;</span><br><span class="line">    userId: PropTypes.string.isRequired,</span><br><span class="line">    user: PropTypes.object</span><br><span class="line">  &#125;;</span><br><span class="line">  </span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>用户名：&#123;this.props.user.name&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Comp = connect(mapStateToProps)(MyComp);</span><br></pre></td></tr></table></figure>
-<p>当 <code>state</code> 变化，或者 <code>ownProps</code> 变化的时候，<code>mapStateToProps</code> 都会被调用，计算出一个新的 <code>stateProps</code>，（在与 <code>ownProps</code> merge 后）更新给 <code>MyComp</code>。</p>
-<p>这就是将 Redux <code>store</code> 中的数据连接到组件的基本方式。</p>
-<h3 id="mapDispatchToProps-dispatch-ownProps-dispatchProps"><a href="#mapDispatchToProps-dispatch-ownProps-dispatchProps" class="headerlink" title="mapDispatchToProps(dispatch, ownProps): dispatchProps"></a><code>mapDispatchToProps(dispatch, ownProps): dispatchProps</code></h3><p><code>connect</code> 的第二个参数是 <code>mapDispatchToProps</code>，它的功能是，将 action 作为 <code>props</code> 绑定到 <code>MyComp</code> 上。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapDispatchToProps = (dispatch, ownProps) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    increase: (...args) =&gt; dispatch(actions.increase(...args)),</span><br><span class="line">    decrease: (...args) =&gt; dispatch(actions.decrease(...args))</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyComp</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render()&#123;</span><br><span class="line">    <span class="keyword">const</span> &#123;count, increase, decrease&#125; = <span class="keyword">this</span>.props;</span><br><span class="line">    <span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span>&gt;</span>计数：&#123;this.props.count&#125;次<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;increase&#125;</span>&gt;</span>增加<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">onClick</span>=<span class="string">&#123;decrease&#125;</span>&gt;</span>减少<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Comp = connect(mapStateToProps， mapDispatchToProps)(MyComp);</span><br></pre></td></tr></table></figure>
-<p>由于 <code>mapDispatchToProps</code> 方法返回了具有 <code>increase</code> 属性和 <code>decrease</code> 属性的对象，这两个属性也会成为 <code>MyComp</code> 的 <code>props</code>。</p>
-<p>如上所示，调用 <code>actions.increase()</code> 只能得到一个 <code>action</code> 对象 <code>{type:&#39;INCREASE&#39;}</code>，要触发这个 <code>action</code> 必须在 <code>store</code> 上调用 <code>dispatch</code> 方法。<code>diapatch</code> 正是 <code>mapDispatchToProps</code> 的第一个参数。但是，为了不让 <code>MyComp</code> 组件感知到 <code>dispatch</code> 的存在，我们需要将 <code>increase</code> 和 <code>decrease</code> 两个函数包装一下，使之成为直接可被调用的函数（即，调用该方法就会触发 <code>dispatch</code>）。</p>
-<p>Redux 本身提供了 <code>bindActionCreators</code> 函数，来将 action 包装成直接可被调用的函数。</p>
-<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;bindActionCreators&#125; <span class="keyword">from</span> <span class="string">'redux'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mapDispatchToProps = (dispatch, ownProps) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> bindActionCreators(&#123;</span><br><span class="line">    increase: action.increase,</span><br><span class="line">    decrease: action.decrease</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>同样，当 <code>ownProps</code> 变化的时候，该函数也会被调用，生成一个新的 <code>dispatchProps</code>，（在与 <code>statePrope</code> 和 <code>ownProps</code> merge 后）更新给 <code>MyComp</code>。注意，<code>action</code> 的变化不会引起上述过程，默认 <code>action</code> 在组件的生命周期中是固定的。</p>
-<h3 id="mergeProps-stateProps-dispatchProps-ownProps-props"><a href="#mergeProps-stateProps-dispatchProps-ownProps-props" class="headerlink" title="[mergeProps(stateProps, dispatchProps, ownProps): props]"></a><code>[mergeProps(stateProps, dispatchProps, ownProps): props]</code></h3><p>之前说过，不管是 <code>stateProps</code> 还是 <code>dispatchProps</code>，都需要和 <code>ownProps</code> merge 之后才会被赋给 <code>MyComp</code>。<code>connect</code> 的第三个参数就是用来做这件事。通常情况下，你可以不传这个参数，<code>connect</code> 就会使用 <code>Object.assign</code> 替代该方法。</p>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>最后还有一个 <code>options</code> 选项，比较简单，基本上也不大会用到（尤其是你遵循了其他的一些 React 的「最佳实践」的时候），本文就略过了。希望了解的同学可以直接看文档。</p>
-<p>（完）</p>
-<h2 id="附：connect-方法的官方英文文档"><a href="#附：connect-方法的官方英文文档" class="headerlink" title="附：connect 方法的官方英文文档"></a>附：connect 方法的官方英文文档</h2><blockquote>
-<h4 id="connect-mapStateToProps-mapDispatchToProps-mergeProps-options"><a href="#connect-mapStateToProps-mapDispatchToProps-mergeProps-options" class="headerlink" title="connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])"></a><code>connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])</code></h4><p>Connects a React component to a Redux store.</p>
-<p>It does not modify the component class passed to it. Instead, it returns a new, connected component class, for you to use.</p>
-<h4 id="Arguments"><a href="#Arguments" class="headerlink" title="Arguments"></a>Arguments</h4><ul>
-<li><p>[mapStateToProps(state, [ownProps]): stateProps] (Function): If specified, the component will subscribe to Redux store updates. Any time it updates, mapStateToProps will be called. Its result must be a plain object*, and it will be merged into the component’s props. If you omit it, the component will not be subscribed to the Redux store. If ownProps is specified as a second argument, its value will be the props passed to your component, and mapStateToProps will be additionally re-invoked whenever the component receives new props (e.g. if props received from a parent component have shallowly changed, and you use the ownProps argument, mapStateToProps is re-evaluated).</p>
-</li>
-<li><p>[mapDispatchToProps(dispatch, [ownProps]): dispatchProps] (Object or Function): If an object is passed, each function inside it will be assumed to be a Redux action creator. An object with the same function names, but with every action creator wrapped into a dispatch call so they may be invoked directly, will be merged into the component’s props. If a function is passed, it will be given dispatch. It’s up to you to return an object that somehow uses dispatch to bind action creators in your own way. (Tip: you may use the bindActionCreators() helper from Redux.) If you omit it, the default implementation just injects dispatch into your component’s props. If ownProps is specified as a second argument, its value will be the props passed to your component, and mapDispatchToProps will be re-invoked whenever the component receives new props.</p>
-</li>
-<li><p>[mergeProps(stateProps, dispatchProps, ownProps): props] (Function): If specified, it is passed the result of mapStateToProps(), mapDispatchToProps(), and the parent props. The plain object you return from it will be passed as props to the wrapped component. You may specify this function to select a slice of the state based on props, or to bind action creators to a particular variable from props. If you omit it, Object.assign({}, ownProps, stateProps, dispatchProps) is used by default.</p>
-</li>
-<li><p>[options] (Object) If specified, further customizes the behavior of the connector.</p>
-<ul>
-<li>[pure = true] (Boolean): If true, implements shouldComponentUpdate and shallowly compares the result of mergeProps, preventing unnecessary updates, assuming that the component is a “pure” component and does not rely on any input or state other than its props and the selected Redux store’s state. Defaults to true.</li>
-<li>[withRef = false] (Boolean): If true, stores a ref to the wrapped component instance and makes it available via getWrappedInstance() method. Defaults to false.</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1fYYeLpXXXXbtXFXXXXXXXXXX-900-500.jpg" alt="React 实践心得：react-redux 之 connect 方法详解"></p>
-<p>Redux 是「React]]>
-    </summary>
-    
-      <category term="React" scheme="http://taobaofed.org/tags/React/"/>
-    
-      <category term="Redux" scheme="http://taobaofed.org/tags/Redux/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
