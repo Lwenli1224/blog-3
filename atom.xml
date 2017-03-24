@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-03-24T08:55:31.000Z</updated>
+  <updated>2017-03-24T09:38:52.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -16,63 +16,10 @@
   
   <entry>
     <title><![CDATA[「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结]]></title>
-    <link href="http://taobaofed.org/blog/2017/03/24/node-subway-season-4-guangzhou/"/>
-    <id>http://taobaofed.org/blog/2017/03/24/node-subway-season-4-guangzhou/</id>
-    <published>2017-03-23T23:31:45.000Z</published>
-    <updated>2017-03-24T08:55:31.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>获得知识有两种途径。一是学习理论知识；二是实践。二者缺一不可。学习知识固然重要，但最根本的是要把理论的知识和实践结合起来达到学以致用和用以促学的目的，Node.js 从 2009 年至今发展已近 8 年，时光荏苒，回想当初社区生态还不完善时候的捉襟见肘，到现在社区庞大社区完善，为一些企业打造了了不起的线上应用。</p>
-<p>三月春盛，烟烟霞霞，Node.js 地下铁以深入实践为主题迎来了第四场活动，大家相约六朝古都——南京。我们将带着敬意和和坦诚，携手两位网红与嘉宾们一起分享 Node.js 在实践中带来的经验和总结。</p>
-<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><h3 id="Node-js-组件化-UI-渲染"><a href="#Node-js-组件化-UI-渲染" class="headerlink" title="Node.js 组件化 UI 渲染"></a>Node.js 组件化 UI 渲染</h3><p><img src="https://img.alicdn.com/tfs/TB1TyPDQXXXXXbVXVXXXXXXXXXX-1920-1204.jpg" alt="https://img.alicdn.com/tfs/TB1TyPDQXXXXXbVXVXXXXXXXXXX-1920-1204.jpg"></p>
-<p>想让搜索引擎抓取到你的站点，服务端渲染这一步不可或缺，服务端渲染还可以提升站点的性能，在加载 JavaScript 脚本前，浏览器就可以进行页面渲染，来自淘宝的元彦通过介绍，以 React 为代表的组件化的 Node.js 端 UI  渲染方案，引出解决传统 SPA 应用的首屏性能低与 SEO 弱两大问题，对传统的模版化渲染方案的利弊。</p>
-<p><a href="http://v.youku.com/v_show/id_XMjY1Nzc3MTA5Ng==.html" target="_blank" rel="external">分享视频</a></p>
-<p><a href="http://nodejs.club/slides/season-4/Node.js%E7%BB%84%E4%BB%B6%E5%8C%96UI%E6%B8%B2%E6%9F%93.pdf" target="_blank" rel="external">PPT</a></p>
-<h3 id="Java-迁移-Node-js-实践分享"><a href="#Java-迁移-Node-js-实践分享" class="headerlink" title="Java 迁移 Node.js 实践分享"></a>Java 迁移 Node.js 实践分享</h3><p><img src="https://img.alicdn.com/tfs/TB1l1_3QXXXXXc6XXXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1l1_3QXXXXXc6XXXXXXXXXXXX-1920-1280.jpg"><br>来自淘宝的亦才结合淘宝微海报的案例，分享 Java 迁移 Node.js 项目期间的一些经验与心得，从架构设计，技术选型到数据、服务、UI 的迁移以及迁移前后效果对比，总结一些迁移要点以及 Node.js 企业级应用开发规范。</p>
-<p><a href="http://v.youku.com/v_show/id_XMjY1ODY0NTM3Mg==.html" target="_blank" rel="external">分享视频</a></p>
-<p><a href="http://nodejs.club/slides/season-4/Java%E8%BF%81%E7%A7%BBNode.js%E5%AE%9E%E8%B7%B5%E5%88%86%E4%BA%AB.pdf" target="_blank" rel="external">PPT</a></p>
-<h3 id="定位线上-Node-js-运行时错误"><a href="#定位线上-Node-js-运行时错误" class="headerlink" title="定位线上 Node.js 运行时错误"></a>定位线上 Node.js 运行时错误</h3><p><img src="https://img.alicdn.com/tfs/TB1WwL8QXXXXXX7XXXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1WwL8QXXXXXX7XXXXXXXXXXXX-1920-1280.jpg"></p>
-<p>Node.js 单进程的模型下，健壮性虽然能由 PM2 等守护工具最后兜底一把，但是对于出现线上偶发错误是很无力的，阻塞点定位模糊，排查效率低。黄一君的分享如何实现一套基于 V8 引擎的底层监控的实践，来快速定位到线上进程的异常点。</p>
-<p><a href="http://v.youku.com/v_show/id_XMjY1ODUzODg0NA==.html" target="_blank" rel="external">分享视频</a><br><a href="http://nodejs.club/slides/season-4/%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E7%BA%BF%E4%B8%8A%E8%BF%90%E8%A1%8C%E6%97%B6%E9%94%99%E8%AF%AF.pdf" target="_blank" rel="external">PPT</a></p>
-<h3 id="从钻木取火到航空母舰-—-fiber-引擎的四次重构"><a href="#从钻木取火到航空母舰-—-fiber-引擎的四次重构" class="headerlink" title="从钻木取火到航空母舰 — fiber 引擎的四次重构"></a>从钻木取火到航空母舰 — fiber 引擎的四次重构</h3><p><img src="https://img.alicdn.com/tfs/TB1jSnUQXXXXXcJXpXXXXXXXXXX-1920-1202.jpg" alt="https://img.alicdn.com/tfs/TB1jSnUQXXXXXcJXpXXXXXXXXXX-1920-1202.jpg"></p>
-<p>虽然看起来很像广告，而且会场响马大哥分享时再三强调这不是广告，然而分享 PPT 的时候反复播放第三极 logo 暴露了事实的本质。 当然不可否认 Fib.js 是优秀的，结合 V8  fiber 解决了回调地狱问题，并提供更强劲的并发能力，这次分享就是将 Fib.js  重构的思路和经验分享给大家，有助于大家扩展新的思路。</p>
-<p><a href="http://v.youku.com/v_show/id_XMjY1ODE0NTM3Ng==.html" target="_blank" rel="external">分享视频</a></p>
-<p><a href="http://nodejs.club/slides/season-4/Fiber%E5%BC%95%E6%93%8E.pdf" target="_blank" rel="external">PPT</a></p>
-<h3 id="辩论：异步操作同步化解决方案那种好？"><a href="#辩论：异步操作同步化解决方案那种好？" class="headerlink" title="辩论：异步操作同步化解决方案那种好？"></a>辩论：异步操作同步化解决方案那种好？</h3><p>在分享完后主持人趁热打铁，引出了 Node.js 地下铁最有意思的环节–辩论会，在场听众称之为“嘉宾队”的正方由寒泉<br>元彦、亦才、黄一君组成，他们的立场是 Node.js 中新加入的 async/await 方案好。由王爱科、响马、沈志敏、庄少为代表的精英队认为 fiber 对于异步的解决方案更好。<br>辩论一开始从谈笑风生急转步步为营，双方为了各自的立场口舌相向，恨不得人手一支麦克风通过自己的理论知识、实践经验、业界方案告诉对方自己所坚持的立场更有优势。</p>
-<p><img src="https://img.alicdn.com/tfs/TB1ax_nQXXXXXb.XVXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1ax_nQXXXXXb.XVXXXXXXXXXX-1920-1280.jpg"></p>
-<p>双方的精彩辩论迎来阵阵爆笑，最后因为时间原因紧急喊停，用现场投票的方式决出胜负，胜者是以响马大哥为代表的反方他们的论点是“fiber 对于异步的解决方案更好”，虽然台上胜负已定，但究竟哪个方案更好，仍待商榷。毕竟科学的发展一定是在不断的纠偏补正中进行的。</p>
-<p><img src="https://img.alicdn.com/tfs/TB1Rn6MQXXXXXcuXFXXXXXXXXXX-5107-3365.jpg" alt="https://img.alicdn.com/tfs/TB1Rn6MQXXXXXcuXFXXXXXXXXXX-5107-3365.jpg"></p>
-<p>颁奖的时候，明显的看到开心的却是反方，究竟是友谊第一还是现场出现了乌龙，请看嘉宾手中的奖品大小~</p>
-<p><img src="https://img.alicdn.com/tfs/TB1hnHxQXXXXXXlaXXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1hnHxQXXXXXXlaXXXXXXXXXXX-1920-1280.jpg"></p>
-<p><a href="http://v.youku.com/v_show/id_XMjY1Nzc5NzUwOA==.html" target="_blank" rel="external">辩论视频</a></p>
-<h2 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h2><p>这一次的相逢短暂紧凑，我们在大牛们的肩膀上取经，为了一项技术的演进增砖添瓦，为将来大家业务上遇到问题可以有所借鉴，为四海八荒的同学们那一刻的相聚，在此感谢各位，我们下次再聚！</p>
-<p>最后附上大家的照片，作为同行的小编想说我们还是太腼腆，拍照时一大半的同学不好意思拍照就走啦，不然会有很多小伙伴出镜~后来小编调动几次气氛后就变的和辩论时那样开心了~</p>
-<p><img src="https://img.alicdn.com/tfs/TB1yP29QXXXXXbWXXXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1yP29QXXXXXbWXXXXXXXXXXXX-1920-1280.jpg"></p>
-<p><img src="https://img.alicdn.com/tfs/TB1c_vnQXXXXXcjXVXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1c_vnQXXXXXcjXVXXXXXXXXXX-1920-1280.jpg"></p>
-<p>错过了这次分享的同学也不要紧，可以查看我们在文中分享的 Node.js 地下铁视频与 PPT 资料。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
-<h2 id="前言]]>
-    </summary>
-    
-      <category term="nodejs" scheme="http://taobaofed.org/tags/nodejs/"/>
-    
-      <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
-    
-      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
-    
-      <category term="南京" scheme="http://taobaofed.org/tags/%E5%8D%97%E4%BA%AC/"/>
-    
-      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结]]></title>
     <link href="http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/"/>
     <id>http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/</id>
     <published>2017-03-23T23:31:45.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>获得知识有两种途径。一是学习理论知识；二是实践。二者缺一不可。学习知识固然重要，但最根本的是要把理论的知识和实践结合起来达到学以致用和用以促学的目的，Node.js 从 2009 年至今发展已近 8 年，时光荏苒，回想当初社区生态还不完善时候的捉襟见肘，到现在社区庞大社区完善，为一些企业打造了了不起的线上应用。</p>
 <p>三月春盛，烟烟霞霞，Node.js 地下铁以深入实践为主题迎来了第四场活动，大家相约六朝古都——南京。我们将带着敬意和和坦诚，携手两位网红与嘉宾们一起分享 Node.js 在实践中带来的经验和总结。</p>
@@ -125,7 +72,7 @@
     <link href="http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/"/>
     <id>http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/</id>
     <published>2017-03-15T23:18:05.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg" alt="我眼中的 JavaScript 函数式编程"></p>
 <p>JavaScript 函数式编程是一个存在了很久的话题，但似乎从 2016 年开始，它变得越来越火热。这可能是因为 ES6 语法对于函数式编程更为友好，也可能是因为诸如 RxJS (ReactiveX) 等函数式框架的流行。</p>
 <p>看过许多关于函数式编程的讲解，但是其中大部分是停留在理论层面，还有一些是仅针对 Haskell 等纯函数式编程语言的。而本文旨在聊一聊我眼中的函数式编程在 <strong>JavaScript</strong> 中的具体实践，之所以是 “我眼中的” 即我所说的仅代表个人观点，可能和部分 <strong>严格概念</strong> 是有冲突的。</p>
@@ -227,7 +174,7 @@
     <link href="http://taobaofed.org/blog/2017/03/09/head-first-typescript/"/>
     <id>http://taobaofed.org/blog/2017/03/09/head-first-typescript/</id>
     <published>2017-03-08T23:17:52.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
 <p>这是一个系列文章，一共会有三篇：</p>
 <ol>
@@ -361,7 +308,7 @@
     <link href="http://taobaofed.org/blog/2017/03/03/to-my-future-friend/"/>
     <id>http://taobaofed.org/blog/2017/03/03/to-my-future-friend/</id>
     <published>2017-03-03T01:14:01.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg" alt="致未来的实习生"></p>
 <p>岁月如歌，你的人生即将翻开新的篇章，也许你需要一份展现自我的优秀简历，也许你需要一份属于自己的未来规划，也许你需要一个优秀的导师帮助你成长。淘宝前端团队有很多优秀的 FEDer，他们和你们一样富有激情和梦想，对于过去也有过徘徊和迷茫。优秀的他们用自己的激情和努力完成了学生到专业攻城师的华丽转身，成为淘宝的 FEDer、最新技术的弄潮儿、团队不可或缺的重要成员。来听听他们的经历和建议，以及 Winter 老师带来的面试官视角，希望对同学们有所帮助。</p>
 <h2 id="那一年，我是如何“挤”进淘宝的"><a href="#那一年，我是如何“挤”进淘宝的" class="headerlink" title="那一年，我是如何“挤”进淘宝的"></a>那一年，我是如何“挤”进淘宝的</h2><p><img style="margin: 0;" src="http://gtms02.alicdn.com/tfs/TB1pjeUPVXXXXcgXFXXXXXXXXXX-770-1034.jpg" width="400"></p>
@@ -476,7 +423,7 @@
     <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
     <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
     <published>2017-03-02T05:25:09.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
 <p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
 <p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
@@ -529,7 +476,7 @@
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -963,7 +910,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1LxebPVXXXXaHXpXXXXXXXXXX-900-500.png" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -1026,7 +973,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -1100,7 +1047,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -1218,7 +1165,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -1379,7 +1326,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -1431,7 +1378,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -1627,7 +1574,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -1694,7 +1641,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -1794,7 +1741,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -1919,7 +1866,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -2023,7 +1970,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -2094,7 +2041,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -2177,7 +2124,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-03-24T09:35:25.000Z</updated>
+    <updated>2017-03-24T09:38:52.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -2222,6 +2169,67 @@
       <category term="Babel" scheme="http://taobaofed.org/tags/Babel/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[Node.js 和 C++ 之间的类型转换]]></title>
+    <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
+    <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
+    <published>2016-09-20T03:18:23.000Z</published>
+    <updated>2017-03-24T09:38:52.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
+<p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
+<p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
+<p>JavaScript 的基本类型包括 String，Number，Boolean，null，undefined，V8 使用类继承的方式来定义这类型，这些类型都继承了 <code>Primitive</code> 类，而 <code>Primitive</code> 继承了 <code>Value</code>，v8 也支持整型（包括 <code>Int32</code> 和 <code>Uint32</code>），而所有的类型定义都可以从 V8 <a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">类型文档</a>中看到，除了基本的类型，还有 Object，Array，Map 等类型的定义。</p>
+<p>基本类型的继承关系如下图：<br><img src="https://img.alicdn.com/tfs/TB1JspRNpXXXXajapXXXXXXXXXX-804-860.png" alt="primitive"></p>
+<p>在 V8 中所有 JavaScript 值都是被放在 <code>Local</code> 对象中，通过这个对象指定了 JavaScript 运行时的内存单元。</p>
+<p>下面这段代定义了一个 <code>Number</code> 类型的值，其中 Test 函数中声明的 isolate 变量代表着 V8 虚拟机中的堆内存，当创建新变量的时候就需要用到它，接下来的一行代码就通过 isolate 声明了一个 <code>Number</code> 类型的变量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line">    <span class="comment">// 声明变量</span></span><br><span class="line">    Local&lt;Number&gt; retval = v8::Number::New(isolate, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Local &lt;Object&gt; exports, Local&lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(exports, <span class="string">"getTestValue"</span>, Test);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(returnValue, init)</span><br></pre></td></tr></table></figure>
+<p>看了 V8 <a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">类型 API 文档</a> 你会发现对于基本的 JavaScript 类型，只有变量的声明而没有变量的赋值。最初想可能觉得这个非常的奇怪，可是仔细想一想后发现这个是合理的。主要由以下几点原因：</p>
+<ul>
+<li>JavaScript 的基本类型是不可变类型，变量都是指向一个不可变的内存单元，var a = 10，则 a 指向的内存单元中包含的值为 5，重新赋值 a = 100，没有改变这个内存单元的值，而是使得 a 指向了另外一个内存单元，其中的值为 100。如果声明两个变量 x，y 的值都为 10，则他们指向的是同一个内存单元。</li>
+<li>函数的传参都是传值，而不是传引用，当在 JavaScript 中调用 C++ 的函数时，如果参数是基本类型则每次都是把这个值拷贝过去，改变参数的值不会影响原来的值。</li>
+<li>使用 <code>Local&lt;Value&gt;</code> 声明基本类型的变量都是对内存单元的引用，因为第一条原因不可能改变引用的值使其指向另外一个内存单元，因此不存在变量的重新赋值。</li>
+</ul>
+<h3 id="数据流向-C-gt-JavaScript"><a href="#数据流向-C-gt-JavaScript" class="headerlink" title="数据流向 C++ -&gt; JavaScript"></a>数据流向 C++ -&gt; JavaScript</h3><p>下面 demo 定义了一些常用的 JavaScript 类型，包括基本类型的以及 Object, Array, Fuction。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MyFunction</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line">    args.GetReturnValue().Set(String::NewFromUtf8(isolate, <span class="string">"Hello World!"</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Number 类型的声明</span></span><br><span class="line">    Local&lt;Number&gt; retval = v8::Number::New(isolate, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// String 类型的声明</span></span><br><span class="line">    Local&lt;String&gt; str = v8::String::NewFromUtf8(isolate, <span class="string">"Hello World!"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Object 类型的声明</span></span><br><span class="line">    Local&lt;Object&gt; obj = v8::Object::New(isolate);</span><br><span class="line">    <span class="comment">// 对象的赋值</span></span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg1"</span>), str);</span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg2"</span>), retval);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Function 类型的声明并赋值</span></span><br><span class="line">    Local&lt;FunctionTemplate&gt; tpl = v8::FunctionTemplate::New(isolate, MyFunction);</span><br><span class="line">    Local&lt;Function&gt; fn = tpl-&gt;GetFunction();</span><br><span class="line">    <span class="comment">// 函数名字</span></span><br><span class="line">    fn-&gt;SetName(String::NewFromUtf8(isolate, <span class="string">"theFunction"</span>));</span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg3"</span>), fn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Boolean 类型的声明</span></span><br><span class="line">    Local&lt;Boolean&gt; flag = Boolean::New(isolate, <span class="literal">true</span>);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg4"</span>), flag);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Array 类型的声明</span></span><br><span class="line">    Local&lt;Array&gt; arr = Array::New(isolate);</span><br><span class="line">    <span class="comment">// Array 赋值</span></span><br><span class="line">    arr-&gt;Set(<span class="number">0</span>, Number::New(isolate, <span class="number">1</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">1</span>, Number::New(isolate, <span class="number">10</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">2</span>, Number::New(isolate, <span class="number">100</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">3</span>, Number::New(isolate, <span class="number">1000</span>));</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg5"</span>), arr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Undefined 类型的声明</span></span><br><span class="line">    Local&lt;Value&gt; und = Undefined(isolate);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg6"</span>), und);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// null 类型的声明</span></span><br><span class="line">    Local&lt;Value&gt; null = Null(isolate);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg7"</span>), null);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回给 JavaScript 调用时的返回值</span></span><br><span class="line">    args.GetReturnValue().Set(obj);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Local &lt;Object&gt; exports, Local&lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(exports, <span class="string">"getTestValue"</span>, Test);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(returnValue, init)</span><br></pre></td></tr></table></figure>
+<p>所有的 addon 都需要一个初始化的函数，如下面的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Initialize</span><span class="params">(Local&lt;Object&gt; exports)</span></span>;</span><br><span class="line">NODE_MODULE(module_name, Initialize)</span><br></pre></td></tr></table></figure>
+<p><code>Initialize</code> 是初始化的函数，<code>module_name</code> 是编译后产生的二进制文件名，上述代码的模块名为 <code>returnValue</code>。</p>
+<p>上述代码通过 node-gyp 编译后（编译过程官方文档 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 有详细的介绍），可以通过如下的方式调用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// returnValue.node 这个文件就是编译后产生的文件，通过 NODE_MODULE(returnValue, init) 决定的文件名</span></span><br><span class="line"><span class="keyword">const</span> returnValue = <span class="built_in">require</span>(<span class="string">'./build/Release/returnValue.node'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(returnValue.getTestValue());</span><br></pre></td></tr></table></figure>
+<p>运行结果如下:<br><img src="https://img.alicdn.com/tfs/TB1jb80NpXXXXXYaXXXXXXXXXXX-840-324.png" alt="returnValue"></p>
+<h3 id="数据流向-javaScript-gt-C"><a href="#数据流向-javaScript-gt-C" class="headerlink" title="数据流向 javaScript -&gt; C++"></a>数据流向 javaScript -&gt; C++</h3><p>上面的 demo 展示了怎样在在 C++ 定义 JavaScript 类型，数据的是从 C++ 流向 JavaScript，反过来数据也需要从 javaScript 流向 C++，也就是调用 C++ 函数的时候需要传入一些参数。</p>
+<p>下面的代码展示了参数个数判断，参数类型判断，以及参数类型装换成 V8 类型的过程，包括基本类型以及 Object, Array, Fuction。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetArgument</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数长度判断</span></span><br><span class="line">    <span class="keyword">if</span> (args.Length() &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        isolate-&gt;ThrowException(Exception::TypeError(</span><br><span class="line">            String::NewFromUtf8(isolate, <span class="string">"Wrong number of arguments"</span>)));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数类型判断</span></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsNumber() || !args[<span class="number">1</span>]-&gt;IsNumber()) &#123;</span><br><span class="line">        <span class="comment">//抛出错误</span></span><br><span class="line">        isolate-&gt;ThrowException(Exception::TypeError(</span><br><span class="line">            String::NewFromUtf8(isolate, <span class="string">"argumnets must be number"</span>)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsObject()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Object\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsBoolean()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Boolean\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsArray()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Array\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsString()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not String\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsFunction()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Function\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsNull()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Null\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsUndefined()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Undefined\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Number 类型转换成 v8 Number 类型</span></span><br><span class="line">    Local&lt;Number&gt; value1 = Local&lt;Number&gt;::Cast(args[<span class="number">0</span>]);</span><br><span class="line">    Local&lt;Number&gt; value2 = Local&lt;Number&gt;::Cast(args[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">double</span> value = value1-&gt;NumberValue() + value2-&gt;NumberValue();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js String 类型转换成 v8 String 类型</span></span><br><span class="line">    Local&lt;String&gt; str = Local&lt;String&gt;::Cast(args[<span class="number">2</span>]);</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValue</span><span class="params">(str)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValue)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Array 类型转换成 v8 Array 类型</span></span><br><span class="line">    Local&lt;Array&gt; input_array = Local&lt;Array&gt;::Cast(args[<span class="number">3</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d, %f %f\n"</span>, input_array-&gt;Length(), input_array-&gt;Get(<span class="number">0</span>)-&gt;NumberValue(), input_array-&gt;Get(<span class="number">1</span>)-&gt;NumberValue());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Object 类型转换成 v8 Object 类型</span></span><br><span class="line">    Local&lt;Object&gt; obj = Local&lt;Object&gt;::Cast(args[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;Value&gt; a = obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"a"</span>));</span><br><span class="line">    Local&lt;Value&gt; b = obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"b"</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Array 类型转换成 v8 Array 类型</span></span><br><span class="line">    Local&lt;Array&gt; c = Local&lt;Array&gt;::Cast(obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"c"</span>)));</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;a-&gt;NumberValue()&lt;&lt;<span class="string">"   "</span>&lt;&lt;b-&gt;NumberValue()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d, %f %f\n"</span>, c-&gt;Length(), c-&gt;Get(<span class="number">0</span>)-&gt;NumberValue(), c-&gt;Get(<span class="number">1</span>)-&gt;NumberValue());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js String 类型转换成 v8 String 类型</span></span><br><span class="line">    Local&lt;String&gt; cString = Local&lt;String&gt;::Cast(c-&gt;Get(<span class="number">2</span>));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValueD</span><span class="params">(cString)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValueD)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;Object&gt; d = Local&lt;Object&gt;::Cast(obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"d"</span>)));</span><br><span class="line">    Local&lt;String&gt; dString1 = Local&lt;String&gt;::Cast(d-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"m"</span>)));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValued1</span><span class="params">(dString1)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValued1)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;String&gt; dString2 = Local&lt;String&gt;::Cast(d-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"n"</span>)));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValued2</span><span class="params">(dString2)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValued2)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Booelan 类型转换成 v8 Boolean 类型</span></span><br><span class="line">    Local&lt;Boolean&gt; FlagTrue = Local&lt;Boolean&gt;::Cast(args[<span class="number">5</span>]);</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"Flag: "</span>&lt;&lt;FlagTrue-&gt;BooleanValue()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Function 类型转换成 v8 Function 类型</span></span><br><span class="line">    Local&lt;Function&gt; cb = Local&lt;Function&gt;::Cast(args[<span class="number">8</span>]);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">unsigned</span> argc = <span class="number">2</span>;</span><br><span class="line">    Local&lt;Value&gt; argv[<span class="number">2</span>];</span><br><span class="line">    argv[<span class="number">0</span>] = a;</span><br><span class="line">    argv[<span class="number">1</span>] = b;</span><br><span class="line">    cb-&gt;Call(Null(isolate), argc, argv);</span><br><span class="line"></span><br><span class="line">    args.GetReturnValue().Set(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Init</span><span class="params">(Local &lt;Object&gt; exports, Local &lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(module, <span class="string">"exports"</span>, GetArgument);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(argumentss, Init)</span><br></pre></td></tr></table></figure>
+<p>通过 node-gyp 编译后，可以通过如下的方式调用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> getArguments = <span class="built_in">require</span>(<span class="string">'./build/Release/arguments'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(getArguments(<span class="number">2</span>, <span class="number">3</span>, <span class="string">'Hello Arguments'</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], &#123;</span><br><span class="line">        a: <span class="number">10</span>,</span><br><span class="line">        b: <span class="number">100</span>,</span><br><span class="line">        c: [<span class="number">23</span>, <span class="number">22</span>, <span class="string">"我是33"</span>],</span><br><span class="line">        d: &#123; m: <span class="string">'我是22'</span>, n: <span class="string">'我是23'</span> &#125;</span><br><span class="line">    &#125;, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'I am Function!'</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(...args);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'I am Function!'</span>);</span><br><span class="line">    &#125;));</span><br></pre></td></tr></table></figure>
+<p>运行结果如下:</p>
+<p><img src="https://img.alicdn.com/tfs/TB11tB4NpXXXXaLXVXXXXXXXXXX-796-796.png" alt="argument"></p>
+<p>关于其他的类型，我这里就就不一一介绍，V8 文档里面都有对应的 API。</p>
+<h3 id="NAN"><a href="#NAN" class="headerlink" title="NAN"></a>NAN</h3><p>由于 V8 的 API 还没有彻底稳定下来，所以对于不同版本的 Node.js 类型相关的 API 会发生变化，而 <a href="https://github.com/nodejs/nan" target="_blank" rel="external">NAN</a> 帮我们做了封装，在编码的时候不需要关心版本问题，只需要引入相应的头文件即可。</p>
+<p>引入头文件后，可以如下使用方式：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v8::Local&lt;v8::Primitive&gt; Nan::Undefined()</span><br><span class="line">v8::Local&lt;v8::Primitive&gt; Nan::Null()</span><br></pre></td></tr></table></figure>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="http://blog.scottfrees.com/type-conversions-from-javascript-to-c-in-v8" target="_blank" rel="external">Type conversions from JavaScript to C++ in V8</a></li>
+<li><a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">node addon</a></li>
+<li><a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">v8 types documentation</a></li>
+<li><a href="https://github.com/nodejs/node-gyp" target="_blank" rel="external">node-gyp</a></li>
+<li><a href="https://gyp.gsrc.io/docs/UserDocumentation.md" target="_blank" rel="external">gyp user documentation</a></li>
+<li><a href="https://github.com/nodejs/nan" target="_blank" rel="external">nan</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
+<p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场]]>
+    </summary>
+    
+      <category term="类型转换" scheme="http://taobaofed.org/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
+    
+      <category term="addons" scheme="http://taobaofed.org/tags/addons/"/>
+    
+      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
     
   </entry>
   
