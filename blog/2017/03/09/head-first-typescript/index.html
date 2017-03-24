@@ -26,7 +26,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
 最近几个月有幸体验了 TypeScri">
 <meta property="og:image" content="http://taobaofed.org//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1G_7nPVXXXXX1XXXXXXXXXXXX-935-1277.jpg">
-<meta property="og:updated_time" content="2017-03-24T09:10:45.000Z">
+<meta property="og:updated_time" content="2017-03-24T09:35:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="认识 TypeScript">
 <meta name="twitter:description" content="这是一个系列文章，一共会有三篇：
@@ -178,7 +178,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
 <p>最近几个月有幸体验了 TypeScript，它对大型软件 —— 大型 JavaScript 软件 —— 开发来说真是一把利刃。就像我斜后方那个男人一样，写了 TypeScript 就不想再写 JavaScript 了 —— 真乃取其精华去其糟粕啊！</p>
 <p>没想到我一个 Linux 的老用户 Copyleft 的忠实拥护者，也会像今天这样喜欢用 M$ 出的东西，17 岁到 19 岁的我一定会鄙视死现在的我。</p>
 <h2 id="背景认识"><a href="#背景认识" class="headerlink" title="背景认识"></a>背景认识</h2><p>TypeScript 是微软开发一款开源的编程语言，本质上是向 JavaScript 增加静态类型系统。它是 JavaScript 的超集，所有现有的 JavaScript 都可以不加改变就在其中使用。它是为大型软件开发而设计的，它最终编译产生 JavaScript，所以可以运行在浏览器、Node.js 等等的运行时环境。</p>
-<h2 id="什么是类型系统"><a href="#什么是类型系统" class="headerlink" title="什么是类型系统"></a>什么是类型系统</h2><p>下面是摘自 <code>《 Types And Programming Languages 》</code> 中的定义：</p>
+<h2 id="什么是类型系统"><a href="#什么是类型系统" class="headerlink" title="什么是类型系统"></a>什么是类型系统</h2><p>下面是摘自 <code>《 Types And Programming Languages 》</code> 中的定义： </p>
 <blockquote>
 <p>A type system is a tractable syntactic method for proving the absence of certain program behaviors by classifying phrases according to the kinds of values they compute.</p>
 </blockquote>
@@ -188,7 +188,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
 <p>JavaScript 不是一个静态编译语言,不存在编译这一步骤。但从 <code>程序推理工具</code> 的角度来看，JavaScript 的配套中还是有不少的，比如 <code>ESLint</code> 这个不完备的 <code>程序推理工具</code>。</p>
 <h2 id="静态类型系统与-Lint-工具的关系"><a href="#静态类型系统与-Lint-工具的关系" class="headerlink" title="静态类型系统与 Lint 工具的关系"></a>静态类型系统与 Lint 工具的关系</h2><p>我们先看 <code>ESLint</code> 的定义：</p>
 <blockquote>
-<p>Code linting is a type of static analysis that is frequently used to find problematic patterns or code that doesn’t adhere to certain style guidelines.</p>
+<p>Code linting is a type of static analysis that is frequently used to find problematic patterns or code that doesn’t adhere to certain style guidelines. </p>
 </blockquote>
 <h3 id="区别一"><a href="#区别一" class="headerlink" title="区别一"></a>区别一</h3><p>同样强调 <code>Static Analysis</code>，不过更强调 <code>Certain Style Guidelines</code> ，<code>Lint 工具</code>是一种团队协作时的风格规范工具。</p>
 <h3 id="区别二"><a href="#区别二" class="headerlink" title="区别二"></a>区别二</h3><p><code>静态类型类型分析</code>和 <code>Lint 工具</code> 的区别在于 <code>Lint 工具</code> 没有 <code>Classifying phrases according to the kinds of values they compute</code>。</p>
@@ -239,14 +239,14 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
 <p>taste.ts</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params">text: string</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(text);</span><br><span class="line">&#125;</span><br><span class="line">say(<span class="number">969</span>);</span><br></pre></td></tr></table></figure>
 <p>然后再执行 <code>tsc taste.ts</code>，然后就类型检查就报错了。这就是 TypeScript 的主要功能 —— 静态类型检查。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">taste.ts(4,5): error TS2345: Argument of type &apos;969&apos; is not assignable to parameter of type &apos;string&apos;.</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts </span><br><span class="line">taste.ts(4,5): error TS2345: Argument of type &apos;969&apos; is not assignable to parameter of type &apos;string&apos;.</span><br></pre></td></tr></table></figure>
 <h2 id="有趣的例子-基于控制流的分析"><a href="#有趣的例子-基于控制流的分析" class="headerlink" title="有趣的例子 - 基于控制流的分析"></a>有趣的例子 - 基于控制流的分析</h2><p>看一个 JavaScript 的例子。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getDefaultValue</span> (<span class="params">key, emphasis</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ret;</span><br><span class="line">  <span class="keyword">if</span> (key === <span class="string">'name'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'GuangWong'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span>(key=== <span class="string">'gender'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'Man'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key === <span class="string">'age'</span>) &#123;</span><br><span class="line">    ret = <span class="number">23</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Unkown key '</span> + info.type);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (emphasis) &#123;</span><br><span class="line">    ret = ret.toUpperCase();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getDefaultValue(<span class="string">'name'</span>); <span class="comment">// GuangWong</span></span><br><span class="line">getDefaultValue(<span class="string">'gender'</span>, <span class="literal">true</span>) <span class="comment">// MAN</span></span><br><span class="line">getDefaultValue(<span class="string">'age'</span>, <span class="literal">true</span>) <span class="comment">// Error: toUpperCase is not a function</span></span><br></pre></td></tr></table></figure>
-<p>这是一个简单的函数，第一个参数 <code>key</code> 用来获得一个默认值。第二参数 <code>emphasis</code> 为了某些场景下要大写强调，只需要传入 <code>true</code> 即可自动将结果转成大写。</p>
+<p>这是一个简单的函数，第一个参数 <code>key</code> 用来获得一个默认值。第二参数 <code>emphasis</code> 为了某些场景下要大写强调，只需要传入 <code>true</code> 即可自动将结果转成大写。 </p>
 <p>但是我不小心将 <code>age</code> 的值写成了数字字面量，如果我调用 <code>getDefaultValue(&#39;age&#39;, true)</code> 就会在运行时报错。这个有可能是软件上线了之后才发生，直接导致业务不可用。</p>
 <p>TypeScript 就能避免这类问题，我们只需要进行一个简单的标注。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getDefaultValue</span> (<span class="params">key, emphasis?</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> ret: string;</span><br><span class="line">  <span class="keyword">if</span> (key === <span class="string">'name'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'GuangWong'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key === <span class="string">'gender'</span>) &#123;</span><br><span class="line">    ret = <span class="string">'Man'</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key === <span class="string">'age'</span>) &#123;</span><br><span class="line">    ret = <span class="number">23</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Unkown key '</span> + key);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (emphasis) &#123;</span><br><span class="line">    ret = ret.toUpperCase();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getDefaultValue(<span class="string">'name'</span>); <span class="comment">// GuangWong</span></span><br><span class="line">getDefaultValue(<span class="string">'gender'</span>, <span class="literal">true</span>) <span class="comment">// MAN</span></span><br><span class="line">getDefaultValue(<span class="string">'age'</span>, <span class="literal">true</span>) <span class="comment">// Error: toUpperCase is not a function</span></span><br></pre></td></tr></table></figure>
-<p>在 <code>tsc</code> 编译时，逻辑错误会自动报出来。妈妈再也不怕我的逻辑混乱了！</p>
+<p>在 <code>tsc</code> 编译时，逻辑错误会自动报出来。妈妈再也不怕我的逻辑混乱了！ </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; tsc taste.ts</span><br><span class="line">x.ts(8,5): error TS2322: Type &apos;23&apos; is not assignable to type &apos;string&apos;.</span><br></pre></td></tr></table></figure>
 <h2 id="有趣的例子-Interface"><a href="#有趣的例子-Interface" class="headerlink" title="有趣的例子 - Interface"></a>有趣的例子 - Interface</h2><p>JavaScript 的类型我们称为鸭子类型。</p>
 <blockquote>
@@ -285,7 +285,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2017/03/09/head-first-typescript/" data-id="cj0nm3yum002m3nqe5pwff1wb" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2017/03/09/head-first-typescript/" data-id="cj0nmswl9002rboqen7ilr33g" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/">TypeScript</a></li></ul>
@@ -404,6 +404,29 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
             
             <div class="item-thumbnail">
               
+<a href="/blog/2017/03/24/node-subway-season-4-nanjing/" class="thumbnail">
+  
+    <span style="background-image:url(https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg
+)" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2017/03/24/node-subway-season-4-nanjing/" class="title">「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结</a></p>
+              
+              <p class="item-author">by 闪光</p>
+              
+              <p class="item-date">at <time datetime="2017-03-23T23:31:45.000Z" itemprop="datePublished">2017-03-24</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
 <a href="/blog/2017/03/16/javascript-functional-programing/" class="thumbnail">
   
     <span style="background-image:url(https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg
@@ -469,29 +492,6 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
             </div>
           </li>
         
-          <li>
-            
-            <div class="item-thumbnail">
-              
-<a href="/blog/2017/03/02/thinking-in-request-animation-frame/" class="thumbnail">
-  
-    <span style="background-image:url(//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg
-)" alt="浅析 requestAnimationFrame" class="thumbnail-image"></span>
-  
-</a>
-
-            </div>
-            
-            <div class="item-inner">
-              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
-              <p class="item-title"><a href="/blog/2017/03/02/thinking-in-request-animation-frame/" class="title">浅析 requestAnimationFrame</a></p>
-              
-              <p class="item-author">by 腾渊</p>
-              
-              <p class="item-date">at <time datetime="2017-03-02T05:25:09.000Z" itemprop="datePublished">2017-03-02</time></p>
-            </div>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -510,7 +510,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -520,7 +520,7 @@ TypeScript 工程使用 - 讲述如何在工程 —— 包括 Node.js 工程、R
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
     </div>
   </div>
 
