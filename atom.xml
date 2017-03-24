@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-03-24T09:38:52.000Z</updated>
+  <updated>2017-03-24T09:47:44.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/"/>
     <id>http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/</id>
     <published>2017-03-23T23:31:45.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>获得知识有两种途径。一是学习理论知识；二是实践。二者缺一不可。学习知识固然重要，但最根本的是要把理论的知识和实践结合起来达到学以致用和用以促学的目的，Node.js 从 2009 年至今发展已近 8 年，时光荏苒，回想当初社区生态还不完善时候的捉襟见肘，到现在社区庞大社区完善，为一些企业打造了了不起的线上应用。</p>
 <p>三月春盛，烟烟霞霞，Node.js 地下铁以深入实践为主题迎来了第四场活动，大家相约六朝古都——南京。我们将带着敬意和和坦诚，携手两位网红与嘉宾们一起分享 Node.js 在实践中带来的经验和总结。</p>
@@ -59,9 +59,9 @@
     
       <category term="地下铁" scheme="http://taobaofed.org/tags/%E5%9C%B0%E4%B8%8B%E9%93%81/"/>
     
-      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
-    
       <category term="南京" scheme="http://taobaofed.org/tags/%E5%8D%97%E4%BA%AC/"/>
+    
+      <category term="沙龙" scheme="http://taobaofed.org/tags/%E6%B2%99%E9%BE%99/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
     
@@ -72,7 +72,7 @@
     <link href="http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/"/>
     <id>http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/</id>
     <published>2017-03-15T23:18:05.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg" alt="我眼中的 JavaScript 函数式编程"></p>
 <p>JavaScript 函数式编程是一个存在了很久的话题，但似乎从 2016 年开始，它变得越来越火热。这可能是因为 ES6 语法对于函数式编程更为友好，也可能是因为诸如 RxJS (ReactiveX) 等函数式框架的流行。</p>
 <p>看过许多关于函数式编程的讲解，但是其中大部分是停留在理论层面，还有一些是仅针对 Haskell 等纯函数式编程语言的。而本文旨在聊一聊我眼中的函数式编程在 <strong>JavaScript</strong> 中的具体实践，之所以是 “我眼中的” 即我所说的仅代表个人观点，可能和部分 <strong>严格概念</strong> 是有冲突的。</p>
@@ -174,7 +174,7 @@
     <link href="http://taobaofed.org/blog/2017/03/09/head-first-typescript/"/>
     <id>http://taobaofed.org/blog/2017/03/09/head-first-typescript/</id>
     <published>2017-03-08T23:17:52.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
 <p>这是一个系列文章，一共会有三篇：</p>
 <ol>
@@ -308,7 +308,7 @@
     <link href="http://taobaofed.org/blog/2017/03/03/to-my-future-friend/"/>
     <id>http://taobaofed.org/blog/2017/03/03/to-my-future-friend/</id>
     <published>2017-03-03T01:14:01.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg" alt="致未来的实习生"></p>
 <p>岁月如歌，你的人生即将翻开新的篇章，也许你需要一份展现自我的优秀简历，也许你需要一份属于自己的未来规划，也许你需要一个优秀的导师帮助你成长。淘宝前端团队有很多优秀的 FEDer，他们和你们一样富有激情和梦想，对于过去也有过徘徊和迷茫。优秀的他们用自己的激情和努力完成了学生到专业攻城师的华丽转身，成为淘宝的 FEDer、最新技术的弄潮儿、团队不可或缺的重要成员。来听听他们的经历和建议，以及 Winter 老师带来的面试官视角，希望对同学们有所帮助。</p>
 <h2 id="那一年，我是如何“挤”进淘宝的"><a href="#那一年，我是如何“挤”进淘宝的" class="headerlink" title="那一年，我是如何“挤”进淘宝的"></a>那一年，我是如何“挤”进淘宝的</h2><p><img style="margin: 0;" src="http://gtms02.alicdn.com/tfs/TB1pjeUPVXXXXcgXFXXXXXXXXXX-770-1034.jpg" width="400"></p>
@@ -423,7 +423,7 @@
     <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
     <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
     <published>2017-03-02T05:25:09.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
 <p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
 <p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
@@ -476,7 +476,7 @@
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -910,7 +910,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1LxebPVXXXXaHXpXXXXXXXXXX-900-500.png" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -973,7 +973,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -1047,7 +1047,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -1165,7 +1165,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -1326,7 +1326,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -1378,7 +1378,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -1574,7 +1574,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -1641,7 +1641,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -1741,7 +1741,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -1866,7 +1866,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -1970,7 +1970,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -2041,7 +2041,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -2124,7 +2124,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -2177,7 +2177,7 @@
     <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
     <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
     <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-03-24T09:38:52.000Z</updated>
+    <updated>2017-03-24T09:47:44.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
 <p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
 <p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
