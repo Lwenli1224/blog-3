@@ -40,7 +40,7 @@ layout
 <meta property="og:image" content="https://img.alicdn.com/tps/TB10ruuLpXXXXaEXFXXXXXXXXXX-1853-779.jpg">
 <meta property="og:image" content="http://img.alicdn.com/tps/TB1e4yFLpXXXXcHXXXXXXXXXXXX-1395-224.jpg">
 <meta property="og:image" content="http://img.alicdn.com/tps/TB1bIilLpXXXXX2XVXXXXXXXXXX-1394-225.jpg">
-<meta property="og:updated_time" content="2017-03-24T09:47:44.000Z">
+<meta property="og:updated_time" content="2017-04-03T10:31:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="无线性能优化：页面可见时间与异步加载">
 <meta name="twitter:description" content="如何让页面尽可能早地渲染页面，页面更早可见，让白屏时间更短，尤其是无线环境下，一直是性能优化的话题。
@@ -204,10 +204,10 @@ layout
 <li>A. head script: 即普通的将 JS 放在 <code>head</code> 中或放在 <code>body</code> 中间：<a href="http://codepen.io/taobaofed/pen/LGOdRX" target="_blank" rel="external">DEMO 地址</a></li>
 <li>B. bottom script: 即常规的优化策略，JS 放<code>body</code>的底部：<a href="http://codepen.io/taobaofed/pen/NxwYpR" target="_blank" rel="external">DEMO 地址</a></li>
 <li><p>C. document.write: 以前 PC 优化少用的一种异步加载 JS 的策略：<a href="http://codepen.io/taobaofed/pen/yePKoz" target="_blank" rel="external">DEMO 地址</a></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">injectWrite</span>(<span class="params">src</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">document</span>.write(<span class="string">'&lt;script src="'</span> + src + <span class="string">'"&gt;&lt;/sc'</span> + <span class="string">'ript&gt;'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function injectWrite(src)&#123;</span><br><span class="line">  document.write(&apos;&lt;script src=&quot;&apos; + src + &apos;&quot;&gt;&lt;/sc&apos; + &apos;ript&gt;&apos;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>D. getScript: 形如以下，也是 KISSY 内部的<code>getScript</code>函数的简易实现：<a href="http://codepen.io/taobaofed/pen/VerXzO" target="_blank" rel="external">DEMO 地址</a></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span><br><span class="line">  <span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  script.src = <span class="string">"//g.tbcdn.com/xx.js"</span>;</span><br><span class="line">  <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>].appendChild(script);</span><br><span class="line"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  var script = document.createElement(&apos;script&apos;);</span><br><span class="line">  script.src = &quot;//g.tbcdn.com/xx.js&quot;;</span><br><span class="line">  document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>E. 加 <code>async</code> 属性：<a href="http://codepen.io/taobaofed/pen/eJeMRV" target="_blank" rel="external">DEMO 地址</a></p>
 </li>
@@ -304,7 +304,7 @@ layout
 <p>因此在 JS 中用 setTimeout 来延迟发送请求也有可能会影响 didFinishLoad 的时间，建议 setTimeout 的时间设置得更长一点，如 3s。</p>
 <h2 id="async-和-defer"><a href="#async-和-defer" class="headerlink" title="async 和 defer"></a>async 和 defer</h2><p>script 标签上可以添加 defer 和 async 属性来优化此 script 的下载和执行。</p>
 <h3 id="defer-：延迟"><a href="#defer-：延迟" class="headerlink" title="defer ：延迟"></a>defer ：延迟</h3><p>HTML 4.0 规范，其作用是，告诉浏览器，等到 DOM+CSSOM 渲染完成，再执行指定脚本。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">defer</span> <span class="attr">src</span>=<span class="string">"xx.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script defer src=&quot;xx.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
 <li>浏览器开始解析 HTML 网页</li>
@@ -316,7 +316,7 @@ layout
 <p>下载的脚本文件在 DOMContentLoaded 事件触发前执行（即刚刚读取完\&lt;\/html&gt;标签），而且可以保证执行顺序就是它们在页面上出现的顺序。所以 添加 defer 属性后，domReady 的时间并没有提前，但它可以让页面更快显示出来。</p>
 <p>将放在页面上方的 script 加 defer，在 PC Chrome 下其效果相当于 把这个 script 放在底部，页面会先显示。 但对 iOS Safari 和 iOS WebView 加 defer 和 script 放底部一样都是长时间白屏。</p>
 <h3 id="async-异步"><a href="#async-异步" class="headerlink" title="async: 异步"></a>async: 异步</h3><p>HTML 5 规范，其作用是，使用另一个进程下载脚本，下载时不会阻塞渲染，并且下载完成后立刻执行。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">async</span> <span class="attr">src</span>=<span class="string">"yy.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script async src=&quot;yy.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <ul>
 <li>浏览器开始解析 HTML 网页</li>
@@ -334,7 +334,7 @@ layout
 <li>当 script 同时加 <code>async</code> 和 <code>defer</code> 属性时，后者不起作用，浏览器行为由 <code>async</code> 属性决定。</li>
 <li><code>async</code> 和 <code>defer</code> 的兼容性不一致，好在 <code>async</code> 和 <code>defer</code> 无线端基本都支持，<code>async</code> 不支持 IE 9-。<br>附 <a href="http://caniuse.com/#search=async" target="_blank" rel="external">async 兼容性</a> <a href="http://caniuse.com/#search=defer" target="_blank" rel="external">defer 兼容性</a></li>
 </ul>
-<h2 id="script-inject-和-async"><a href="#script-inject-和-async" class="headerlink" title="script inject 和 async"></a>script inject 和 async</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">&lt;!-- BAD --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//g.alicdn.com/large.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- GOOD --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span><br><span class="line">  <span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">  script.src = <span class="string">"//g.alicdn.com/large.js"</span>;</span><br><span class="line">  <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>].appendChild(script);</span><br><span class="line"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="script-inject-和-async"><a href="#script-inject-和-async" class="headerlink" title="script inject 和 async"></a>script inject 和 async</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">  &lt;!-- BAD --&gt;</span><br><span class="line">&lt;script src=&quot;//g.alicdn.com/large.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- GOOD --&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">  var script = document.createElement(&apos;script&apos;);</span><br><span class="line">  script.src = &quot;//g.alicdn.com/large.js&quot;;</span><br><span class="line">  document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <p>我们通常用这种 inject script 的方式来异步加载文件，特别是以前 <code>Sea.js</code>、<code>KISSY</code> 的盛行时，出现大量使用<code>$.use</code> 来加载页面入口文件。这种方式和 <code>async</code> 的一样都能异步化 JS，不阻塞页面渲染。但真的是最快的吗？</p>
 <p>一个常见的页面如下：一个 CSS，两个异步的 JS</p>
 <p>JS 使用 script inject 的方式测试结果如下，<a href="http://codepen.io/taobaofed/pen/YwEYgx" target="_blank" rel="external">DEMO</a>：</p>
@@ -344,7 +344,7 @@ layout
 <p>对比结果发现，通过 <code>&lt;script async&gt;</code> 的方式的 JS 可以和 CSS 并发下载，这样整个页面 load 时间变得更短，JS 更快执行完，这样页面的交互或数据等可以更快更新。为什么呢？因为浏览器有类似 ‘<a href="https://developers.google.com/web/fundamentals/performance/critical-rendering-path/adding-interactivity-with-javascript?hl=zh-cn" target="_blank" rel="external">preload scanner</a>’ 的功能，在 HTML 解析时就可以提前并发去下载 JS 文件，如果把 JS 的文件隐藏在 JS 逻辑中，浏览器就没这么智能发现了。</p>
 <p>也许大家会说，现在 CSS/JS 都预加载到客户端了，怎么加载不重要。但页面有可能分享出去也有可能运行在浏览器中，也有可能预加载失效。</p>
 <p>综合上面 async 和 defer，推荐以下用法。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 现代浏览器用 'async', ie9-用 'defer' --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"//g.alicdn.com/alilog/mlog/aplus_wap.js"</span> <span class="attr">async</span> <span class="attr">defer</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 现代浏览器用 &apos;async&apos;, ie9-用 &apos;defer&apos; --&gt;</span><br><span class="line">&lt;script src=&quot;//g.alicdn.com/alilog/mlog/aplus_wap.js&quot; async defer&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <p>其实现在无线站点 aplus.js 可以完全用这种方式引入，既不会阻塞 <code>DOM</code> 和<code>CSSOM</code>，也不会延长整个页面 <code>onLoad</code> 时间，而不是原来的 PC 上的 <code>script inject</code>方式。</p>
 <p>如果 aplus.js 在 PC 上这么用，IE 8/IE 9 应用的是 defer 属性，不会阻塞页面渲染，但是这个 JS 需要执行完后才触发 domReady（DOMContentLoaded）事件，故在 IE 8/IE 9 下可能会影响 domReady 的时间。</p>
 <h2 id="最后建议"><a href="#最后建议" class="headerlink" title="最后建议"></a>最后建议</h2><ul>
@@ -361,7 +361,7 @@ layout
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2016/01/20/mobile-wpo-pageshow-async/" data-id="cj0nn8rjf004gqqqeyr3le5n7" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2016/01/20/mobile-wpo-pageshow-async/" data-id="cj11zadjz005is7qeij43vpp1" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异步加载/">异步加载</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/无线性能优化/">无线性能优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/页面可见时间/">页面可见时间</a></li></ul>
@@ -586,7 +586,7 @@ layout
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -596,7 +596,7 @@ layout
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/">2010</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/">2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2008/">2008</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/">2007</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

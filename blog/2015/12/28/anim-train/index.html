@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://img.alicdn.com/tps/TB1C6y3LXXXXXXRXXXXXXXXXXXX-671-230.jpg">
 <meta property="og:image" content="http://img.alicdn.com/tps/TB102y2LXXXXXXaXXXXXXXXXXXX-422-585.jpg">
 <meta property="og:image" content="http://img.alicdn.com/tps/TB1mbyBLXXXXXb_XVXXXXXXXXXX-509-538.jpg">
-<meta property="og:updated_time" content="2017-03-24T09:47:44.000Z">
+<meta property="og:updated_time" content="2017-04-03T10:31:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="小火车是怎么跑起来的">
 <meta name="twitter:description" content="前言
@@ -184,28 +184,28 @@
 <p><img src="http://img4.tbcdn.cn/L1/461/1/548950c7d83f65e68d68873c1a29f8d28876d372" alt="Snip20150528_1"></p>
 <h2 id="确定位置"><a href="#确定位置" class="headerlink" title="确定位置"></a>确定位置</h2><p>动画的基本原理，就是在每一帧的时候进行重绘。我们需要知道，<strong>某一帧</strong> 时，小火车的位置（坐标）是多少？</p>
 <p>假设小火车是匀速的，速度为 <code>speed</code>，那么我们可以知道：在某一帧时，小火车已经行进的距离 <code>L</code>，是上一帧行进的距离 <code>L’</code> 加上两帧的时间差 <code>inter</code> 乘以 <code>speed</code>。那么，我们只需为小火车保存当前的 <code>L</code>，在每一帧，就可以获得最新的 <code>L</code>，进而决定那一帧火车的位置。代码如下（这里是为了理解方便，实际情况要复杂一些，我们不会用 <code>setInterval</code>，时间间隔也不会那么武断地取常量）。</p>
-<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">train.speed = <span class="number">10</span>;</span><br><span class="line">train.L = <span class="number">0</span>;</span><br><span class="line">setInterval(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> inter = <span class="number">50</span>;</span><br><span class="line">    train.L += inter * trans.speed;</span><br><span class="line">    <span class="comment">// 根据 train.L 算出 train 的位置</span></span><br><span class="line">    <span class="comment">// 在那个位置上画出 train</span></span><br><span class="line">&#125;, <span class="number">50</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">train.speed = 10;</span><br><span class="line">train.L = 0;</span><br><span class="line">setInterval(function()&#123;</span><br><span class="line">    var inter = 50;</span><br><span class="line">    train.L += inter * trans.speed;</span><br><span class="line">    // 根据 train.L 算出 train 的位置</span><br><span class="line">    // 在那个位置上画出 train</span><br><span class="line">&#125;, 50)</span><br></pre></td></tr></table></figure>
 <p>有了小火车当前帧已经行进的距离 <code>L</code>，又有了轨道的踩点数据，如何确定小火车的状态呢？勾股定理帮助我们计算轨道中任意两个相邻踩点之间的距离，进而我们也可以得到整个轨道的长度。这样，就能够通过 <code>L</code> 求取火车位于轨道上的哪两个踩点之间，以及火车在它们之间的哪个位置。</p>
 <p>假设小火车在第 i 个点 p[i] 和第 i+1 个点 p[i+1] 之间，而且在比例为 q 的位置上，如何确定小火车的位置呢。</p>
 <p><img src="http://img.alicdn.com/tps/TB1C6y3LXXXXXXRXXXXXXXXXXXX-671-230.jpg" alt=""></p>
 <p>简单的线性内插，求得：</p>
-<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train.<span class="keyword">x</span> = (<span class="number">1</span>-<span class="keyword">q</span>) * p[i].<span class="keyword">x</span> + <span class="keyword">q</span> * p[i+<span class="number">1</span>].<span class="keyword">x</span></span><br><span class="line">train.y = (<span class="number">1</span>-<span class="keyword">q</span>) * p[i].y + <span class="keyword">q</span> * p[i+<span class="number">1</span>].y</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train.x = (1-q) * p[i].x + q * p[i+1].x</span><br><span class="line">train.y = (1-q) * p[i].y + q * p[i+1].y</span><br></pre></td></tr></table></figure>
 <p>这样就能够算出小火车每一帧的位置坐标，我们只需要在 (train.x ,  train.y) 位置绘制出火车即可。</p>
 <h2 id="确定角度"><a href="#确定角度" class="headerlink" title="确定角度"></a>确定角度</h2><p>现在，小火车已经能开动了。但遗憾的是，它永远只保持着一个方向，但显然的是，沿着轨道方向的小火车更加真实。我们可以通过轨道上任意相邻两点的坐标（比如下图的 A B 两点），求出这两点间线段的角度。然后在对小火车平移之后，先不急着绘制，再旋转这个角度绘制，小火车就能沿着轨道了。</p>
 <p><img src="http://img.alicdn.com/tps/TB102y2LXXXXXXaXXXXXXXXXXXX-422-585.jpg" alt=""></p>
 <p>看上去不错，但是还不够，因为采样点不够密集，所以在每个采样点处，小火车的旋转角度都会「骤变」一下，动画看起来就会不流畅。所以，对于每一帧的旋转角度，我们再进行一次内插。</p>
 <p>首先，为每个点确定一个「切线」法向量，如 A 点的 theta_A，B 点的 theta_B，B 点的 theta_C。确定的过程，可以取前后两点连线的法线，比如 theta_B 就是 AC 两点的法线。然后对于任意一帧，根据小火车的位置，内插出火车的角度。</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train.theta = (<span class="number">1</span>-q) * p<span class="string">[i]</span>.theta + q * p<span class="string">[i+1]</span>.theta</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train.theta = (1-q) * p[i].theta + q * p[i+1].theta</span><br></pre></td></tr></table></figure>
 <p><img src="http://img.alicdn.com/tps/TB1mbyBLXXXXXb_XVXXXXXXXXXX-509-538.jpg" alt=""></p>
 <p>这样，小火车跑动就不会再一卡一卡的了。</p>
 <h2 id="速度问题"><a href="#速度问题" class="headerlink" title="速度问题"></a>速度问题</h2><p>之前，我们把小火车的速度设置为了常量，但是如果它的速度是合理变化的，那就会更加逼真了。对于过山车而言，简单的能量守恒定律告诉我们，速度的平方与小火车的高度存在某种线性关系。稍加推理，不难写出：</p>
-<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在每一帧</span></span><br><span class="line">train.<span class="built_in">speed</span> = Math.<span class="built_in">sqrt</span>(C1 - C2 * train.y)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 在每一帧</span><br><span class="line">train.speed = Math.sqrt(C1 - C2 * train.y)</span><br></pre></td></tr></table></figure>
 <p>适当地调节两个常量 <code>C 1</code> 和 <code>C 2</code> 的值，使动画看上去比较合理。这样，动画就完成了。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>动画的原理很简单，最关键的就是「内插」而已。每一帧中，不管是小火车的位置还是角度，都是通过内插得来的。这样，位置和角度的值就会是连续变化的。其实，这种情况，也许把曲线拟合成若干条贝塞尔曲线互相连接，会更加「完美」，但是经验告诉我，拟合贝塞尔曲线也许没那么轻松，而适当的采样点也蕴含了足够的信息，足以使我完成这个动画。</p>
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2015/12/28/anim-train/" data-id="cj0nn8rd20005qqqel19v58ia" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2015/12/28/anim-train/" data-id="cj11zadeq0005s7qejqei5fka" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动画/">动画</a></li></ul>
@@ -430,7 +430,7 @@
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -440,7 +440,7 @@
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/">2010</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/">2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2008/">2008</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/">2007</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

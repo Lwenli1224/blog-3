@@ -26,7 +26,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
 <meta property="og:image" content="http://img.alicdn.com/tps/TB1qt_yLpXXXXcrXVXXXXXXXXXX-764-277.jpg">
 <meta property="og:image" content="http://gw.alicdn.com/tps/TB1UG.qLpXXXXbdXpXXXXXXXXXX-674-461.png">
 <meta property="og:image" content="http://gw.alicdn.com/tps/TB13HZILpXXXXacXXXXXXXXXXXX-296-369.png">
-<meta property="og:updated_time" content="2017-03-24T09:47:44.000Z">
+<meta property="og:updated_time" content="2017-04-03T10:31:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Canvas 最佳实践（性能篇）">
 <meta name="twitter:description" content="Canvas 想必前端同学们都不陌生，它是 HTML5 新增的「画布」元素，允许我们使用 JavaScript 来绘制图形。目前，所有的主流浏览器都支持 Canvas。
@@ -196,7 +196,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
 <p>说到这里，和性能貌似还扯不上什么关系。那我现在就要告诉你，对 <code>context.lineWidth</code> 赋值的开销远远大于对一个普通对象赋值的开销，你会作如何感想。</p>
 <p>当然，这很容易理解。Canvas 上下文不是一个普通的对象，当你调用了 <code>context.lineWidth = 5</code> 时，浏览器会需要立刻地做一些事情，这样你下次调用诸如 <code>stroke</code> 或 <code>strokeRect</code> 等 API 时，画出来的线就正好是 5 个像素宽了（不难想象，这也是一种优化，否则，这些事情就要等到下次 <code>stroke</code> 之前做，更加会影响性能）。</p>
 <p>我尝试执行以下赋值操作 10<sup>6</sup> 次，得到的结果是：对一个普通对象的属性赋值只消耗了 3ms，而对 <code>context</code> 的属性赋值则消耗了 40ms。值得注意的是，如果你赋的值是非法的，浏览器还需要一些额外时间来处理非法输入，正如第三/四种情形所示，消耗了 140ms 甚至更多。</p>
-<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">somePlainObject<span class="variable">.lineWidth</span> = <span class="number">5</span>;  <span class="comment">// 3ms (10^6 times)</span></span><br><span class="line"><span class="keyword">context</span><span class="variable">.lineWidth</span> = <span class="number">5</span>;  <span class="comment">// 40ms</span></span><br><span class="line"><span class="keyword">context</span><span class="variable">.lineWidth</span> = <span class="number">'He</span>llo World!'; <span class="comment">// 140ms</span></span><br><span class="line"><span class="keyword">context</span><span class="variable">.lineWidth</span> = &#123;&#125;; <span class="comment">// 600ms</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">somePlainObject.lineWidth = 5;  // 3ms (10^6 times)</span><br><span class="line">context.lineWidth = 5;  // 40ms</span><br><span class="line">context.lineWidth = &apos;Hello World!&apos;; // 140ms</span><br><span class="line">context.lineWidth = &#123;&#125;; // 600ms</span><br></pre></td></tr></table></figure>
 <p>对 <code>context</code> 而言，对不同属性的赋值开销也是不同的。<code>lineWidth</code> 只是开销较小的一类。下面整理了为 <code>context</code> 的一些其他的属性赋值的开销，如下所示。</p>
 <table>
 <thead>
@@ -251,7 +251,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
 <p>记住，堆叠在上方的 Canvas 中的内容会覆盖住下方 Canvas 中的内容。</p>
 <h1 id="绘制图像"><a href="#绘制图像" class="headerlink" title="绘制图像"></a>绘制图像</h1><p>目前，Canvas 中使用到最多的 API，非 <code>drawImage</code> 莫属了。（当然也有例外，你如果要用 Canvas 写图表，自然是半句也不会用到了）。</p>
 <p><code>drawImage</code> 方法的格式如下所示：</p>
-<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">context</span>.drawImage(image, sx, sy, <span class="keyword">sWidth, </span><span class="keyword">sHeight, </span>dx, dy, dWidth, dHeight)<span class="comment">;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);</span><br></pre></td></tr></table></figure>
 <p><img src="http://gw.alicdn.com/tps/TB11l3dLpXXXXXRXpXXXXXXXXXX-593-395.png" alt=""></p>
 <h2 id="数据源与绘制的性能"><a href="#数据源与绘制的性能" class="headerlink" title="数据源与绘制的性能"></a>数据源与绘制的性能</h2><p>由于我们具备「把图片中的某一部分绘制到 Canvas 上」的能力，所以很多时候，我们会把多个游戏对象放在一张图片里面，以减少请求数量。这通常被称为「精灵图」。然而，这实际上存在着一些潜在的性能问题。我发现，使用 <code>drawImage</code> 绘制同样大小的区域，数据源是一张和绘制区域尺寸相仿的图片的情形，比起数据源是一张较大图片（我们只是把数据扣下来了而已）的情形，前者的开销要小一些。可以认为，两者相差的开销正是「裁剪」这一个操作的开销。</p>
 <blockquote>
@@ -307,7 +307,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2016/02/22/canvas-performance/" data-id="cj0nn8re5000oqqqevfee2e51" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2016/02/22/canvas-performance/" data-id="cj11zadfc000es7qebivutqgf" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/canvas/">canvas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/performance/">performance</a></li></ul>
@@ -532,7 +532,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -542,7 +542,7 @@ Canvas 最常见的用途是渲染动画。渲染动画的基本原理，无非�
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/">2010</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/">2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2008/">2008</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/">2007</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 

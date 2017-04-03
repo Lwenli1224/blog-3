@@ -23,7 +23,7 @@
 统计用户在站点的停留时长
 收集页面链接的点击数量等">
 <meta property="og:image" content="https://gw.alicdn.com/tps/TB1VF2YMXXXXXX2XpXXXXXXXXXX-900-500.png">
-<meta property="og:updated_time" content="2017-03-24T09:47:44.000Z">
+<meta property="og:updated_time" content="2017-04-03T10:31:13.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="页面跳转时，统计数据丢失问题探讨">
 <meta name="twitter:description" content="为了更好地了解用户对产品的使用情况，业务中，我们经常会收到埋点统计的需求，比如：
@@ -213,7 +213,7 @@
 <p>这里存在的问题是，该属性可能被开发者用于其他途径。我们可以限制开发者直接使用 <code>window.name</code>，封装接口，通过接口调用，如 aralejs 提供的 <a href="https://github.com/aralejs/name-storage" target="_blank" rel="external">nameStorage</a>，</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nameStorage.setItem(key, value);</span><br><span class="line">nameStorage.getItem(key);</span><br><span class="line">nameStorage.removeItem(key);</span><br></pre></td></tr></table></figure>
 <p>储存形式为：</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    scheme                  nameStorage datas</span><br><span class="line">      |                            |</span><br><span class="line"><span class="comment">------------           ------------------------</span></span><br><span class="line">nameStorage:origin-<span class="built_in">name</span>?key1=value1&amp;key2=value2</span><br><span class="line">            <span class="comment">-----------</span></span><br><span class="line">                 |</span><br><span class="line">         window origin <span class="built_in">name</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    scheme                  nameStorage datas</span><br><span class="line">      |                            |</span><br><span class="line">------------           ------------------------</span><br><span class="line">nameStorage:origin-name?key1=value1&amp;key2=value2</span><br><span class="line">            -----------</span><br><span class="line">                 |</span><br><span class="line">         window origin name</span><br></pre></td></tr></table></figure>
 <p>以上虽然基本解决了数据丢失和体验差的问题，但是这也很大程度依赖于开发者的编程习惯，如不能随便玩耍 <code>window.name</code>；也对系统有一定的要求，必须在所有页面上部署同样的埋点脚本。</p>
 <h3 id="这件事情应该交给浏览器来解决"><a href="#这件事情应该交给浏览器来解决" class="headerlink" title="这件事情应该交给浏览器来解决"></a>这件事情应该交给浏览器来解决</h3><p>上面提到的各种方案，不乏黑科技，然而存在的问题还是一大堆，如果团队的开发者执行力不够，中途容易出现各种麻烦。所以真正能够解决这个问题的，必然还是浏览器本身！</p>
 <p>为什么不能给用户提供这样一个 API，即使页面跳转了，也能够将上个页面的请求发出去呢？庆幸的是，W3C 工作组也想到了这个问题，提出了 <code>Beacon API</code> 的 <a href="https://www.w3.org/TR/beacon/" target="_blank" rel="external">草案</a>。</p>
@@ -232,7 +232,7 @@
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2016/04/01/lose-statistics/" data-id="cj0nn8rj50042qqqeg1irhxj0" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2016/04/01/lose-statistics/" data-id="cj11zadjg004ys7qers338eyn" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/埋点/">埋点</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据统计/">数据统计</a></li></ul>
@@ -457,7 +457,7 @@
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">40</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">42</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -467,7 +467,7 @@
   <div class="widget-wrap widget-list">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/">2010</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/">2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2008/">2008</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/">2007</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
