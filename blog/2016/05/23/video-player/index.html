@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>视频播放的那些事 | Taobao FED | 淘宝前端团队</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="baidu-site-verification" content="OTHOW5vFFG" />
+  <meta name="description" content="视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 
+
+播放器
+在手淘过去一年多的历史长河中存在五种类型的播放器。
+
+原生 HTML5 video 标签
+Android 5.3.2 版本之后的 UC 内核增强 SAC 播放器
+Android 5.4.9 版本之后的 UC HAC 播放器
+Android 5.3.2 版本之前的 Glu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视频播放的那些事">
+<meta property="og:url" content="http://taobaofed.org/blog/2016/05/23/video-player/index.html">
+<meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
+<meta property="og:description" content="视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 
+
+播放器
+在手淘过去一年多的历史长河中存在五种类型的播放器。
+
+原生 HTML5 video 标签
+Android 5.3.2 版本之后的 UC 内核增强 SAC 播放器
+Android 5.4.9 版本之后的 UC HAC 播放器
+Android 5.3.2 版本之前的 Glu">
+<meta property="og:image" content="http://taobaofed.org//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg">
+<meta property="og:image" content="https://img.alicdn.com/tps/TB1vRHkJpXXXXXAXFXXXXXXXXXX-1280-719.jpg">
+<meta property="og:image" content="https://img.alicdn.com/tps/TB1VrUrJFXXXXctXVXXXXXXXXXX-178-175.jpg">
+<meta property="og:image" content="http://img3.tbcdn.cn/L1/461/1/2d8cead70e721088b82892514ef210b7150df716.gif">
+<meta property="og:image" content="https://img.alicdn.com/tps/TB1bu2KJVXXXXcfXXXXXXXXXXXX-181-178.jpg">
+<meta property="og:updated_time" content="2017-04-03T10:31:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="视频播放的那些事">
+<meta name="twitter:description" content="视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 
+
+播放器
+在手淘过去一年多的历史长河中存在五种类型的播放器。
+
+原生 HTML5 video 标签
+Android 5.3.2 版本之后的 UC 内核增强 SAC 播放器
+Android 5.4.9 版本之后的 UC HAC 播放器
+Android 5.3.2 版本之前的 Glu">
+<meta name="twitter:image" content="http://taobaofed.org//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg">
+  
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
+    <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/rss+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+  
+    <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  
+  
+    <link rel="stylesheet" href="/scrollLoading/style.css">
+  
+
+  
+    <style type="text/css">
+      .logo { background-image:url(//img.alicdn.com/tps/TB1Nv_wKXXXXXbmXVXXXXXXXXXX-295-195.png); }
+    </style>
+  
+
+  <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+  <script src="/js/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+  <img src="//img.alicdn.com/tps/TB1GKckKXXXXXXIXpXXXXXXXXXX-400-400.png" alt="Taobao FED" style="position:absolute;left:-9999px">
+  <div id="wrap">
+    <header id="header">
+  <div id="header-outer" class="outer">
+    <div class="container">
+      <div class="container-inner">
+        <div id="header-title">
+          <h1 class="logo-wrap">
+            <a href="/" class="logo"></a>
+          </h1>
+          
+            <h2 class="subtitle-wrap">
+              <p class="subtitle">淘宝前端团队（FED）</p>
+              <p class="description">用技术为体验提供无限可能</p>
+            </h2>
+          
+        </div>
+        <div id="header-inner" class="nav-container">
+          <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+          <div class="nav-container-inner">
+            <ul id="main-nav">
+              <li class="main-nav-list-item" ><a class="main-nav-list-link" href="/">主页</a></li>
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Web开发/">Web开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/Node-js/">Node.js</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/无线开发/">无线开发</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/工具-平台/">工具&amp;平台</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/categories/团队生活/">团队生活</a>
+                </li>
+                
+              
+                
+                <li class="main-nav-list-item" >
+                  <a class="main-nav-list-link" href="/about/">关于我们</a>
+                </li>
+                
+              
+            </ul>
+            <nav id="sub-nav">
+              <div id="search-form-wrap">
+                <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="搜索"><input type="hidden" name="sitesearch" value="http://taobaofed.org"></form>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="container">
+      <div class="main-body container-inner">
+        <div class="main-body-inner">
+          <section id="main">
+            <div class="main-body-header">
+
+              <h1 class="header"><a class="page-title-link" href="/categories/Web开发/">Web开发</a></h1>
+            </div>
+            <div class="main-body-content">
+              
+  <article id="post-video-player" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+      <!--  -->
+      
+        <header class="article-header">
+          
+  
+    <h1 class="article-title" itemprop="name">
+      视频播放的那些事
+    </h1>
+  
+
+        </header>
+      
+      <p class="article-byline">
+        
+        <span>作者: 永霸
+        </span>
+        <span>发表于: <a href="/blog/2016/05/23/video-player/" class="article-date">
+  <time datetime="2016-05-23T03:26:29.000Z" itemprop="datePublished">2016-05-23</time>
+</a></span>
+      </p>
+      <div class="article-entry" itemprop="articleBody">
+        <p><img src="//img.alicdn.com/tfs/TB1YyshJVXXXXaEXVXXXXXXXXXX-900-500.jpg" alt="视频播放的那些事"></p>
+<ul>
+<li>视频作为淘宝教育业务的基础服务，本文根据自身在手淘中视频播放的实践，谈谈在手淘中视频播放遇到的问题及其解决方案。 </li>
+</ul>
+<h3 id="播放器"><a href="#播放器" class="headerlink" title="播放器"></a>播放器</h3><ul>
+<li><p>在手淘过去一年多的历史长河中存在五种类型的播放器。</p>
+<ul>
+<li>原生 HTML5 video 标签</li>
+<li>Android 5.3.2 版本之后的 UC 内核增强 SAC 播放器</li>
+<li>Android 5.4.9 版本之后的 UC HAC 播放器</li>
+<li>Android 5.3.2 版本之前的 Glue native 播放器</li>
+<li>Android 5.3.2 版本及其之后的 PlayBuddy 播放器</li>
+</ul>
+</li>
+<li><p>下面从支持平台，loading 动画，全屏，模拟全屏和兼容性五个方面对各个播放器做个横向对比。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>video IOS</th>
+<th>video Android</th>
+<th>UC SAC</th>
+<th>UC HAC</th>
+<th>PlayBuddy</th>
+<th>Glue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台</td>
+<td>IOS手淘</td>
+<td>android手淘</td>
+<td>android手淘&gt;=5.3.2</td>
+<td>android手淘&gt;=5.4.9</td>
+<td>android手淘&gt;=5.3.2</td>
+<td>android手淘&lt;5.3.2</td>
+</tr>
+<tr>
+<td>loading</td>
+<td>可定制</td>
+<td>可定制</td>
+<td>无</td>
+<td>可定制</td>
+<td>不可定制，丑陋</td>
+<td>有</td>
+</tr>
+<tr>
+<td>控件可定制性</td>
+<td>可以</td>
+<td>可以</td>
+<td>不可以</td>
+<td>可以</td>
+<td>不可以</td>
+<td>不可以</td>
+</tr>
+<tr>
+<td>全屏</td>
+<td>支持竖全屏</td>
+<td>不支持</td>
+<td>支持竖全屏</td>
+<td>可以</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>模拟全屏</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+<td>有bug</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>好</td>
+<td>较好</td>
+<td>较好</td>
+<td>好</td>
+<td>较好</td>
+<td>一般，不兼容 android 5.0及以上</td>
+</tr>
+</tbody>
+</table>
+<h3 id="接口与事件封装"><a href="#接口与事件封装" class="headerlink" title="接口与事件封装"></a>接口与事件封装</h3><p>上面介绍了手淘中可供 WebView 选择的播放器，对于业务方而言迫切需要一个解决方，无需关心底层差异。为此，我们屏蔽移动端不同系统平台、宿主环境、播放器的实现细节和兼容性问题，提供统一的接口和事件，具体如下：</p>
+<ul>
+<li>方法<ul>
+<li>play 播放</li>
+<li>pause 暂停</li>
+<li>stop 停止</li>
+<li>show 显示</li>
+<li>hide 隐藏</li>
+<li>requestFullscreen 全屏</li>
+<li>exitFullScreen 退出全屏</li>
+<li>getCurrentTime 获取当前播放时间</li>
+<li>setCurrentTime 设置播放时间</li>
+<li>getDuration 获取视频时长</li>
+<li>setPoster 设置背景图</li>
+<li>destory 销毁</li>
+<li>reset 重置视频</li>
+</ul>
+</li>
+<li><p>事件</p>
+<ul>
+<li>timeupdate 进度更新</li>
+<li>ended 停止</li>
+<li>error 错误</li>
+<li>play （专指video）</li>
+<li>pause 停止（专指video）</li>
+<li>firstpaint 视频真正开始播放（专指video）</li>
+</ul>
+</li>
+<li><p>controls 播放控件（专指video）</p>
+<ul>
+<li>播放</li>
+<li>暂停</li>
+<li>进度更新</li>
+<li>全屏</li>
+<li>loading</li>
+</ul>
+</li>
+</ul>
+<h3 id="兼容性处理"><a href="#兼容性处理" class="headerlink" title="兼容性处理"></a>兼容性处理</h3><p>接下来谈谈在开发过程中遇到的各种小问题及其解决办法。</p>
+<h4 id="video"><a href="#video" class="headerlink" title="video"></a>video</h4><ul>
+<li><p><strong>内联播放</strong>。iPhone 在视频播放时默认全屏播放，<a href="https://developer.apple.com/library/iad/documentation/UserExperience/Conceptual/iAdJSProgGuide/PlayingVideosinAds/PlayingVideosinAds.html" target="_blank" rel="external">参考</a>。</p>
+<ul>
+<li><p>WebView 中，可以对 UIWebView 做如下配置，并且在 video 中配置 webkit-playsinline 属性即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webview.allowsInlineMediaPlayback = YES;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>iPhone Safari 在 IOS &gt;= 8 的系统中，有人也提出了一个<a href="https://link.zhihu.com/?target=https%3A//github.com/bfred-it/iphone-inline-video" target="_blank" rel="external">方案</a></p>
+</li>
+</ul>
+</li>
+<li><p><strong>自定义播放控件</strong></p>
+<ul>
+<li>部分 Android 机型不支持内置控件，或者说内置控件无法正常使用；各个产品都有特定的视觉规范，默认控件的交互和视觉无法满足需求。因此，我们推荐默认不启用默认控件，采用自定义控件。</li>
+<li>IOS 下播放时还可能还展示系统自带播放按钮，可以配置如下 CSS。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">video</span><span class="selector-pseudo">::-webkit-media-controls-start-playback-button</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>poster 视频底图</strong></p>
+<ul>
+<li>在 iPhone 中视频加载完第一帧数据后会覆盖 Poster 底图展示第一帧画面，这时可以使用 DIV 覆盖在视频上方模拟，监听 timeupdate 事件做隐藏操作。</li>
+<li>在 UC WebView 中动态设置 poster 可能会导致手淘 crash，方案跟上方一样。</li>
+<li>在使用 Native 播放器时，在播放器未初始化时使用 DIV 替换 video 标签，并设置底图为背景图。</li>
+</ul>
+</li>
+<li><p><strong>播放首屏</strong>：IOS 通过监听 playing 事件可以准确获取视频播放的时间点；Android 中在该事件触发时，还没真正开始播放。我们通过监听 timeupdate 的事件做模拟处理。</p>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">_timeUpdate(e) &#123;</span><br><span class="line"> <span class="keyword">var</span> currentTime = <span class="keyword">this</span>.getCurrentTime();</span><br><span class="line"> </span><br><span class="line"> <span class="comment">// 判断是否为首帧</span></span><br><span class="line"> <span class="keyword">if</span> (currentTime !== <span class="literal">undefined</span> &amp;&amp; currentTime !== <span class="number">0</span>) &#123;</span><br><span class="line">     <span class="keyword">this</span>.fire(<span class="string">'firstpaint'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_playing() &#123;</span><br><span class="line">  <span class="keyword">if</span> (Env.os.ios) &#123;</span><br><span class="line">     <span class="keyword">this</span>.fire(<span class="string">'firstpaint'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>视频切换</strong>：在android 4.4 以下版本，在视频切换时存在第一次切换不能正常播放，第二次才能正常播放情况。通过调试人肉分析，发现切换视频的 video 存在以下两个特征：readyState 值为 0，videoWidth 为 0。因此我们判断当两个属性为0时，则切换失败，再次调用播放逻辑。存在误判的可能，但是能保证正常工作。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">isWork() &#123;</span><br><span class="line">    <span class="keyword">if</span> (videoEl.readyState === <span class="number">0</span> &amp;&amp; videoEl.videoWidth === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>全屏</strong>：手淘 IOS 支持竖全屏效果，Android 虽然具有全屏方法，但是被手淘限制，调用全屏方法无效。</p>
+<ul>
+<li><p><code>方案一</code>：为了支持横全屏，我们使用 css3 的 rotate 对视频区域进行90度旋转，并且调用 bridge 接口隐藏 native 顶部的 navibar，并对自定义控件进行响应优化调整。基本到达 native全屏效果。当然顶部状态栏不能隐藏还是有些小瑕疵。同时旋转之后元素的 z-index失效，导致视频覆盖控件问题，可以通过设置 -webkit-transform: translate3d(0,0,0) 来修复</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">requestFullscreen() &#123;</span><br><span class="line">    <span class="keyword">var</span> element = <span class="keyword">this</span>.el[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">var</span> method = FullscreenApi.requestFullscreen;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (method) &#123;</span><br><span class="line">        element[method]();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (element.webkitEnterFullscreen || element.enterFullScreen) &#123;</span><br><span class="line">        element.webkitEnterFullscreen &amp;&amp; element.webkitEnterFullscreen();</span><br><span class="line">        element.enterFullScreen &amp;&amp; element.enterFullScreen();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 模拟全屏</span></span><br><span class="line">        <span class="comment">// enterFullWindow();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟全屏js核心代码</span></span><br><span class="line">_mockFullscreen() &#123;</span><br><span class="line">    <span class="keyword">if</span> (curEl.hasClass(<span class="string">'normal'</span>)) &#123;</span><br><span class="line">        <span class="keyword">this</span>.fullscreen = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        playerEl.css(&#123;</span><br><span class="line">            width: <span class="keyword">this</span>.originWidth,</span><br><span class="line">            height: <span class="keyword">this</span>.originHeight,</span><br><span class="line">            left: <span class="number">0</span></span><br><span class="line">        &#125;).removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">        wrapperEl.css(&#123;</span><br><span class="line">            width: <span class="keyword">this</span>.wrapperOriginWidth,</span><br><span class="line">            height: <span class="keyword">this</span>.wrapperOriginHeight</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        videoEl.css(<span class="string">'height'</span>, <span class="string">'100%'</span>);</span><br><span class="line"></span><br><span class="line">        curEl.removeClass(<span class="string">'normal'</span>);</span><br><span class="line">        contentEl.removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.fullscreen = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.originWidth = playerEl.width();</span><br><span class="line">        <span class="keyword">this</span>.originHeight = playerEl.height();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.wrapperOriginWidth = wrapperEl.width();</span><br><span class="line">        <span class="keyword">this</span>.wrapperOriginHeight = wrapperEl.height();</span><br><span class="line"></span><br><span class="line">        playerEl.css(&#123;</span><br><span class="line">            width: $(<span class="built_in">window</span>).height(),</span><br><span class="line">            height: $(<span class="built_in">window</span>).width(),</span><br><span class="line">            left: $(<span class="built_in">window</span>).width()</span><br><span class="line">        &#125;).addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">        wrapperEl.css(&#123;</span><br><span class="line">            width: $(<span class="built_in">window</span>).height(),</span><br><span class="line">            height: $(<span class="built_in">window</span>).width()</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        videoEl.css(<span class="string">'height'</span>, videoEl.height() - controlsHeight);</span><br><span class="line"></span><br><span class="line">        curEl.addClass(<span class="string">'normal'</span>);</span><br><span class="line">        contentEl.addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>效果图:<br><img src="https://img.alicdn.com/tps/TB1vRHkJpXXXXXAXFXXXXXXXXXX-1280-719.jpg" alt="IOS全屏"></p>
+</li>
+<li>预览地址（请用手淘扫码）：<br><img src="https://img.alicdn.com/tps/TB1VrUrJFXXXXctXVXXXXXXXXXX-178-175.jpg" alt="demo"></li>
+</ul>
+<ul>
+<li><code>方案二</code>。方案一只是模拟了横全屏效果，对于追求完美的处女座不能忍。还有其他方案吗？有时候只需要转换下思维，问题即可迎刃而解。既然是横屏播放，只需要让 WebView 横屏即可，同时在横屏之后重新调整控件即可，关键手淘提供了打开应用横全屏的接口。注意点：横屏之后需要禁止页面滚动，要不然全屏就露馅了，因为本质还是个 WebView。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.transverseFullScreen) &#123;</span><br><span class="line">  <span class="keyword">if</span> (curEl.hasClass(<span class="string">'normal'</span>)) &#123;</span><br><span class="line">    curEl.removeClass(<span class="string">'normal'</span>);</span><br><span class="line">    <span class="keyword">this</span>._transverseFullScreen(<span class="literal">false</span>).then(() =&gt; &#123;</span><br><span class="line">      $(<span class="string">'body'</span>).removeClass(<span class="string">'co-fullscreen'</span>).attr(&#123; height: <span class="string">'auto'</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.videoWrapperEl.height(<span class="keyword">this</span>.videoOriginHeight).removeClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.player.fire(<span class="string">'transversefullscreen'</span>, &#123; fullscreen: <span class="literal">false</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.resize();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    curEl.addClass(<span class="string">'normal'</span>);</span><br><span class="line">    <span class="keyword">this</span>._transverseFullScreen(<span class="literal">true</span>).then(() =&gt; &#123;</span><br><span class="line">      $(<span class="string">'body'</span>).addClass(<span class="string">'co-fullscreen'</span>).attr(&#123; height: win.height() &#125;);</span><br><span class="line">      <span class="keyword">this</span>.videoWrapperEl.height(win.height()).addClass(<span class="string">'fullscreen'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">this</span>.player.fire(<span class="string">'transversefullscreen'</span>, &#123; fullscreen: <span class="literal">true</span> &#125;);</span><br><span class="line">      <span class="keyword">this</span>.resize();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Demo：<br><img src="http://img3.tbcdn.cn/L1/461/1/2d8cead70e721088b82892514ef210b7150df716.gif" alt="fullscreen"></li>
+<li>手淘 IOS 扫码：<br><img src="https://img.alicdn.com/tps/TB1bu2KJVXXXXcfXXXXXXXXXXXX-181-178.jpg" alt=""><ul>
+<li><code>方案3</code>。在 UC HAC 方案视频提供全屏接口 UCSettings.setVideoViewFullscreenByDefault（true），开启后，视频全屏默认为横屏  </li>
+</ul>
+</li>
+<li><strong>自动播放</strong><ul>
+<li>出于用户节省用户流量考虑，iPhone 下播放视频需要用户手动触发，即使配置了 autoplay 属性也是无效的。在业务中，特定场景还是需要视频能够自动播放，对此我们可以监听页面的 touchstart 事件，做如下处理：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.auoplay &amp;&amp; env.app.TB &amp;&amp; env.network.wifi) &#123;</span><br><span class="line"><span class="keyword">if</span> (player.getCurrentTime() &gt; <span class="number">0</span> &amp;&amp; !player.isPause()) &#123;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.hasAutoPlay) &#123;</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">this</span>.hasAutoPlay = <span class="literal">true</span>;</span><br><span class="line">startEl.trigger(<span class="string">'click'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">autoplay</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    doc.detach(<span class="string">'touchstart'</span>, autoplay);</span><br><span class="line">    <span class="keyword">if</span> (player.getCurrentTime() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  startEl.trigger(<span class="string">'click'</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> doc.on(<span class="string">'touchstart'</span>, autoplay);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>其他<ul>
+<li>部分机型手淘低版本使用 video 播放时，会出现有声音没画面的问题，升级手淘后即恢复。例如，小米4 手淘 4.2.0</li>
+<li>IOS 5.1 和部分 android 手机暂停和开始按钮不触发点击事件(元素的 :after 为iconfont)。通过父元素添加background即可</li>
+<li>Android UC 内核的播放器，在未设置 source 资源时，设置 poster 无效</li>
+<li>Android UC 内核的播放器无法自定义控件和样式操作，但是可以正常的监听事件。</li>
+<li>直接替换 source 不会改变当前正在播放的视频，需要调用 load 方法。</li>
+<li>UC 浏览器中 video 标签会被 UC 的播放器插件替换</li>
+<li>使用 m3u8 和 mp4 基本可以兼容所有机型 </li>
+<li>在 IOS 视频初始化后设置 currrentTime 无效，在 loadedmetadata 事件触发后，设置 currentTime 即可。</li>
+</ul>
+</li>
+</ul>
+<h3 id="native播放器"><a href="#native播放器" class="headerlink" title="native播放器"></a>native播放器</h3><ul>
+<li><p>destroy：</p>
+<ul>
+<li>Glue：Glue native 播放器在页面跳转，WebView 后退等操作时，不会自动析构，好的情况是视频依然在背后播放，有时候会直接导致手淘 crash。</li>
+<li><p>PlayBuddy：在页面跳转时依然会继续播放</p>
+<p>处理方式：页面跳转时需要手动的销毁native播放器。</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'WV.Event.Page.Refresh'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>), <span class="literal">false</span>);</span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'WV.Event.Key.Back'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>), <span class="literal">false</span>);</span><br><span class="line">win.on(<span class="string">'unload'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>));</span><br><span class="line">win.on(<span class="string">'beforeunload'</span>, $.proxy(<span class="keyword">this</span>.destory, <span class="keyword">this</span>));</span><br></pre></td></tr></table></figure>
+<ul>
+<li>定位<ul>
+<li>Glue 播放器使用 dip 作为播放器的定位单位，rem 布局会对页面进行缩放，导致定位位置和视频大小错误。同时定位时参数有小数点会导致播放器错误。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/__</span><br><span class="line"> * 返回值需要是整数，否则会有异常</span><br><span class="line"> */</span><br><span class="line">_getVedioPos(isDpr) &#123;</span><br><span class="line">    var el = this.el,</span><br><span class="line">        offset = el.offset(),</span><br><span class="line">        dpr = 1;</span><br><span class="line"></span><br><span class="line">    if (isDpr) &#123;</span><br><span class="line">        dpr = this._getDpr();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return &#123;</span><br><span class="line">        x: parseInt(offset.left / dpr),</span><br><span class="line">        y: parseInt(offset.top / dpr),</span><br><span class="line">        w: parseInt(el.width() / dpr),</span><br><span class="line">        h: parseInt(el.height() / dpr)</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>视频源地址：Glue 播放器不支持以 // 开始的视频资源，例如 //video.xxx</li>
+<li>PlayBuddy 播放器不会随着页面滚动而滚动。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>如果业务中需要在手淘中播放视频，IOS 直接使用原生 video 即可。在 Android 中较为复杂，没有完全兼容的方案。建议使用 video，对于 Android 低版本建议使用native 播放器。随着uc内核接入，未来完全抛弃 native 方案也是可行的。</li>
+<li>本文基于过去一年在手淘视频播放过程中遇到问题的小结，后续会整理视频监控和视频娱乐化相关内容。</li>
+</ul>
+<h2 id="附：手淘同学播放器兼容性表"><a href="#附：手淘同学播放器兼容性表" class="headerlink" title="附：手淘同学播放器兼容性表"></a>附：手淘同学播放器兼容性表</h2><table>
+<thead>
+<tr>
+<th>品牌</th>
+<th>机型</th>
+<th>手淘版本</th>
+<th>操作系统版本</th>
+<th>播放器控件</th>
+<th>视频列表切换</th>
+<th>试看控制</th>
+<th>观看进度同步</th>
+<th>切换模式</th>
+<th>问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>苹果</td>
+<td>6 plus</td>
+<td>5.2.7</td>
+<td>8.11</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td>6</td>
+<td>5.2.7</td>
+<td>8.11</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td>5s</td>
+<td>5.2.7</td>
+<td>8.11</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td>5</td>
+<td>5.2.7</td>
+<td>8.11</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td>4s</td>
+<td>5.2.7</td>
+<td>8.11</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>苹果</td>
+<td>4</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>google</td>
+<td>nexus 5</td>
+<td>*</td>
+<td>yun os 3</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>*</td>
+</tr>
+<tr>
+<td>google</td>
+<td>nexus 5</td>
+<td>*</td>
+<td>安卓 5</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>*</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>N7100</td>
+<td>4.9</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>*</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>NOTE4</td>
+<td>4.9</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>模式二点最大化crash</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>NOTE3</td>
+<td>4.9</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>*</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>S4</td>
+<td>5.2.7.3</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>模式二，播放有问题 </td>
+</tr>
+<tr>
+<td>三星</td>
+<td>I9300</td>
+<td>4.3</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>S3</td>
+<td>5.2.8.2</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>三星</td>
+<td>S5</td>
+<td>5.2.7.3</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>魅族</td>
+<td>MX2</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>魅族</td>
+<td>MX4 PRO</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>魅族</td>
+<td>魅蓝Note</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>魅族</td>
+<td>MX3（安装不上）</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>华为</td>
+<td>荣耀6</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>模式二可能播放不了</td>
+</tr>
+<tr>
+<td>华为</td>
+<td>mate7</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>模式二可能播放不了 </td>
+</tr>
+<tr>
+<td>华为</td>
+<td>c8816</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>进度条拖动会跳</td>
+</tr>
+<tr>
+<td>华为</td>
+<td>荣耀3c</td>
+<td>*</td>
+<td>4.4.2</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×一直展示loading的图片</td>
+<td>模式二播放不了</td>
+</tr>
+<tr>
+<td>华为</td>
+<td>C8813</td>
+<td>*</td>
+<td>4.1.1</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>高清视频不能播放</td>
+</tr>
+<tr>
+<td>HTC</td>
+<td>MAX</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>HTC</td>
+<td>816w</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>VIVO</td>
+<td>Find5</td>
+<td>*</td>
+<td>4.1.1</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>VIVO</td>
+<td>X3</td>
+<td>*</td>
+<td>4.2.2</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>小米</td>
+<td>2S</td>
+<td>*</td>
+<td>4.3</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>高清的播放不了</td>
+</tr>
+<tr>
+<td>小米</td>
+<td>3</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>小米</td>
+<td>4</td>
+<td>*</td>
+<td>4.4.4</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>索尼</td>
+<td>M512</td>
+<td>*</td>
+<td>4.4.2</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>索尼</td>
+<td>xperia 36l</td>
+<td>*</td>
+<td>4.1.2</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td>nubia</td>
+<td>nx403</td>
+<td>*</td>
+<td>4.2.2</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td>模式一，模式二播放均有问题</td>
+</tr>
+<tr>
+<td>锤子</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+<td></td>
+</tr>
+<tr>
+<td>oppo</td>
+<td>x907</td>
+<td>*</td>
+<td>4.0.3</td>
+<td>很难点到</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>*</td>
+</tr>
+<tr>
+<td>nexus5</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>第二种模式crash</td>
+</tr>
+</tbody>
+</table>
+<p>注：模式1为video，模式2为glue native播放器</p>
+
+      </div>
+      <footer class="article-footer">
+        <a data-url="http://taobaofed.org/blog/2016/05/23/video-player/" data-id="cj1d73frk00al8nqe6ru8a57u" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        
+        
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/视频/">视频</a></li></ul>
+
+      </footer>
+    </div>
+  </article>
+  
+  
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-video-player" data-title="视频播放的那些事" data-url="http://taobaofed.org/blog/2016/05/23/video-player/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'taobaofed'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
+  
+
+            </div>
+          </section>
+          <aside id="sidebar">
+  <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+  <div class="sidebar-top">
+    <p>关注我们 :</p>
+    <ul class="social-links">
+      
+        <li><a class="social-tooltip" title="github" href="https://github.com/taobaofed" target="_blank"><i class="icon fa fa-github"></i></a></li>
+      
+        <li><a class="social-tooltip" title="weibo" href="http://weibo.com/taobaofed" target="_blank"><i class="icon fa fa-weibo"></i></a></li>
+      
+        <li><a class="social-tooltip" title="rss" href="/atom.xml" target="_blank"><i class="icon fa fa-rss"></i></a></li>
+      
+    </ul>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2016/06/02/thing-about-taobao-homepage/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <p class="article-nav-title">
+        
+          聊一聊淘宝首页和它背后的一套
+        
+      </p>
+      <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+  
+  
+    <a href="/blog/2016/05/13/barrage-in-mobile/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <p class="article-nav-title">无线端的弹幕实现方案</p>
+      <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+    </a>
+  
+</nav>
+
+  
+  <div class="widgets-container">
+    
+      <div class="widget-wrap widget-open-source">
+  <!--<h3 class="widget-title">开源产品</h3>-->
+  
+  <a href="https://github.com/alibaba/rax" target="_blank">
+    <img src="//gw.alicdn.com/tps/TB1psKfPVXXXXaxXpXXXXXXXXXX-560-200.png" width="280" alt="A universal React-compatible render engine." title="A universal React-compatible render engine.">
+  </a>
+  
+  <a href="https://github.com/taobaofed/react-web" target="_blank">
+    <img src="//gw.alicdn.com/tfs/TB1yUyQPpXXXXbKaXXXXXXXXXXX-280-100.jpg" width="280" alt="A framework for building web apps with React Native compatible API." title="A framework for building web apps with React Native compatible API.">
+  </a>
+  
+</div>
+
+    
+      
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul id="recent-post" class="">
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2017/03/24/node-subway-season-4-nanjing/" class="thumbnail">
+  
+    <span style="background-image:url(https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg
+)" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2017/03/24/node-subway-season-4-nanjing/" class="title">「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结</a></p>
+              
+              <p class="item-author">by 煜宸</p>
+              
+              <p class="item-date">at <time datetime="2017-03-23T23:31:45.000Z" itemprop="datePublished">2017-03-24</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2017/03/16/javascript-functional-programing/" class="thumbnail">
+  
+    <span style="background-image:url(https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg
+)" alt="我眼中的 JavaScript 函数式编程" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2017/03/16/javascript-functional-programing/" class="title">我眼中的 JavaScript 函数式编程</a></p>
+              
+              <p class="item-author">by 化辰</p>
+              
+              <p class="item-date">at <time datetime="2017-03-15T23:18:05.000Z" itemprop="datePublished">2017-03-16</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2017/03/09/head-first-typescript/" class="thumbnail">
+  
+    <span style="background-image:url(//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg
+)" alt="认识 TypeScript" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2017/03/09/head-first-typescript/" class="title">认识 TypeScript</a></p>
+              
+              <p class="item-author">by 九十</p>
+              
+              <p class="item-date">at <time datetime="2017-03-08T23:17:52.000Z" itemprop="datePublished">2017-03-09</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2017/03/03/to-my-future-friend/" class="thumbnail">
+  
+    <span style="background-image:url(http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg
+)" alt="致未来的实习生" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/团队生活/">团队生活</a></p>
+              <p class="item-title"><a href="/blog/2017/03/03/to-my-future-friend/" class="title">致未来的实习生</a></p>
+              
+              <p class="item-author">by 海文</p>
+              
+              <p class="item-date">at <time datetime="2017-03-03T01:14:01.000Z" itemprop="datePublished">2017-03-03</time></p>
+            </div>
+          </li>
+        
+          <li>
+            
+            <div class="item-thumbnail">
+              
+<a href="/blog/2017/03/02/thinking-in-request-animation-frame/" class="thumbnail">
+  
+    <span style="background-image:url(//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg
+)" alt="浅析 requestAnimationFrame" class="thumbnail-image"></span>
+  
+</a>
+
+            </div>
+            
+            <div class="item-inner">
+              <p class="item-category"><a class="article-category-link" href="/categories/Web开发/">Web开发</a></p>
+              <p class="item-title"><a href="/blog/2017/03/02/thinking-in-request-animation-frame/" class="title">浅析 requestAnimationFrame</a></p>
+              
+              <p class="item-author">by 腾渊</p>
+              
+              <p class="item-date">at <time datetime="2017-03-02T05:25:09.000Z" itemprop="datePublished">2017-03-02</time></p>
+            </div>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-wechat">
+    <h3 class="widget-title">微信公众号</h3>
+    <a href="https://github.com/alibaba/rax ">
+      <img src="//img.alicdn.com/tfs/TB12fzTMVXXXXafaXXXXXXXXXXX-280-280.jpg" width="280" alt="淘宝前端团队微信公众号（taobaofed）" title="淘宝前端团队微信公众号（taobaofed）">
+    </a>
+  </div>
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Node-js/">Node.js</a><span class="category-list-count">46</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Web开发/">Web开发</a><span class="category-list-count">57</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/团队生活/">团队生活</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具-平台/">工具&平台</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/无线开发/">无线开发</a><span class="category-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">58</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/">2015</a><span class="archive-list-count">51</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/">2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/">2013</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/">2012</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/">2010</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/">2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2008/">2008</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/">2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget-wrap widget-list">
+    <h3 class="widget-title">链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://nodejs.club/">Node 地下铁</a>
+          </li>
+        
+          <li>
+            <a href="http://alinode.aliyun.com/">alinode</a>
+          </li>
+        
+          <li>
+            <a href="http://fex.baidu.com/">百度 FEX</a>
+          </li>
+        
+          <li>
+            <a href="http://www.75team.com/">奇舞团</a>
+          </li>
+        
+          <li>
+            <a href="http://aotu.io/notes/">凹凸实验室</a>
+          </li>
+        
+          <li>
+            <a href="http://www.alloyteam.com/">腾讯 AlloyTeam</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+    
+  </div>
+</aside>
+        </div>
+      </div>
+    </div>
+    <footer id="footer">
+  
+  <div class="container">
+    <div class="container-inner">
+      <!-- <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a> -->
+      <div class="credit">
+        <p>Copyright &copy; 2017 Taobao FED. All rights reserved.</p>
+        <a href="/terms">版权声明</a>
+        <!-- <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a> Redesigned by <a href="http://barretlee.com/" target="_blank">barretlee</a></p> -->
+      </div>
+    </div>
+  </div>
+</footer>
+  
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-65944345-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+<script>
+// for baidu spider
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+// for baidu analysis
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?33dd75d7b88de8722970ea06fa5f06b0";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+    
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+  <script src="/scrollLoading/jquery.scrollLoading.js"></script>
+  <script src="/scrollLoading/main.js"></script>
+
+
+<script src="/js/html-patch.js"></script>
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
