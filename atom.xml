@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-03-24T09:47:44.000Z</updated>
+  <updated>2017-04-28T06:48:36.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,82 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[使用 ES decorators 构建一致性 API]]></title>
+    <link href="http://taobaofed.org/blog/2017/04/27/building-consistent-api-with-es-decorators/"/>
+    <id>http://taobaofed.org/blog/2017/04/27/building-consistent-api-with-es-decorators/</id>
+    <published>2017-04-26T22:59:16.000Z</published>
+    <updated>2017-04-28T06:48:36.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1uGueQVXXXXbCXVXXXXXXXXXX-900-500.png" alt="使用 ES decorators 构建一致性 API"></p>
+<p>重用和一致性是程序设计中经久不衰的两个课题。在最新的 ES Proposal 中，「decorators 语法」为此带来了一定的便利，并且，很适合应用于大型的类库中。</p>
+<hr>
+<h2 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h2><p>提到 decorator 大家都不会陌生，即「装饰模式」—— 我们可以在「不侵入原有代码」的情况下，为代码增加一些「额外的功能」。</p>
+<p>所谓「额外的功能」一般都比较独立，不和原有逻辑耦合，只是做一层包装。你也可以把它看成「包装模式」。形如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 旧方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 包装后的新方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">funcWrapped</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 有的没的</span></span><br><span class="line">  doSomethingBefore(); </span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 旧方法的过程本身并不变化</span></span><br><span class="line">  func();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 这啊那的</span></span><br><span class="line">  doSomethingAfter();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样看来，有一些场景特别适用这个模式，比如：</p>
+<ul>
+<li>记录方法的开始执行和结束执行。</li>
+<li>为运算过程提供额外的缓存能力。</li>
+<li>标记方法为 deprecated。</li>
+<li>等等。</li>
+</ul>
+<h3 id="编写一个装饰器"><a href="#编写一个装饰器" class="headerlink" title="编写一个装饰器"></a>编写一个装饰器</h3><p>如果有好多方法都想包上这种「额外的功能」，那么我们不会一个个地去改写，而是考虑抽出一个「装饰器」—— 它能够接受原方法，然后生成包装后的方法。比如，我们想记录所有方法的运行时间：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">performanceTimingDecorator</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回包装后的新方法</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> start = <span class="built_in">Date</span>.now();</span><br><span class="line">    func(...args);</span><br><span class="line">    <span class="keyword">const</span> end = <span class="built_in">Date</span>.now();</span><br><span class="line">    <span class="keyword">const</span> t = end - start;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;func.name&#125;</span> performed <span class="subst">$&#123;t&#125;</span>ms.`</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> funcWrapped = performanceTimingDecorator(func);</span><br><span class="line"></span><br><span class="line"><span class="comment">// func performed 2ms.</span></span><br><span class="line">funcWrapped();</span><br></pre></td></tr></table></figure>
+<h2 id="使用-ES-decorators"><a href="#使用-ES-decorators" class="headerlink" title="使用 ES decorators"></a>使用 ES decorators</h2><p>如果一个系统内需要大量运用装饰器，那么上述的写法可读性还有待提高。ES decorators 解决了这个问题，这是一个新的语法（语法糖）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义 decorator</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">performanceTiming</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 返回包装后的方法</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">target, key, descriptor</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 使用这种语法修饰方法 func</span></span><br><span class="line">  @performanceTiming</span><br><span class="line">  func() &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新的 decorator 语法 <code>@xxx</code> 的形式非常类似 Java Annotation，不过后者作为静态语言，其 Annotation 的实现机制以及使用场景和 ES decorators 都有区别，这是一个题外话。事实上，ES decorators 完全借鉴自 Python 的 decorators。</p>
+<p>同时，聪明的你应该发现，相比手写装饰器，新的语法中其实「该写的东西一个都没少」。那这个 decorators 语法有什么意义呢？</p>
+<p>在我看来，这种语法糖对 decorators 的「定义」和「调用」都做了收敛，带来了「形式美感」。说人话，可读性更好。</p>
+<ol>
+<li>在 decorators 定义时，约束了装饰器的输入（固定的几个相关参数）和输出（返回一个 function），使所有装饰器风格得到收敛。</li>
+<li>在 decorators 调用时，以无侵入的语法「修饰」类或方法，可维护性和可读性都提升很多。</li>
+</ol>
+<p>这两个优势，让我想到 ES decorators 的一个重要使用场景，便是应用于构架一致性 API。</p>
+<h2 id="构架一致性-API"><a href="#构架一致性-API" class="headerlink" title="构架一致性 API"></a>构架一致性 API</h2><p>对于多人开发的大型类库来说，「一致性」是很重要同时也很难执行的一个课题。这里的「一致性」包括：</p>
+<ol>
+<li>各模块提供一致的标准公用功能。</li>
+<li>公用功能的实现和调用方式也保持一致。</li>
+<li>整体 API 的风格一致。</li>
+</ol>
+<p>其中 1、2 两点可以通过引入 ES decorators 机制来更好地达到。</p>
+<h3 id="实践演示"><a href="#实践演示" class="headerlink" title="实践演示"></a>实践演示</h3><p>先封装好部分 decorators（可参见 <code>@ali/universal-decorator</code> 这个包），这里选取两个装饰器：</p>
+<ul>
+<li><code>@deprecated</code> - 用于修饰类的方法，如果方法被调用，则在 console 中提示此方法已经过时，以便开发者转而调用其他方法。</li>
+<li><code>@moduleLevel</code> - 这是 Rax 体系下模块类的一个静态成员标准字段，可取值为几个有限的枚举，此装饰器对此做了约束。</li>
+</ul>
+<p>接下来具体地应用到库中。</p>
+<p>例如 <code>@ali/universal-tracker</code> 中，<code>report()</code> 方法已经迁移到了 <code>@ali/universal-goldlog</code>，原方法已经废弃，则可以写作：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;deprecated&#125; <span class="keyword">from</span> <span class="string">'@ali/universal-decorator'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tracker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  @deprecated(<span class="string">'This method is moved to universal-goldlog.'</span>, &#123;</span><br><span class="line">    url: <span class="string">'http://web.npm.alibaba-inc.com/package/@ali/universal-goldlog'</span></span><br><span class="line">  &#125;)</span><br><span class="line">  report() &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在调用 <code>report()</code> 后则会提示：</p>
+<p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/a6083c683cdcf5b3009eaf10d0b885da.png" alt="deprecated-result"></p>
+<p>这样，在相关的所有库中都引入类似的装饰器，从而保证 API 表达上的一致，并且这些公共逻辑遵循一致的实现。</p>
+<p>另外还有一个例子，可以用来对类的字段做约束。以大量基于 Rax 的页面模块为例，这些模块 class 需要声明一个静态属性 <code>moduleLevel</code> 是 app 级别还是 page 级别，以便于框架将其渲染到对应的容器中。但是静态成员的赋值不够清晰明朗，也不能对枚举值做约束。使用 decorators 来改写则：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;moduleLevel&#125; <span class="keyword">from</span> <span class="string">'@ali/universal-decorator'</span>;</span><br><span class="line"></span><br><span class="line">@moduleLevel(<span class="string">'page'</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyModule1</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">@moduleLevel(<span class="string">'other'</span>)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyModule2</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>moduleLevel 这个 decorator 将为类赋上一个名为 <code>moduleLevel</code> 的静态成员，并且会对传入值作判断，如果入参不是 <code>&#39;page&#39;</code> 或 <code>&#39;app&#39;</code>，则发出警告：</p>
+<p><img src="http://ata2-img.cn-hangzhou.img-pub.aliyun-inc.com/fc5c4951f58caf5ef630736bed474527.png" alt="module-level-result"></p>
+<p>最后，由于使用了 ES decorators 语法的代码，类似于一种声明式的标记，所以更利于我们对这些代码作静态分析，比如进一步的提前校验，或是条件编译等等。这部分更多的想法和思路，有待发掘。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ol>
+<li><a href="https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841" target="_blank" rel="external">Exploring EcmaScript Decorators</a></li>
+</ol>
+<hr>
+<p>题图：<a href="http://maxpixel.freegreatpicture.com/Festival-The-Christmas-Tree-Decorate-A-Christmas-Tree-1081320" target="_blank" rel="external">一棵被装饰得五光十色的圣诞树</a>。很多涉及到 decorator 的文章动不动就拿圣诞树来举例子，俨然 Christmas tree 是 decorate 的固定宾语。🎄</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1uGueQVXXXXbCXVXXXXXXXXXX-900-500.png" alt="使用 ES decorators 构建一致性 API"></p>
+<p>重用和一致性是程序设计中经久不衰的两个]]>
+    </summary>
+    
+      <category term="decorators" scheme="http://taobaofed.org/tags/decorators/"/>
+    
+      <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结]]></title>
     <link href="http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/"/>
     <id>http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/</id>
     <published>2017-03-23T23:31:45.000Z</published>
-    <updated>2017-03-24T09:47:44.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>获得知识有两种途径。一是学习理论知识；二是实践。二者缺一不可。学习知识固然重要，但最根本的是要把理论的知识和实践结合起来达到学以致用和用以促学的目的，Node.js 从 2009 年至今发展已近 8 年，时光荏苒，回想当初社区生态还不完善时候的捉襟见肘，到现在社区庞大社区完善，为一些企业打造了了不起的线上应用。</p>
 <p>三月春盛，烟烟霞霞，Node.js 地下铁以深入实践为主题迎来了第四场活动，大家相约六朝古都——南京。我们将带着敬意和和坦诚，携手两位网红与嘉宾们一起分享 Node.js 在实践中带来的经验和总结。</p>
@@ -49,6 +120,9 @@
 <p><img src="https://img.alicdn.com/tfs/TB1yP29QXXXXXbWXXXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1yP29QXXXXXbWXXXXXXXXXXXX-1920-1280.jpg"></p>
 <p><img src="https://img.alicdn.com/tfs/TB1c_vnQXXXXXcjXVXXXXXXXXXX-1920-1280.jpg" alt="https://img.alicdn.com/tfs/TB1c_vnQXXXXXcjXVXXXXXXXXXX-1920-1280.jpg"></p>
 <p>错过了这次分享的同学也不要紧，可以查看我们在文中分享的 Node.js 地下铁视频与 PPT 资料。</p>
+<blockquote>
+<p>题图：<a href="https://unsplash.com/photos/crjPrExvShc" target="_blank" rel="external">https://unsplash.com/photos/crjPrExvShc</a> By @Soroush Karimi</p>
+</blockquote>
 ]]></content>
     <summary type="html">
     <![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
@@ -72,7 +146,7 @@
     <link href="http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/"/>
     <id>http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/</id>
     <published>2017-03-15T23:18:05.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg" alt="我眼中的 JavaScript 函数式编程"></p>
 <p>JavaScript 函数式编程是一个存在了很久的话题，但似乎从 2016 年开始，它变得越来越火热。这可能是因为 ES6 语法对于函数式编程更为友好，也可能是因为诸如 RxJS (ReactiveX) 等函数式框架的流行。</p>
 <p>看过许多关于函数式编程的讲解，但是其中大部分是停留在理论层面，还有一些是仅针对 Haskell 等纯函数式编程语言的。而本文旨在聊一聊我眼中的函数式编程在 <strong>JavaScript</strong> 中的具体实践，之所以是 “我眼中的” 即我所说的仅代表个人观点，可能和部分 <strong>严格概念</strong> 是有冲突的。</p>
@@ -174,7 +248,7 @@
     <link href="http://taobaofed.org/blog/2017/03/09/head-first-typescript/"/>
     <id>http://taobaofed.org/blog/2017/03/09/head-first-typescript/</id>
     <published>2017-03-08T23:17:52.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
 <p>这是一个系列文章，一共会有三篇：</p>
 <ol>
@@ -308,7 +382,7 @@
     <link href="http://taobaofed.org/blog/2017/03/03/to-my-future-friend/"/>
     <id>http://taobaofed.org/blog/2017/03/03/to-my-future-friend/</id>
     <published>2017-03-03T01:14:01.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg" alt="致未来的实习生"></p>
 <p>岁月如歌，你的人生即将翻开新的篇章，也许你需要一份展现自我的优秀简历，也许你需要一份属于自己的未来规划，也许你需要一个优秀的导师帮助你成长。淘宝前端团队有很多优秀的 FEDer，他们和你们一样富有激情和梦想，对于过去也有过徘徊和迷茫。优秀的他们用自己的激情和努力完成了学生到专业攻城师的华丽转身，成为淘宝的 FEDer、最新技术的弄潮儿、团队不可或缺的重要成员。来听听他们的经历和建议，以及 Winter 老师带来的面试官视角，希望对同学们有所帮助。</p>
 <h2 id="那一年，我是如何“挤”进淘宝的"><a href="#那一年，我是如何“挤”进淘宝的" class="headerlink" title="那一年，我是如何“挤”进淘宝的"></a>那一年，我是如何“挤”进淘宝的</h2><p><img style="margin: 0;" src="http://gtms02.alicdn.com/tfs/TB1pjeUPVXXXXcgXFXXXXXXXXXX-770-1034.jpg" width="400"></p>
@@ -423,7 +497,7 @@
     <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
     <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
     <published>2017-03-02T05:25:09.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
 <p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
 <p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
@@ -476,7 +550,7 @@
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -910,7 +984,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1LxebPVXXXXaHXpXXXXXXXXXX-900-500.png" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -973,7 +1047,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -1047,7 +1121,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -1165,7 +1239,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -1326,7 +1400,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -1378,7 +1452,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -1574,7 +1648,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -1641,7 +1715,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -1741,7 +1815,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -1866,7 +1940,7 @@
     <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
     <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
     <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
 <h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
 <ol>
@@ -1970,7 +2044,7 @@
     <link href="http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/"/>
     <id>http://taobaofed.org/blog/2016/10/19/chrome-remote-debugging-technics/</id>
     <published>2016-10-19T07:15:15.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1MZ9aNVXXXXaQXFXXXXXXXXXX-900-500.jpg" alt="揭秘浏览器远程调试技术"></p>
 <h2 id="调试技术的起源"><a href="#调试技术的起源" class="headerlink" title="调试技术的起源"></a>调试技术的起源</h2><p>1947 年 9 月 9 日，一名美国的科学家格蕾丝.霍普和她的同伴在对 Mark II 计算机进行研究的时候发现，一只飞蛾粘在一个继电器上，导致计算机无法正常工作，当他们把飞蛾移除之后，计算机又恢复了正常运转。于是他们将这只飞蛾贴在了他们当时记录的日志上，对这件事情进行了详细的记录，并在日志最后写了这样一句话：First actual case of bug being found。这是他们发现的第一个真正意义上的 bug，这也是人类计算机软件历史上，发现的第一个 bug，而他们找到飞蛾的方法和过程，就是 debugging 调试技术。</p>
 <p><img src="https://img.alicdn.com/tps/TB1f_n8NpXXXXXBXpXXXXXXXXXX-740-583.jpg" alt="History of Debug"></p>
@@ -2041,7 +2115,7 @@
     <link href="http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/"/>
     <id>http://taobaofed.org/blog/2016/10/11/thinking-in-velocity-nyc-2016/</id>
     <published>2016-10-11T10:38:34.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1H9LFNFXXXXb_aXXXXXXXXXXX-900-500.jpg" alt="Velocity NYC 2016 参会总结"></p>
 <p>就在刚刚过去的九月，作为 FED 团队的代表有幸参加了美国纽约的 Velocity Web 性能和敏捷运维大会。在大约一周的行程中，会议团队组织了十分丰富的行程，会议团队也在内部对于 Velocity 的演讲内容做了多次讨论。整个行程在我看来是十分圆满的。</p>
 <h1 id="Velocity-NYC"><a href="#Velocity-NYC" class="headerlink" title="Velocity @ NYC"></a>Velocity @ NYC</h1><p>Velocity 作为 <a href="http://www.oreilly.com/conferences/" target="_blank" rel="external">O’Reilly</a> 旗下的老牌会议品牌，从 2008 年开始专著 Web 性能、DevOps（运维或开发自运维）等领域。在会议组织、开发者关系和商业运作等方面都十分老道。国内的开发者社区方兴未艾，也有诸如 SegmentFault D-Day、JSConf、D2 等类似定位的会议，但从各方面来讲都与 Velocity 有云泥之别。这也是为何在汇报中把会议组织本身感想放在了最前面。</p>
@@ -2124,7 +2198,7 @@
     <link href="http://taobaofed.org/blog/2016/09/29/babel-plugins/"/>
     <id>http://taobaofed.org/blog/2016/09/29/babel-plugins/</id>
     <published>2016-09-29T10:58:03.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
+    <updated>2017-04-28T06:48:36.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://img.alicdn.com/tfs/TB1cVgDNpXXXXb2XFXXXXXXXXXX-900-500.jpg" alt="理解 Babel 插件"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>相信目前常与 ES6 代码打交道的同学对 Babel 应该不会陌生，在 ES6 代码被编译转化为 ES5 代码的过程中，Babel 插件显得尤为重要，我们最后经由 Babel 生成的代码取决于插件在这一层中做了什么事，在探索这其中的过程之前，我们先来了解下一些所需的基础知识。</p>
 <h2 id="抽象语法树"><a href="#抽象语法树" class="headerlink" title="抽象语法树"></a>抽象语法树</h2><p>Babel 的工作流可以用下面一张图来表示，代码首先经由 <code>babylon</code> 解析成<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank" rel="external">抽象语法树</a>（AST），后经一些遍历和分析转换（主要过程），最后根据转换后的 AST 生成新的常规代码。</p>
@@ -2169,67 +2243,6 @@
       <category term="Babel" scheme="http://taobaofed.org/tags/Babel/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Node.js 和 C++ 之间的类型转换]]></title>
-    <link href="http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/"/>
-    <id>http://taobaofed.org/blog/2016/09/20/type-casts-between-node-and-cpp/</id>
-    <published>2016-09-20T03:18:23.000Z</published>
-    <updated>2017-04-03T10:31:13.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
-<p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场景时 Node.js 就不能够很好地胜任了。而在这样的情况下 C++  是一个很好的选择，非常幸运 Node.js 官方提供了 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 的机制让我们能够使用 V8 API 把 Node.js 和 C++ 结合起来。</p>
-<p>虽然在 Node.js 官方网站有很多的关于怎么使用这些 API 的文档，但是在 JavaScript 和 C++ 之间传递数据是一件非常麻烦的事情，C++ 是强类型语言（”1024” 是字符串类型而不是整数类型），而 JavaScript 却总是默认的帮我们做一些类型转换。</p>
-<p>JavaScript 的基本类型包括 String，Number，Boolean，null，undefined，V8 使用类继承的方式来定义这类型，这些类型都继承了 <code>Primitive</code> 类，而 <code>Primitive</code> 继承了 <code>Value</code>，v8 也支持整型（包括 <code>Int32</code> 和 <code>Uint32</code>），而所有的类型定义都可以从 V8 <a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">类型文档</a>中看到，除了基本的类型，还有 Object，Array，Map 等类型的定义。</p>
-<p>基本类型的继承关系如下图：<br><img src="https://img.alicdn.com/tfs/TB1JspRNpXXXXajapXXXXXXXXXX-804-860.png" alt="primitive"></p>
-<p>在 V8 中所有 JavaScript 值都是被放在 <code>Local</code> 对象中，通过这个对象指定了 JavaScript 运行时的内存单元。</p>
-<p>下面这段代定义了一个 <code>Number</code> 类型的值，其中 Test 函数中声明的 isolate 变量代表着 V8 虚拟机中的堆内存，当创建新变量的时候就需要用到它，接下来的一行代码就通过 isolate 声明了一个 <code>Number</code> 类型的变量。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line">    <span class="comment">// 声明变量</span></span><br><span class="line">    Local&lt;Number&gt; retval = v8::Number::New(isolate, <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Local &lt;Object&gt; exports, Local&lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(exports, <span class="string">"getTestValue"</span>, Test);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(returnValue, init)</span><br></pre></td></tr></table></figure>
-<p>看了 V8 <a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">类型 API 文档</a> 你会发现对于基本的 JavaScript 类型，只有变量的声明而没有变量的赋值。最初想可能觉得这个非常的奇怪，可是仔细想一想后发现这个是合理的。主要由以下几点原因：</p>
-<ul>
-<li>JavaScript 的基本类型是不可变类型，变量都是指向一个不可变的内存单元，var a = 10，则 a 指向的内存单元中包含的值为 5，重新赋值 a = 100，没有改变这个内存单元的值，而是使得 a 指向了另外一个内存单元，其中的值为 100。如果声明两个变量 x，y 的值都为 10，则他们指向的是同一个内存单元。</li>
-<li>函数的传参都是传值，而不是传引用，当在 JavaScript 中调用 C++ 的函数时，如果参数是基本类型则每次都是把这个值拷贝过去，改变参数的值不会影响原来的值。</li>
-<li>使用 <code>Local&lt;Value&gt;</code> 声明基本类型的变量都是对内存单元的引用，因为第一条原因不可能改变引用的值使其指向另外一个内存单元，因此不存在变量的重新赋值。</li>
-</ul>
-<h3 id="数据流向-C-gt-JavaScript"><a href="#数据流向-C-gt-JavaScript" class="headerlink" title="数据流向 C++ -&gt; JavaScript"></a>数据流向 C++ -&gt; JavaScript</h3><p>下面 demo 定义了一些常用的 JavaScript 类型，包括基本类型的以及 Object, Array, Fuction。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MyFunction</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line">    args.GetReturnValue().Set(String::NewFromUtf8(isolate, <span class="string">"Hello World!"</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Test</span><span class="params">(<span class="keyword">const</span> v8::FunctionCallbackInfo&lt;v8::Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Number 类型的声明</span></span><br><span class="line">    Local&lt;Number&gt; retval = v8::Number::New(isolate, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// String 类型的声明</span></span><br><span class="line">    Local&lt;String&gt; str = v8::String::NewFromUtf8(isolate, <span class="string">"Hello World!"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Object 类型的声明</span></span><br><span class="line">    Local&lt;Object&gt; obj = v8::Object::New(isolate);</span><br><span class="line">    <span class="comment">// 对象的赋值</span></span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg1"</span>), str);</span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg2"</span>), retval);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Function 类型的声明并赋值</span></span><br><span class="line">    Local&lt;FunctionTemplate&gt; tpl = v8::FunctionTemplate::New(isolate, MyFunction);</span><br><span class="line">    Local&lt;Function&gt; fn = tpl-&gt;GetFunction();</span><br><span class="line">    <span class="comment">// 函数名字</span></span><br><span class="line">    fn-&gt;SetName(String::NewFromUtf8(isolate, <span class="string">"theFunction"</span>));</span><br><span class="line">    obj-&gt;Set(v8::String::NewFromUtf8(isolate, <span class="string">"arg3"</span>), fn);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Boolean 类型的声明</span></span><br><span class="line">    Local&lt;Boolean&gt; flag = Boolean::New(isolate, <span class="literal">true</span>);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg4"</span>), flag);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Array 类型的声明</span></span><br><span class="line">    Local&lt;Array&gt; arr = Array::New(isolate);</span><br><span class="line">    <span class="comment">// Array 赋值</span></span><br><span class="line">    arr-&gt;Set(<span class="number">0</span>, Number::New(isolate, <span class="number">1</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">1</span>, Number::New(isolate, <span class="number">10</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">2</span>, Number::New(isolate, <span class="number">100</span>));</span><br><span class="line">    arr-&gt;Set(<span class="number">3</span>, Number::New(isolate, <span class="number">1000</span>));</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg5"</span>), arr);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Undefined 类型的声明</span></span><br><span class="line">    Local&lt;Value&gt; und = Undefined(isolate);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg6"</span>), und);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// null 类型的声明</span></span><br><span class="line">    Local&lt;Value&gt; null = Null(isolate);</span><br><span class="line">    obj-&gt;Set(String::NewFromUtf8(isolate, <span class="string">"arg7"</span>), null);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回给 JavaScript 调用时的返回值</span></span><br><span class="line">    args.GetReturnValue().Set(obj);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(Local &lt;Object&gt; exports, Local&lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(exports, <span class="string">"getTestValue"</span>, Test);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(returnValue, init)</span><br></pre></td></tr></table></figure>
-<p>所有的 addon 都需要一个初始化的函数，如下面的代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Initialize</span><span class="params">(Local&lt;Object&gt; exports)</span></span>;</span><br><span class="line">NODE_MODULE(module_name, Initialize)</span><br></pre></td></tr></table></figure>
-<p><code>Initialize</code> 是初始化的函数，<code>module_name</code> 是编译后产生的二进制文件名，上述代码的模块名为 <code>returnValue</code>。</p>
-<p>上述代码通过 node-gyp 编译后（编译过程官方文档 <a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">C/C++ Addons</a> 有详细的介绍），可以通过如下的方式调用。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// returnValue.node 这个文件就是编译后产生的文件，通过 NODE_MODULE(returnValue, init) 决定的文件名</span></span><br><span class="line"><span class="keyword">const</span> returnValue = <span class="built_in">require</span>(<span class="string">'./build/Release/returnValue.node'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(returnValue.getTestValue());</span><br></pre></td></tr></table></figure>
-<p>运行结果如下:<br><img src="https://img.alicdn.com/tfs/TB1jb80NpXXXXXYaXXXXXXXXXXX-840-324.png" alt="returnValue"></p>
-<h3 id="数据流向-javaScript-gt-C"><a href="#数据流向-javaScript-gt-C" class="headerlink" title="数据流向 javaScript -&gt; C++"></a>数据流向 javaScript -&gt; C++</h3><p>上面的 demo 展示了怎样在在 C++ 定义 JavaScript 类型，数据的是从 C++ 流向 JavaScript，反过来数据也需要从 javaScript 流向 C++，也就是调用 C++ 函数的时候需要传入一些参数。</p>
-<p>下面的代码展示了参数个数判断，参数类型判断，以及参数类型装换成 V8 类型的过程，包括基本类型以及 Object, Array, Fuction。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;node.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;v8.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> v8;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GetArgument</span><span class="params">(<span class="keyword">const</span> FunctionCallbackInfo&lt;Value&gt;&amp; args)</span> </span>&#123;</span><br><span class="line">    Isolate* isolate = args.GetIsolate();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数长度判断</span></span><br><span class="line">    <span class="keyword">if</span> (args.Length() &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        isolate-&gt;ThrowException(Exception::TypeError(</span><br><span class="line">            String::NewFromUtf8(isolate, <span class="string">"Wrong number of arguments"</span>)));</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 参数类型判断</span></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsNumber() || !args[<span class="number">1</span>]-&gt;IsNumber()) &#123;</span><br><span class="line">        <span class="comment">//抛出错误</span></span><br><span class="line">        isolate-&gt;ThrowException(Exception::TypeError(</span><br><span class="line">            String::NewFromUtf8(isolate, <span class="string">"argumnets must be number"</span>)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsObject()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Object\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsBoolean()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Boolean\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsArray()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Array\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsString()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not String\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsFunction()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Function\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsNull()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Null\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!args[<span class="number">0</span>]-&gt;IsUndefined()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"I am not Undefined\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Number 类型转换成 v8 Number 类型</span></span><br><span class="line">    Local&lt;Number&gt; value1 = Local&lt;Number&gt;::Cast(args[<span class="number">0</span>]);</span><br><span class="line">    Local&lt;Number&gt; value2 = Local&lt;Number&gt;::Cast(args[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">double</span> value = value1-&gt;NumberValue() + value2-&gt;NumberValue();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js String 类型转换成 v8 String 类型</span></span><br><span class="line">    Local&lt;String&gt; str = Local&lt;String&gt;::Cast(args[<span class="number">2</span>]);</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValue</span><span class="params">(str)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValue)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Array 类型转换成 v8 Array 类型</span></span><br><span class="line">    Local&lt;Array&gt; input_array = Local&lt;Array&gt;::Cast(args[<span class="number">3</span>]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d, %f %f\n"</span>, input_array-&gt;Length(), input_array-&gt;Get(<span class="number">0</span>)-&gt;NumberValue(), input_array-&gt;Get(<span class="number">1</span>)-&gt;NumberValue());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Object 类型转换成 v8 Object 类型</span></span><br><span class="line">    Local&lt;Object&gt; obj = Local&lt;Object&gt;::Cast(args[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;Value&gt; a = obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"a"</span>));</span><br><span class="line">    Local&lt;Value&gt; b = obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"b"</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Array 类型转换成 v8 Array 类型</span></span><br><span class="line">    Local&lt;Array&gt; c = Local&lt;Array&gt;::Cast(obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"c"</span>)));</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;a-&gt;NumberValue()&lt;&lt;<span class="string">"   "</span>&lt;&lt;b-&gt;NumberValue()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%d, %f %f\n"</span>, c-&gt;Length(), c-&gt;Get(<span class="number">0</span>)-&gt;NumberValue(), c-&gt;Get(<span class="number">1</span>)-&gt;NumberValue());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js String 类型转换成 v8 String 类型</span></span><br><span class="line">    Local&lt;String&gt; cString = Local&lt;String&gt;::Cast(c-&gt;Get(<span class="number">2</span>));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValueD</span><span class="params">(cString)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValueD)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;Object&gt; d = Local&lt;Object&gt;::Cast(obj-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"d"</span>)));</span><br><span class="line">    Local&lt;String&gt; dString1 = Local&lt;String&gt;::Cast(d-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"m"</span>)));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValued1</span><span class="params">(dString1)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValued1)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 根据 key 获取对象中的值</span></span><br><span class="line">    Local&lt;String&gt; dString2 = Local&lt;String&gt;::Cast(d-&gt;Get(String::NewFromUtf8(isolate, <span class="string">"n"</span>)));</span><br><span class="line">    String::<span class="function">Utf8Value <span class="title">utfValued2</span><span class="params">(dString2)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="built_in">string</span>(*utfValued2)&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Booelan 类型转换成 v8 Boolean 类型</span></span><br><span class="line">    Local&lt;Boolean&gt; FlagTrue = Local&lt;Boolean&gt;::Cast(args[<span class="number">5</span>]);</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"Flag: "</span>&lt;&lt;FlagTrue-&gt;BooleanValue()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// js Function 类型转换成 v8 Function 类型</span></span><br><span class="line">    Local&lt;Function&gt; cb = Local&lt;Function&gt;::Cast(args[<span class="number">8</span>]);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">unsigned</span> argc = <span class="number">2</span>;</span><br><span class="line">    Local&lt;Value&gt; argv[<span class="number">2</span>];</span><br><span class="line">    argv[<span class="number">0</span>] = a;</span><br><span class="line">    argv[<span class="number">1</span>] = b;</span><br><span class="line">    cb-&gt;Call(Null(isolate), argc, argv);</span><br><span class="line"></span><br><span class="line">    args.GetReturnValue().Set(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Init</span><span class="params">(Local &lt;Object&gt; exports, Local &lt;Object&gt; module)</span> </span>&#123;</span><br><span class="line">    NODE_SET_METHOD(module, <span class="string">"exports"</span>, GetArgument);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NODE_MODULE(argumentss, Init)</span><br></pre></td></tr></table></figure>
-<p>通过 node-gyp 编译后，可以通过如下的方式调用。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> getArguments = <span class="built_in">require</span>(<span class="string">'./build/Release/arguments'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(getArguments(<span class="number">2</span>, <span class="number">3</span>, <span class="string">'Hello Arguments'</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], &#123;</span><br><span class="line">        a: <span class="number">10</span>,</span><br><span class="line">        b: <span class="number">100</span>,</span><br><span class="line">        c: [<span class="number">23</span>, <span class="number">22</span>, <span class="string">"我是33"</span>],</span><br><span class="line">        d: &#123; m: <span class="string">'我是22'</span>, n: <span class="string">'我是23'</span> &#125;</span><br><span class="line">    &#125;, <span class="literal">true</span>, <span class="literal">null</span>, <span class="literal">undefined</span>,</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">myFunction</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'I am Function!'</span>);</span><br><span class="line">        <span class="built_in">console</span>.log(...args);</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'I am Function!'</span>);</span><br><span class="line">    &#125;));</span><br></pre></td></tr></table></figure>
-<p>运行结果如下:</p>
-<p><img src="https://img.alicdn.com/tfs/TB11tB4NpXXXXaLXVXXXXXXXXXX-796-796.png" alt="argument"></p>
-<p>关于其他的类型，我这里就就不一一介绍，V8 文档里面都有对应的 API。</p>
-<h3 id="NAN"><a href="#NAN" class="headerlink" title="NAN"></a>NAN</h3><p>由于 V8 的 API 还没有彻底稳定下来，所以对于不同版本的 Node.js 类型相关的 API 会发生变化，而 <a href="https://github.com/nodejs/nan" target="_blank" rel="external">NAN</a> 帮我们做了封装，在编码的时候不需要关心版本问题，只需要引入相应的头文件即可。</p>
-<p>引入头文件后，可以如下使用方式：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v8::Local&lt;v8::Primitive&gt; Nan::Undefined()</span><br><span class="line">v8::Local&lt;v8::Primitive&gt; Nan::Null()</span><br></pre></td></tr></table></figure>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="http://blog.scottfrees.com/type-conversions-from-javascript-to-c-in-v8" target="_blank" rel="external">Type conversions from JavaScript to C++ in V8</a></li>
-<li><a href="https://nodejs.org/dist/latest-v6.x/docs/api/addons.html" target="_blank" rel="external">node addon</a></li>
-<li><a href="https://v8docs.nodesource.com/node-6.0/d0/d4a/classv8_1_1_primitive.html" target="_blank" rel="external">v8 types documentation</a></li>
-<li><a href="https://github.com/nodejs/node-gyp" target="_blank" rel="external">node-gyp</a></li>
-<li><a href="https://gyp.gsrc.io/docs/UserDocumentation.md" target="_blank" rel="external">gyp user documentation</a></li>
-<li><a href="https://github.com/nodejs/nan" target="_blank" rel="external">nan</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1h_SoNpXXXXcMXXXXXXXXXXXX-900-500.jpg" alt="Node.js 和 C++ 之间的类型转换"></p>
-<p>我非常喜欢使用 Node.js，但是当涉及到计算密集型的场]]>
-    </summary>
-    
-      <category term="类型转换" scheme="http://taobaofed.org/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/"/>
-    
-      <category term="addons" scheme="http://taobaofed.org/tags/addons/"/>
-    
-      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
     
   </entry>
   
