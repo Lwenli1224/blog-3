@@ -7,24 +7,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="baidu-site-verification" content="OTHOW5vFFG" />
   <meta name="uyan_auth" content="5c52f7795a" />
-  <meta name="description" content=".article-entry ol {
-  list-style-position: outside;
-}
-
-
-
-LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据">
+  <meta name="description" content="LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据库，当达到 checkpoint 时，则写入磁盘，同时删除相应的 Op log 文件，后续重新生成新的内存文件和">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LevelDB 实现分析">
 <meta property="og:url" content="http://taobaofed.org/blog/2017/07/04/leveldb-analysis/index.html">
 <meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
-<meta property="og:description" content=".article-entry ol {
-  list-style-position: outside;
-}
-
-
-
-LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据">
+<meta property="og:description" content="LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据库，当达到 checkpoint 时，则写入磁盘，同时删除相应的 Op log 文件，后续重新生成新的内存文件和">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1R1S4SXXXXXaRXpXXXXXXXXXX-900-500.jpg">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1AMqNSXXXXXczXFXXXXXXXXXX-851-479.png">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1IRGFSXXXXXbsXVXXXXXXXXXX-405-79.png">
@@ -33,16 +21,10 @@ LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1C9DXSXXXXXcyXXXXXXXXXXXX-197-140.png">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1X9qPSXXXXXbwXFXXXXXXXXXX-435-67.png">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB11UGqSXXXXXaEaXXXXXXXXXXX-819-359.png">
-<meta property="og:updated_time" content="2017-07-06T07:02:01.000Z">
+<meta property="og:updated_time" content="2017-07-06T07:14:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LevelDB 实现分析">
-<meta name="twitter:description" content=".article-entry ol {
-  list-style-position: outside;
-}
-
-
-
-LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据">
+<meta name="twitter:description" content="LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据库，当达到 checkpoint 时，则写入磁盘，同时删除相应的 Op log 文件，后续重新生成新的内存文件和">
 <meta name="twitter:image" content="https://gw.alicdn.com/tfs/TB1R1S4SXXXXXaRXpXXXXXXXXXX-900-500.jpg">
   
     <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
@@ -175,32 +157,19 @@ LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存
 </a></span>
       </p>
       <div class="article-entry" itemprop="articleBody">
-        <style>
-.article-entry ol {
-  list-style-position: outside;
-}
-</style>
-
-<p><img src="https://gw.alicdn.com/tfs/TB1R1S4SXXXXXaRXpXXXXXXXXXX-900-500.jpg" alt="LevelDB 实现分析"></p>
+        <p><img src="https://gw.alicdn.com/tfs/TB1R1S4SXXXXXaRXpXXXXXXXXXX-900-500.jpg" alt="LevelDB 实现分析"></p>
 <h3 id="LevelDB-介绍"><a href="#LevelDB-介绍" class="headerlink" title="LevelDB 介绍"></a>LevelDB 介绍</h3><p>LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据库，当达到 checkpoint 时，则写入磁盘，同时删除相应的 Op log 文件，后续重新生成新的内存文件和 Op log 文件。</p>
 <p>LevelDB 内部采用了内存缓存机制，也就是在写数据库时，首先会存储在内存中，内存的存储结构采用了 skip list 结构，待达到 checkpoint 时，才进行落盘操作，保证了数据库的高效运转。</p>
 <h3 id="LevelDB-总体架构"><a href="#LevelDB-总体架构" class="headerlink" title="LevelDB 总体架构"></a>LevelDB 总体架构</h3><p><img src="https://gw.alicdn.com/tfs/TB1AMqNSXXXXXczXFXXXXXXXXXX-851-479.png" alt="resources structure"></p>
 <p>如上图所示，整个 LevelDB 由以下几部分组成：</p>
 <ol>
-<li><p>Write(k,v)，对外的接口</p>
-</li>
-<li><p>Op log，操作日志记录文件</p>
-</li>
-<li><p>memtable，数据库存储的内存结构</p>
-</li>
-<li><p>Immutable memtable，待落盘的数据库内存数据</p>
-</li>
-<li><p>sstable，落盘后的磁盘存储结构</p>
-</li>
-<li><p>manifest，LevelDB 元信息清单，包括数据库的配置信息和中间使用的文件列表</p>
-</li>
-<li><p>current，当前正在使用的文件清单</p>
-</li>
+<li>Write(k,v)，对外的接口</li>
+<li>Op log，操作日志记录文件</li>
+<li>memtable，数据库存储的内存结构</li>
+<li>Immutable memtable，待落盘的数据库内存数据</li>
+<li>sstable，落盘后的磁盘存储结构</li>
+<li>manifest，LevelDB 元信息清单，包括数据库的配置信息和中间使用的文件列表</li>
+<li>current，当前正在使用的文件清单</li>
 </ol>
 <p>整体结构清晰紧凑，非常容易理解。</p>
 <h3 id="对外接口"><a href="#对外接口" class="headerlink" title="对外接口"></a>对外接口</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">DB() &#123; &#125;;</span><br><span class="line">virtual ~DB();</span><br><span class="line">static Status Open(const Options&amp; options,</span><br><span class="line">                   const std::string&amp; name,</span><br><span class="line">                   DB** dbptr);</span><br><span class="line">virtual Status Put(const WriteOptions&amp; options,</span><br><span class="line">                   const Slice&amp; key,</span><br><span class="line">                   const Slice&amp; value) = 0;</span><br><span class="line">virtual Status Delete(const WriteOptions&amp; options, const Slice&amp; key) = 0;</span><br><span class="line">virtual Status Write(const WriteOptions&amp; options, WriteBatch* updates) = 0;</span><br><span class="line">virtual Status Get(const ReadOptions&amp; options,</span><br><span class="line">                   const Slice&amp; key, std::string* value) = 0;</span><br><span class="line">virtual Iterator* NewIterator(const ReadOptions&amp; options) = 0;</span><br><span class="line">virtual const Snapshot* GetSnapshot() = 0;</span><br><span class="line">virtual void ReleaseSnapshot(const Snapshot* snapshot) = 0;</span><br></pre></td></tr></table></figure>
@@ -226,24 +195,20 @@ LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存
 </li>
 </ol>
 <h4 id="Op-log结构分析"><a href="#Op-log结构分析" class="headerlink" title="Op log结构分析"></a>Op log结构分析</h4><p>LevelDB 使用的 Op log 日志采用了文件记录的方式，且文件使用了 mmap 方式操作，以提高效率。</p>
-<p>Op log 存储切分为 32KB 大小的数据块，每个 32KB 数据块存储着 Op log，每 个 Op log 格式如下：</p>
+<p>Op log 存储切分为 32KB 大小的数据块，每个 32KB 数据块存储着 Op log，每 个Op log 格式如下：</p>
 <p><img src="https://gw.alicdn.com/tfs/TB1IRGFSXXXXXbsXVXXXXXXXXXX-405-79.png" alt="resources structure"></p>
 <p>其中：</p>
 <ol>
-<li><p>CRC32 为 crc 校验码，保证数据的完整性</p>
-</li>
-<li><p>Length，为 Op log 的数据长度</p>
-</li>
-<li><p>Log Type，Op log 的类型，之所以会有类型，是由于 32KB 可能存不下一条 Op log，Op log 有可能跨数据块，类型分为：</p>
-<ul>
+<li>CRC32 为 crc 校验码，保证数据的完整性</li>
+<li>Length，为 Op log 的数据长度</li>
+<li>Log Type，Op log 的类型，之所以会有类型，是由于 32KB 可能存不下一条 Op log，Op log 有可能跨数据块，类型分为：<ul>
 <li>FULL：代表 Data 包含了所有的数据</li>
 <li>FIRST：代表该 Data 是 Op log 的开始数据</li>
 <li>MIDDLE：代表该 Data 是 Op log 的中间数据</li>
 <li>LAST: 代表该 Data 是 Op log 的结束数据</li>
 </ul>
 </li>
-<li><p>Data，为 Op log 的实际数据</p>
-</li>
+<li>Data，为 Op log 的实际数据</li>
 </ol>
 <h4 id="memtable-结构分析"><a href="#memtable-结构分析" class="headerlink" title="memtable 结构分析"></a>memtable 结构分析</h4><p>memtable 是 LevelDB 数据库的内存存储结构，采用了 skip list 结构存储，如下图所示：</p>
 <blockquote>
@@ -284,28 +249,20 @@ LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存
 <p><img src="https://gw.alicdn.com/tfs/TB11UGqSXXXXXaEaXXXXXXXXXXX-819-359.png" alt="resources structure"></p>
 <p>上图有几点要说明：</p>
 <ol>
-<li><p>对于 Block data 中的第一项总是不压缩存储的，不压缩存储的项称为 restarts，会被记录在上图的最尾部，同时每隔 k 个值（k 值可定制），都会存储一个不压缩的项，这些都称为 restarts，都会被记录在最尾部。</p>
-</li>
-<li><p>每个 restarts 表项会作为索引项存储。</p>
-</li>
-<li><p>除了 restarts 表项以外，其它的表项则基于该 restarts 项，计算跟他相同部分和不同部分，上图中的 shared_bytes 和 unshared_bytes 记录了相同部分长度和不同部分的长度，key_delta 则记录了不同的部分的值，value_length 和 value 则记录了 value 部分的值。</p>
-</li>
-<li><p>压不压缩是可选的，默认会进行 snappy 压缩。</p>
-</li>
+<li>对于 Block data 中的第一项总是不压缩存储的，不压缩存储的项称为 restarts，会被记录在上图的最尾部，同时每隔 k 个值（k 值可定制），都会存储一个不压缩的项，这些都称为 restarts，都会被记录在最尾部。</li>
+<li>每个 restarts 表项会作为索引项存储。</li>
+<li>除了 restarts 表项以外，其它的表项则基于该 restarts 项，计算跟他相同部分和不同部分，上图中的 shared_bytes 和 unshared_bytes 记录了相同部分长度和不同部分的长度，key_delta 则记录了不同的部分的值，value_length 和 value 则记录了 value 部分的值。</li>
+<li>压不压缩是可选的，默认会进行 snappy 压缩。</li>
 </ol>
 <p>对于 Meta Block 来说，它保存了用于快速定位 key 是否在 Data Block 中的信息，具体方法是：</p>
 <ol>
-<li><p>采用了 bloom filter 的过滤机制，bloom filter 是一种 hash 机制，它对每一个 key，会计算 k 个 hash 值，然后在 k 个 bit 位记录为 1。当查找时，相应计算出 k 个 hash 值，然后比对 k 个 bit 位是否为 1，只要有一个不为 1，则不存在。</p>
-</li>
-<li><p>对于每一个 Data Block，所有的 key 值会传入进行 bloom filter 的 hash 计算，每个 key 存储 k 个 bit 位值。</p>
-</li>
+<li>采用了 bloom filter 的过滤机制，bloom filter 是一种 hash 机制，它对每一个 key，会计算 k 个 hash 值，然后在 k 个 bit 位记录为 1。当查找时，相应计算出 k 个 hash 值，然后比对 k 个 bit 位是否为 1，只要有一个不为 1，则不存在。</li>
+<li>对于每一个 Data Block，所有的 key 值会传入进行 bloom filter 的 hash 计算，每个 key 存储 k 个 bit 位值。</li>
 </ol>
 <h4 id="版本管理"><a href="#版本管理" class="headerlink" title="版本管理"></a>版本管理</h4><p>对于 LevelDB 来说，它采用了简单的 sequence num 机制来管理，具体为：</p>
 <ol>
-<li><p>对于 Op log 文件，每一个 Op log 文件名中会包含一个唯一的 sequence num，每创建一个新的 Op log 文件，sequence num 则加 1，sequence num 越大，则表示文件越新，同时最新的 sequence num 会记录下来。</p>
-</li>
-<li><p>对于每个 key-value 对，也会对应一个 sequence num，对于同一个 key，如果后续更新值时，sequence num 也会相应更新，这样就可以根据 sequence num 的大小，找到最新的 key-value 对</p>
-</li>
+<li>对于 Op log 文件，每一个 Op log 文件名中会包含一个唯一的 sequence num，每创建一个新的 Op log 文件，sequence num 则加 1，sequence num 越大，则表示文件越新，同时最新的 sequence num 会记录下来。</li>
+<li>对于每个 key-value 对，也会对应一个 sequence num，对于同一个 key，如果后续更新值时，sequence num 也会相应更新，这样就可以根据 sequence num 的大小，找到最新的 key-value 对</li>
 </ol>
 <h4 id="新增特性"><a href="#新增特性" class="headerlink" title="新增特性"></a>新增特性</h4><ol>
 <li><p>支持模糊查询</p>
@@ -319,11 +276,16 @@ LevelDB 介绍LevelDB 是由 Google 开发的 key-value 非关系型数据库存
 <p>注：图片来源于网络</p>
 <blockquote>
 <p>题图：<a href="https://unsplash.com/photos/9wwF-VmSOrY" target="_blank" rel="external">https://unsplash.com/photos/9wwF-VmSOrY</a> By @eberhard grossgasteiger</p>
+<style>
+.article-entry ol {
+  list-style-position: outside;
+}
+</style>
 </blockquote>
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2017/07/04/leveldb-analysis/" data-id="cj4s372tz0050lht3ajkvl17x" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2017/07/04/leveldb-analysis/" data-id="cj4s3jpym005dpnt3tslbz4f6" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LevelDB/">LevelDB</a></li></ul>
