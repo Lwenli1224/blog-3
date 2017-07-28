@@ -7,43 +7,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="baidu-site-verification" content="OTHOW5vFFG" />
   <meta name="uyan_auth" content="5c52f7795a" />
-  <meta name="description" content="GCanvas 介绍GCanvas发展经历了两个阶段。
+  <meta name="description" content="GCanvas 提供了一套类似于 H5 Canvas 标准的 JavaScript API。基于这套 API 可以方便的去做图形绘制、动画渲染等，开发的体验与 H5 Canvas 是完全一样的。
+GCanvas 介绍GCanvas发展经历了两个阶段。
 
 第一阶段，2014 年中到 2015 年底，解决 Android 平台 WebView Canvas 渲染性能差的问题。
-第二阶段，2016 年 11 月到现在，为前端提供 Native 图形绘制能力。
-
-用一句话来概括 GCanvas，即遵循 W3C 标准，移动端的跨平台的高性能图形渲染引擎。可以从三个方面来解释。 
-
-遵循 W3C 标">
+第二阶段，2016 年">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GCanvas 渲染引擎介绍">
 <meta property="og:url" content="http://taobaofed.org/blog/2017/07/27/gcanvas/index.html">
 <meta property="og:site_name" content="Taobao FED | 淘宝前端团队">
-<meta property="og:description" content="GCanvas 介绍GCanvas发展经历了两个阶段。
+<meta property="og:description" content="GCanvas 提供了一套类似于 H5 Canvas 标准的 JavaScript API。基于这套 API 可以方便的去做图形绘制、动画渲染等，开发的体验与 H5 Canvas 是完全一样的。
+GCanvas 介绍GCanvas发展经历了两个阶段。
 
 第一阶段，2014 年中到 2015 年底，解决 Android 平台 WebView Canvas 渲染性能差的问题。
-第二阶段，2016 年 11 月到现在，为前端提供 Native 图形绘制能力。
-
-用一句话来概括 GCanvas，即遵循 W3C 标准，移动端的跨平台的高性能图形渲染引擎。可以从三个方面来解释。 
-
-遵循 W3C 标">
+第二阶段，2016 年">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB1sakpSpXXXXaAXFXXXXXXXXXX-900-500.jpg">
 <meta property="og:image" content="https://img.alicdn.com/tfs/TB1oRSZSpXXXXb_XXXXXXXXXXXX-1143-708.png">
 <meta property="og:image" content="https://img.alicdn.com/tfs/TB13y1vSpXXXXbKXVXXXXXXXXXX-1194-742.pnghttps://img.alicdn.com/tfs/TB1rlWvSpXXXXX7XVXXXXXXXXXX-1194-742.png">
 <meta property="og:image" content="https://img.alicdn.com/tfs/TB10OLSSpXXXXajXXXXXXXXXXXX-1264-2230.png">
 <meta property="og:image" content="http://git.cn-hangzhou.oss-cdn.aliyun-inc.com/uploads/gcanvas/gcanvas/c20f34aafadc65bfa6c7af91f817c02c/GCanvas_brief_iOS.png">
 <meta property="og:image" content="http://git.cn-hangzhou.oss.aliyun-inc.com/uploads/gcanvas/gcanvas/97d10777075cbe0f9134beeea94a54e3/GCanvas_Render_Core_Layer_Detail_Design.png">
-<meta property="og:updated_time" content="2017-07-28T02:05:35.000Z">
+<meta property="og:updated_time" content="2017-07-28T02:19:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GCanvas 渲染引擎介绍">
-<meta name="twitter:description" content="GCanvas 介绍GCanvas发展经历了两个阶段。
+<meta name="twitter:description" content="GCanvas 提供了一套类似于 H5 Canvas 标准的 JavaScript API。基于这套 API 可以方便的去做图形绘制、动画渲染等，开发的体验与 H5 Canvas 是完全一样的。
+GCanvas 介绍GCanvas发展经历了两个阶段。
 
 第一阶段，2014 年中到 2015 年底，解决 Android 平台 WebView Canvas 渲染性能差的问题。
-第二阶段，2016 年 11 月到现在，为前端提供 Native 图形绘制能力。
-
-用一句话来概括 GCanvas，即遵循 W3C 标准，移动端的跨平台的高性能图形渲染引擎。可以从三个方面来解释。 
-
-遵循 W3C 标">
+第二阶段，2016 年">
 <meta name="twitter:image" content="https://gw.alicdn.com/tfs/TB1sakpSpXXXXaAXFXXXXXXXXXX-900-500.jpg">
   
     <link rel="alternative" href="http://taobaofed.org/atom.xml" title="Taobao FED | 淘宝前端团队" type="application/atom+xml">
@@ -177,6 +168,7 @@
       </p>
       <div class="article-entry" itemprop="articleBody">
         <p><img src="https://gw.alicdn.com/tfs/TB1sakpSpXXXXaAXFXXXXXXXXXX-900-500.jpg" alt="GCanvas 渲染引擎介绍"></p>
+<p>GCanvas 提供了一套类似于 H5 Canvas 标准的 JavaScript API。基于这套 API 可以方便的去做图形绘制、动画渲染等，开发的体验与 H5 Canvas 是完全一样的。</p>
 <h2 id="GCanvas-介绍"><a href="#GCanvas-介绍" class="headerlink" title="GCanvas 介绍"></a>GCanvas 介绍</h2><p>GCanvas发展经历了两个阶段。</p>
 <ul>
 <li>第一阶段，2014 年中到 2015 年底，解决 Android 平台 WebView Canvas 渲染性能差的问题。</li>
@@ -198,7 +190,7 @@
 <h2 id="GCanvas-组成"><a href="#GCanvas-组成" class="headerlink" title="GCanvas 组成"></a>GCanvas 组成</h2><p><img src="https://img.alicdn.com/tfs/TB1oRSZSpXXXXb_XXXXXXXXXXXX-1143-708.png" alt=""></p>
 <p>如上图所示 GCanvas 由三层组成 JavaScript 层、插件层、核心渲染库。</p>
 <ul>
-<li><p>JavaScript 层<br>JavaScript 提供对外统一的 API，支持 Canvas 2D 和 WebGL 的功能接口。接口支持情况请参考<a href="#GCanvasAPI">API 覆盖</a>。</p>
+<li><p>JavaScript 层<br>JavaScript 提供对外统一的 API，支持 Canvas 2D 和 WebGL 的功能接口。接口支持情况请参考 <a href="#GCanvasAPI">API 覆盖</a>。</p>
 </li>
 <li><p>插件层<br>插件层核心包含三部分。 </p>
 <ul>
@@ -245,7 +237,7 @@
 <h2 id="GCanvas-测试例子"><a href="#GCanvas-测试例子" class="headerlink" title="GCanvas 测试例子"></a>GCanvas 测试例子</h2><p>下面给出一些 GCanvas 的案例。</p>
 <ul>
 <li><p>GCanvas 与 H5 Canvas 性能对比</p>
-<p><video width="100%" height="100%" autoplay loop muted markdown="1"><br><source src="http://vodcdn.video.taobao.com/oss/taobao-ugc/fd61eb81603c4875a5ea5bdc12f90b01/1490608620/video.mp4" type="video/mp4" markdown="1"><br></video><br><strong>Android 平台，左边是 GCanvas，右边是 H5 Canvas。同屏渲染图片越多，性能差异越明显。</strong></p>
+<p><video width="100%" height="100%" autoplay loop muted markdown="1"><source src="http://vodcdn.video.taobao.com/oss/taobao-ugc/fd61eb81603c4875a5ea5bdc12f90b01/1490608620/video.mp4" type="video/mp4" markdown="1"></video><br><strong>Android 平台，左边是 GCanvas，右边是 H5 Canvas。同屏渲染图片越多，性能差异越明显。</strong></p>
 </li>
 <li><p>Hilo 2D<br><a href="http://v.youku.com/v_show/id_XMjkwODMxMTQ4MA==.html?spm=a2h3j.8428770.3416059.1" target="_blank" rel="external">100 条鱼</a></p>
 <p>基于 Hilo 2D 动画库，满屏鱼的动画测试。</p>
@@ -255,8 +247,7 @@
 </li>
 </ul>
 <p><span id="GCanvasAPI"></span></p>
-<p>##附：GCanvas API 支持情况</p>
-<p>最后附上 GCanvas Contex2D 和 WebGLAPI 的支持列表，支持常用的接口。另外，WebGL 的 API 目前正在做补全开发，后续会支持 WebGL1.0 API 的全覆盖。</p>
+<h2 id="附：GCanvas-API-支持情况"><a href="#附：GCanvas-API-支持情况" class="headerlink" title="附：GCanvas API 支持情况"></a>附：GCanvas API 支持情况</h2><p>最后附上 GCanvas Contex2D 和 WebGLAPI 的支持列表，支持常用的接口。另外，WebGL 的 API 目前正在做补全开发，后续会支持 WebGL1.0 API 的全覆盖。</p>
 <ul>
 <li>Context2D API</li>
 </ul>
@@ -1236,7 +1227,7 @@
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2017/07/27/gcanvas/" data-id="cj5n8gtwp003598t3e7u2no8m" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2017/07/27/gcanvas/" data-id="cj5n8p716003acct36l2h8x7k" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GCanvas/">GCanvas</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/渲染/">渲染</a></li></ul>
