@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB17EDKaMMPMeJjy1XcXXXpppXa-726-407.png">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB188THaMoQMeJjy0FpXXcTxpXa-793-625.png">
 <meta property="og:image" content="https://gw.alicdn.com/tfs/TB19pTCaMMPMeJjy1XdXXasrXXa-825-401.png">
-<meta property="og:updated_time" content="2017-08-31T07:20:43.000Z">
+<meta property="og:updated_time" content="2017-08-31T08:06:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解 Node.js Stream 内部机制">
 <meta name="twitter:description" content="相信很多人对 Node.js 的 Stream 已经不陌生了，不论是请求流、响应流、文件流还是 socket 流，这些流的底层都是使用 stream 模块封装的，甚至我们平时用的最多的 console.log 打印日志也使用了它，不信你打开 Node.js runtime 的源码，看看 lib/console.js：
@@ -238,10 +238,13 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Transform = <span class="built_in">require</span>(<span class="string">'stream'</span>).Transform;</span><br><span class="line"><span class="keyword">const</span> MAP = &#123;</span><br><span class="line">  <span class="string">'Barret'</span>: <span class="string">'靖'</span>,</span><br><span class="line">  <span class="string">'Lee'</span>: <span class="string">'李'</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Translate</span> <span class="keyword">extends</span> <span class="title">Transform</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(dataSource, options) &#123;</span><br><span class="line">    <span class="keyword">super</span>(options);</span><br><span class="line">  &#125;</span><br><span class="line">  _transform(buf, enc, next) &#123;</span><br><span class="line">    <span class="keyword">const</span> key = buf.toString();</span><br><span class="line">    <span class="keyword">const</span> data = MAP[key];</span><br><span class="line">    <span class="keyword">this</span>.push(data);</span><br><span class="line">    next();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> transform = <span class="keyword">new</span> Translate();</span><br><span class="line">transform.on(<span class="string">'data'</span>, data =&gt; <span class="built_in">console</span>.log(data.toString()));</span><br><span class="line">transform.write(<span class="string">'Lee'</span>);</span><br><span class="line">transform.write(<span class="string">'Barret'</span>);</span><br><span class="line">transform.end();</span><br></pre></td></tr></table></figure>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本文主要参考和查阅 Node.js 官网的文档和源码，细节问题都是从源码中找到的答案，如有理解不准确之处，还请斧正。关于 Stream，这篇文章只是讲述了基础的原理，还有很多细节之处没有讲到，要真正理解它，还是需要多读读文档，写写代码。</p>
 <p>了解了这些 Stream 的内部机制，对我们后续深入理解上层代码有很大的促进作用，特别希望初学 Node.js 的同学花点时间进来看看。</p>
+<blockquote>
+<p>题图：<a href="https://unsplash.com/photos/pOWBHdgy1Lo" target="_blank" rel="external">https://unsplash.com/photos/pOWBHdgy1Lo</a> By @Neven Krcmarek</p>
+</blockquote>
 
       </div>
       <footer class="article-footer">
-        <a data-url="http://taobaofed.org/blog/2017/08/31/nodejs-stream/" data-id="cj705qgk20070kzn9xnbn0761" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+        <a data-url="http://taobaofed.org/blog/2017/08/31/nodejs-stream/" data-id="cj7063d76009r0an9y0g4l3pa" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
         
         
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Stream/">Stream</a></li></ul>
