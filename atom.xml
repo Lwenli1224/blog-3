@@ -4,7 +4,7 @@
   <subtitle><![CDATA[淘宝前端团队（FED）]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://taobaofed.org/"/>
-  <updated>2017-07-28T02:19:10.000Z</updated>
+  <updated>2017-08-31T07:20:43.000Z</updated>
   <id>http://taobaofed.org/</id>
   
   <author>
@@ -15,11 +15,111 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[深入理解 Node.js Stream 内部机制]]></title>
+    <link href="http://taobaofed.org/blog/2017/08/31/nodejs-stream/"/>
+    <id>http://taobaofed.org/blog/2017/08/31/nodejs-stream/</id>
+    <published>2017-08-31T06:37:22.000Z</published>
+    <updated>2017-08-31T07:20:43.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1sZf5aUgQMeJjy0FiXXXhqXXa-900-500.jpg" alt="深入理解 Node.js Stream 内部机制"></p>
+<p>相信很多人对 Node.js 的 Stream 已经不陌生了，不论是请求流、响应流、文件流还是 socket 流，这些流的底层都是使用 <code>stream</code> 模块封装的，甚至我们平时用的最多的 <code>console.log</code> 打印日志也使用了它，不信你打开 Node.js runtime 的源码，看看 <a href="https://github.com/nodejs/node/blob/master/lib/console.js#L82-L109" target="_blank" rel="external"><code>lib/console.js</code></a>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params">ignoreErrors, stream, string, errorhandler</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  stream.once(<span class="string">'error'</span>, noop);</span><br><span class="line">  stream.write(string, errorhandler);</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Console.prototype.log = <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">  write(<span class="keyword">this</span>._ignoreErrors,</span><br><span class="line">        <span class="keyword">this</span>._stdout,</span><br><span class="line">        <span class="string">`<span class="subst">$&#123;util.format.apply(null, args)&#125;</span>\n`</span>,</span><br><span class="line">        <span class="keyword">this</span>._stdoutErrorHandler);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Stream 模块做了很多事情，了解了 Stream，那么 Node.js 中其他很多模块理解起来就顺畅多了。</p>
+<h3 id="stream-模块"><a href="#stream-模块" class="headerlink" title="stream 模块"></a>stream 模块</h3><p>如果你了解 <a href="https://zh.wikipedia.org/zh-hans/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98" target="_blank" rel="external">生产者和消费者问题</a> 的解法，那理解 stream 就基本没有压力了，它不仅仅是资料的起点和落点，还包含了一系列状态控制，可以说一个 stream 就是一个状态管理单元。了解内部机制的最佳方式除了看 <a href="https://nodejs.org/api/stream.html" target="_blank" rel="external">Node.js 官方文档</a>，还可以去看看 Node.js 的 <a href="https://github.com/nodejs/node/blob/master/lib/" target="_blank" rel="external">源码</a>：</p>
+<ul>
+<li><code>lib/module.js</code></li>
+<li><code>lib/_stream_readable.js</code></li>
+<li><code>lib/_stream_writable.js</code></li>
+<li><code>lib/_stream_tranform.js</code></li>
+<li><code>lib/_stream_duplex.js</code></li>
+</ul>
+<p>把 <code>Readable</code> 和 <code>Writable</code> 看明白，Tranform 和 Duplex 就不难理解了。</p>
+<h3 id="Readable-Stream"><a href="#Readable-Stream" class="headerlink" title="Readable Stream"></a>Readable Stream</h3><p>Readable Stream 存在两种模式，一种是叫做 <code>Flowing Mode</code>，流动模式，在 Stream 上绑定 ondata 方法就会自动触发这个模式，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> readable = getReadableStreamSomehow();</span><br><span class="line">readable.on(<span class="string">'data'</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Received <span class="subst">$&#123;chunk.length&#125;</span> bytes of data.`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这个模式的流程图如下：</p>
+<p><img src="https://gw.alicdn.com/tfs/TB1rJvJaMMPMeJjy1XbXXcwxVXa-742-413.png" alt="Flowing"></p>
+<p>资源的数据流并不是直接流向消费者，而是先 push 到缓存池，缓存池有一个水位标记 <code>highWatermark</code>，超过这个标记阈值，push 的时候会返回 <code>false</code>，什么场景下会出现这种情况呢？</p>
+<ul>
+<li>消费者主动执行了 <code>.pause()</code></li>
+<li>消费速度比数据 push 到缓存池的生产速度慢</li>
+</ul>
+<p>有个专有名词来形成这种情况，叫做「背压」，Writable Stream 也存在类似的情况。</p>
+<p>流动模式，这个名词还是很形象的，缓存池就像一个水桶，消费者通过管口接水，同时，资源池就像一个水泵，不断地往水桶中泵水，而 highWaterMark 是水桶的浮标，达到阈值就停止蓄水。<br>下面是一个简单的 Demo：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Readable = <span class="built_in">require</span>(<span class="string">'stream'</span>).Readable;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Stream 实现</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyReadable</span> <span class="keyword">extends</span> <span class="title">Readable</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(dataSource, options) &#123;</span><br><span class="line">    <span class="keyword">super</span>(options);</span><br><span class="line">    <span class="keyword">this</span>.dataSource = dataSource;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 继承了 Readable 的类必须实现这个函数</span></span><br><span class="line">  <span class="comment">// 触发系统底层对流的读取</span></span><br><span class="line">  _read() &#123;</span><br><span class="line">    <span class="keyword">const</span> data = <span class="keyword">this</span>.dataSource.makeData();</span><br><span class="line">    <span class="keyword">this</span>.push(data);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟资源池</span></span><br><span class="line"><span class="keyword">const</span> dataSource = &#123;</span><br><span class="line">  data: <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">10</span>).fill(<span class="string">'-'</span>),</span><br><span class="line">  <span class="comment">// 每次读取时 pop 一个数据</span></span><br><span class="line">  makeData() &#123;</span><br><span class="line">    <span class="keyword">if</span> (!dataSource.data.length) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> dataSource.data.pop();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myReadable = <span class="keyword">new</span> MyReadable(dataSource);</span><br><span class="line">myReadable.setEncoding(<span class="string">'utf8'</span>);</span><br><span class="line">myReadable.on(<span class="string">'data'</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(chunk);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>另外一种模式是 <code>Non-Flowing Mode</code>，没流动，也就是暂停模式，这是 Stream 的预设模式，Stream 实例的 <code>_readableState.flow</code> 有三个状态，分别是：</p>
+<ul>
+<li><code>_readableState.flow = null</code>，暂时没有消费者过来</li>
+<li><code>_readableState.flow = false</code>，主动触发了 <code>.pause()</code></li>
+<li><code>_readableState.flow = true</code>，流动模式</li>
+</ul>
+<p>当我们监听了 onreadable 事件后，会进入这种模式，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myReadable = <span class="keyword">new</span> MyReadable(dataSource);</span><br><span class="line">myReadable.setEncoding(<span class="string">'utf8'</span>);</span><br><span class="line">myReadable.on(<span class="string">'readable'</span>, () =&gt; &#123;&#125;);</span><br></pre></td></tr></table></figure>
+<p>监听 <code>readable</code> 的回调函数第一个参数不会传递内容，需要我们通过 <code>myReadable.read()</code> 主动读取，为啥呢，可以看看下面这张图：</p>
+<p><img src="https://gw.alicdn.com/tfs/TB1JzPFaMoQMeJjy1XaXXcSsFXa-713-418.png" alt="node-stream-non-flowing"></p>
+<p>资源池会不断地往缓存池输送数据，直到 highWaterMark 阈值，消费者监听了 readable 事件并不会消费数据，需要主动调用 <code>.read([size])</code> 函数才会从缓存池取出，并且可以带上 size 参数，用多少就取多少：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myReadable = <span class="keyword">new</span> MyReadable(dataSource);</span><br><span class="line">myReadable.setEncoding(<span class="string">'utf8'</span>);</span><br><span class="line">myReadable.on(<span class="string">'readable'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> chunk;</span><br><span class="line">  <span class="keyword">while</span> (<span class="literal">null</span> !== (chunk = myReadable.read())) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`Received <span class="subst">$&#123;chunk.length&#125;</span> bytes of data.`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里需要注意一点，只要数据达到缓存池都会触发一次 readable 事件，有可能出现「消费者正在消费数据的时候，又触发了一次 readable 事件，那么下次回调中 read 到的数据可能为空」的情况。我们可以通过 <code>_readableState.buffer</code> 来查看缓存池到底缓存了多少资源：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> once = <span class="literal">false</span>;</span><br><span class="line">myReadable.on(<span class="string">'readable'</span>, (chunk) =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(myReadable._readableState.buffer.length);</span><br><span class="line">  <span class="keyword">if</span> (once) <span class="keyword">return</span>;</span><br><span class="line">  once = <span class="literal">true</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(myReadable.read());</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>上面的代码我们只消费一次缓存池的数据，那么在消费后，缓存池又收到了一次资源池的 push 操作，此时还会触发一次 readable 事件，我们可以看看这次存了多大的 buffer。</p>
+<p>需要注意的是，buffer 大小也是有上限的，默认设置为 16kb，也就是 16384 个字节长度，它最大可设置为 8Mb，没记错的话，这个值好像是 Node 的 new space memory 的大小。</p>
+<p>上面介绍了 Readable Stream 大概的机制，还有很多细节部分没有提到，比如 <code>Flowing Mode</code> 在不同 Node 版本中的 Stream 实现不太一样，实际上，它有三个版本，上面提到的是第 2 和 第 3 个版本的实现；再比如 <code>Mixins Mode</code> 模式，一般我们只推荐（允许）使用 ondata 和 onreadable 的一种来处理 Readable Stream，但是如果要求在 <code>Non-Flowing Mode</code> 的情况下使用 ondata 如何实现呢？那么就可以考虑 <code>Mixins Mode</code> 了。</p>
+<h3 id="Writable-Stream"><a href="#Writable-Stream" class="headerlink" title="Writable Stream"></a>Writable Stream</h3><p>原理与 Readable Stream 是比较相似的，数据流过来的时候，会直接写入到资源池，当写入速度比较缓慢或者写入暂停时，数据流会进入队列池缓存起来，如下图所示：</p>
+<p><img src="https://gw.alicdn.com/tfs/TB17EDKaMMPMeJjy1XcXXXpppXa-726-407.png" alt="node-stream-writable"></p>
+<p>当生产者写入速度过快，把队列池装满了之后，就会出现「背压」，这个时候是需要告诉生产者暂停生产的，当队列释放之后，Writable Stream 会给生产者发送一个 <code>drain</code> 消息，让它恢复生产。下面是一个写入一百万条数据的 Demo：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">writeOneMillionTimes</span>(<span class="params">writer, data, encoding, callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> i = <span class="number">10000</span>;</span><br><span class="line">  write();</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> ok = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">while</span>(i-- &gt; <span class="number">0</span> &amp;&amp; ok) &#123;</span><br><span class="line">      <span class="comment">// 写入结束时回调</span></span><br><span class="line">      ok = writer.write(data, encoding, i === <span class="number">0</span> ? callback : <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">// 这里提前停下了，'drain' 事件触发后才可以继续写入  </span></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'drain'</span>, i);</span><br><span class="line">      writer.once(<span class="string">'drain'</span>, write);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们构造一个 Writable Stream，在写入到资源池的时候，我们稍作处理，让它效率低一点：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Writable = <span class="built_in">require</span>(<span class="string">'stream'</span>).Writable;</span><br><span class="line"><span class="keyword">const</span> writer = <span class="keyword">new</span> Writable(&#123;</span><br><span class="line">  write(chunk, encoding, callback) &#123;</span><br><span class="line">    <span class="comment">// 比 process.nextTick() 稍慢</span></span><br><span class="line">    setTimeout(() =&gt; &#123;</span><br><span class="line">      callback &amp;&amp; callback();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">writeOneMillionTimes(writer, <span class="string">'simple'</span>, <span class="string">'utf8'</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'end'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>最后执行的结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">drain 7268</span><br><span class="line">drain 4536</span><br><span class="line">drain 1804</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>说明程序遇到了三次「背压」，如果我们没有在上面绑定 <code>writer.once(&#39;drain&#39;)</code>，那么最后的结果就是 Stream 将第一次获取的数据消耗完变结束了程序。</p>
+<h3 id="pipe"><a href="#pipe" class="headerlink" title="pipe"></a>pipe</h3><p>了解了 Readable 和 Writable，pipe 这个常用的函数应该就很好理解了，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">readable.pipe(writable);</span><br></pre></td></tr></table></figure>
+<p>这句代码的语意性很强，readable 通过 pipe（管道）传输给 writable，pipe 的实现大致如下（伪代码）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Readable.prototype.pipe = <span class="function"><span class="keyword">function</span>(<span class="params">writable, options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.on(<span class="string">'data'</span>, (chunk) =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> ok = writable.write(chunk);</span><br><span class="line">	<span class="comment">// 背压，暂停</span></span><br><span class="line">    !ok &amp;&amp; <span class="keyword">this</span>.pause();</span><br><span class="line">  &#125;);</span><br><span class="line">  writable.on(<span class="string">'drain'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="comment">// 恢复</span></span><br><span class="line">    <span class="keyword">this</span>.resume();</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">// 告诉 writable 有流要导入</span></span><br><span class="line">  writable.emit(<span class="string">'pipe'</span>, <span class="keyword">this</span>);</span><br><span class="line">  <span class="comment">// 支持链式调用</span></span><br><span class="line">  <span class="keyword">return</span> writable;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面做了五件事情：</p>
+<ul>
+<li><code>emit(pipe)</code>，通知写入</li>
+<li><code>.write()</code>，新数据过来，写入</li>
+<li><code>.pause()</code>，消费者消费速度慢，暂停写入</li>
+<li><code>.resume()</code>，消费者完成消费，继续写入</li>
+<li><code>return writable</code>，支持链式调用</li>
+</ul>
+<p>当然，上面只是最简单的逻辑，还有很多异常和临界判断没有加入，具体可以去看看 Node.js 的代码（ <a href="https://github.com/nodejs/node/blob/master/lib/_stream_readable.js#L541-L684" target="_blank" rel="external">/lib/_stream_readable.js</a>）。</p>
+<h3 id="Duplex-Stream"><a href="#Duplex-Stream" class="headerlink" title="Duplex Stream"></a>Duplex Stream</h3><p>Duplex，双工的意思，它的输入和输出可以没有任何关系，</p>
+<p><img src="https://gw.alicdn.com/tfs/TB188THaMoQMeJjy0FpXXcTxpXa-793-625.png" alt="Node-Stream-Duplex"></p>
+<p>Duplex Stream 实现特别简单，不到一百行代码，它继承了 Readable Stream，并拥有 Writable Stream 的方法（<a href="https://github.com/nodejs/node/blob/master/lib/_stream_duplex.js#L31-L42" target="_blank" rel="external">源码地址</a>）：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> util = <span class="built_in">require</span>(<span class="string">'util'</span>);</span><br><span class="line"><span class="keyword">const</span> Readable = <span class="built_in">require</span>(<span class="string">'_stream_readable'</span>);</span><br><span class="line"><span class="keyword">const</span> Writable = <span class="built_in">require</span>(<span class="string">'_stream_writable'</span>);</span><br><span class="line"></span><br><span class="line">util.inherits(Duplex, Readable);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(Writable.prototype);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> v = <span class="number">0</span>; v &lt; keys.length; v++) &#123;</span><br><span class="line">  <span class="keyword">var</span> method = keys[v];</span><br><span class="line">  <span class="keyword">if</span> (!Duplex.prototype[method])</span><br><span class="line">    Duplex.prototype[method] = Writable.prototype[method];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过 options 参数来配置它为只可读、只可写或者半工模式，一个简单的 Demo：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Duplex = <span class="built_in">require</span>(<span class="string">'stream'</span>).Duplex</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> duplex = Duplex();</span><br><span class="line"></span><br><span class="line"><span class="comment">// readable</span></span><br><span class="line"><span class="keyword">let</span> i = <span class="number">2</span>;</span><br><span class="line">duplex._read = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.push(i-- ? <span class="string">'read '</span> + i : <span class="literal">null</span>);</span><br><span class="line">&#125;;</span><br><span class="line">duplex.on(<span class="string">'data'</span>, data =&gt; <span class="built_in">console</span>.log(data.toString()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// writable</span></span><br><span class="line">duplex._write = <span class="function"><span class="keyword">function</span> (<span class="params">chunk, encoding, callback</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(chunk.toString());</span><br><span class="line">  callback();</span><br><span class="line">&#125;;</span><br><span class="line">duplex.write(<span class="string">'write'</span>);</span><br></pre></td></tr></table></figure>
+<p>输出的结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">write</span><br><span class="line">read 1</span><br><span class="line">read 0</span><br></pre></td></tr></table></figure>
+<p>可以看出，两个管道是相互之间不干扰的。</p>
+<h3 id="Transform-Stream"><a href="#Transform-Stream" class="headerlink" title="Transform Stream"></a>Transform Stream</h3><p>Transform Stream 集成了 Duplex Stream，它同样具备 Readable 和 Writable 的能力，只不过它的输入和输出是存在相互关联的，中间做了一次转换处理。常见的处理有 Gzip 压缩、解压等。</p>
+<p><img src="https://gw.alicdn.com/tfs/TB19pTCaMMPMeJjy1XdXXasrXXa-825-401.png" alt="node-stream-transform"></p>
+<p>Transform 的处理就是通过 <code>_transform</code> 函数将 Duplex 的 Readable 连接到 Writable，由于 Readable 的生产效率与 Writable 的消费效率是一样的，所以这里 Transform 内部不存在「背压」问题，背压问题的源头是外部的生产者和消费者速度差造成的。</p>
+<p>关于 Transfrom Stream，我写了一个简单的 Demo：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Transform = <span class="built_in">require</span>(<span class="string">'stream'</span>).Transform;</span><br><span class="line"><span class="keyword">const</span> MAP = &#123;</span><br><span class="line">  <span class="string">'Barret'</span>: <span class="string">'靖'</span>,</span><br><span class="line">  <span class="string">'Lee'</span>: <span class="string">'李'</span></span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Translate</span> <span class="keyword">extends</span> <span class="title">Transform</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(dataSource, options) &#123;</span><br><span class="line">    <span class="keyword">super</span>(options);</span><br><span class="line">  &#125;</span><br><span class="line">  _transform(buf, enc, next) &#123;</span><br><span class="line">    <span class="keyword">const</span> key = buf.toString();</span><br><span class="line">    <span class="keyword">const</span> data = MAP[key];</span><br><span class="line">    <span class="keyword">this</span>.push(data);</span><br><span class="line">    next();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> transform = <span class="keyword">new</span> Translate();</span><br><span class="line">transform.on(<span class="string">'data'</span>, data =&gt; <span class="built_in">console</span>.log(data.toString()));</span><br><span class="line">transform.write(<span class="string">'Lee'</span>);</span><br><span class="line">transform.write(<span class="string">'Barret'</span>);</span><br><span class="line">transform.end();</span><br></pre></td></tr></table></figure>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>本文主要参考和查阅 Node.js 官网的文档和源码，细节问题都是从源码中找到的答案，如有理解不准确之处，还请斧正。关于 Stream，这篇文章只是讲述了基础的原理，还有很多细节之处没有讲到，要真正理解它，还是需要多读读文档，写写代码。</p>
+<p>了解了这些 Stream 的内部机制，对我们后续深入理解上层代码有很大的促进作用，特别希望初学 Node.js 的同学花点时间进来看看。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1sZf5aUgQMeJjy0FiXXXhqXXa-900-500.jpg" alt="深入理解 Node.js Stream 内部机制"></p>
+<p>相信很多人对 Node.js 的 Stre]]>
+    </summary>
+    
+      <category term="Node.js" scheme="http://taobaofed.org/tags/Node-js/"/>
+    
+      <category term="Stream" scheme="http://taobaofed.org/tags/Stream/"/>
+    
+      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[GCanvas 渲染引擎介绍]]></title>
     <link href="http://taobaofed.org/blog/2017/07/27/gcanvas/"/>
     <id>http://taobaofed.org/blog/2017/07/27/gcanvas/</id>
     <published>2017-07-27T08:49:59.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1sakpSpXXXXaAXFXXXXXXXXXX-900-500.jpg" alt="GCanvas 渲染引擎介绍"></p>
 <p>GCanvas 提供了一套类似于 H5 Canvas 标准的 JavaScript API。基于这套 API 可以方便的去做图形绘制、动画渲染等，开发的体验与 H5 Canvas 是完全一样的。</p>
 <h2 id="GCanvas-介绍"><a href="#GCanvas-介绍" class="headerlink" title="GCanvas 介绍"></a>GCanvas 介绍</h2><p>GCanvas发展经历了两个阶段。</p>
@@ -1096,7 +1196,7 @@
     <link href="http://taobaofed.org/blog/2017/07/04/leveldb-analysis/"/>
     <id>http://taobaofed.org/blog/2017/07/04/leveldb-analysis/</id>
     <published>2017-07-04T09:32:29.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1R1S4SXXXXXaRXpXXXXXXXXXX-900-500.jpg" alt="LevelDB 实现分析"></p>
 <h3 id="LevelDB-介绍"><a href="#LevelDB-介绍" class="headerlink" title="LevelDB 介绍"></a>LevelDB 介绍</h3><p>LevelDB 是由 Google 开发的 key-value 非关系型数据库存储系统，是基于 LSM(Log-Structured-Merge Tree) 的典型实现，LSM 的原理是：当读写数据库时，首先纪录读写操作到 Op log 文件中，然后再操作内存数据库，当达到 checkpoint 时，则写入磁盘，同时删除相应的 Op log 文件，后续重新生成新的内存文件和 Op log 文件。</p>
 <p>LevelDB 内部采用了内存缓存机制，也就是在写数据库时，首先会存储在内存中，内存的存储结构采用了 skip list 结构，待达到 checkpoint 时，才进行落盘操作，保证了数据库的高效运转。</p>
@@ -1239,7 +1339,7 @@
     <link href="http://taobaofed.org/blog/2017/05/18/how-to-display-git-diff/"/>
     <id>http://taobaofed.org/blog/2017/05/18/how-to-display-git-diff/</id>
     <published>2017-05-18T01:56:11.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1_6wnRXXXXXbwXFXXXXXXXXXX-900-500.jpg" alt="如何实现一个 Git Diff 解析器"></p>
 <p>代码审阅中一个重要功能是对两个 commit 进行 diff 并展示到页面中，这篇文章将尝试总结其实现过程。</p>
 <h2 id="解析-Git-Diff"><a href="#解析-Git-Diff" class="headerlink" title="解析 Git Diff"></a>解析 Git Diff</h2><p>想要展示 diff，首先需要将 Git 提供的 diff 格式解析成结构化数据（比如：JSON）。</p>
@@ -1338,7 +1438,7 @@
     <link href="http://taobaofed.org/blog/2017/04/27/building-consistent-api-with-es-decorators/"/>
     <id>http://taobaofed.org/blog/2017/04/27/building-consistent-api-with-es-decorators/</id>
     <published>2017-04-26T22:59:16.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1uGueQVXXXXbCXVXXXXXXXXXX-900-500.png" alt="使用 ES decorators 构建一致性 API"></p>
 <p>重用和一致性是程序设计中经久不衰的两个课题。在最新的 ES Proposal 中，「decorators 语法」为此带来了一定的便利，并且，很适合应用于大型的类库中。</p>
 <hr>
@@ -1409,7 +1509,7 @@
     <link href="http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/"/>
     <id>http://taobaofed.org/blog/2017/03/24/node-subway-season-4-nanjing/</id>
     <published>2017-03-23T23:31:45.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1kHkiQXXXXXX9XVXXXXXXXXXX-900-500.jpg" alt="「深入实践中的 Node.js」- Node 地下铁第四期南京站线下沙龙总结"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>获得知识有两种途径。一是学习理论知识；二是实践。二者缺一不可。学习知识固然重要，但最根本的是要把理论的知识和实践结合起来达到学以致用和用以促学的目的，Node.js 从 2009 年至今发展已近 8 年，时光荏苒，回想当初社区生态还不完善时候的捉襟见肘，到现在社区庞大社区完善，为一些企业打造了了不起的线上应用。</p>
 <p>三月春盛，烟烟霞霞，Node.js 地下铁以深入实践为主题迎来了第四场活动，大家相约六朝古都——南京。我们将带着敬意和和坦诚，携手两位网红与嘉宾们一起分享 Node.js 在实践中带来的经验和总结。</p>
@@ -1465,7 +1565,7 @@
     <link href="http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/"/>
     <id>http://taobaofed.org/blog/2017/03/16/javascript-functional-programing/</id>
     <published>2017-03-15T23:18:05.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tfs/TB1xJN9QXXXXXbXXpXXXXXXXXXX-900-500.jpg" alt="我眼中的 JavaScript 函数式编程"></p>
 <p>JavaScript 函数式编程是一个存在了很久的话题，但似乎从 2016 年开始，它变得越来越火热。这可能是因为 ES6 语法对于函数式编程更为友好，也可能是因为诸如 RxJS (ReactiveX) 等函数式框架的流行。</p>
 <p>看过许多关于函数式编程的讲解，但是其中大部分是停留在理论层面，还有一些是仅针对 Haskell 等纯函数式编程语言的。而本文旨在聊一聊我眼中的函数式编程在 <strong>JavaScript</strong> 中的具体实践，之所以是 “我眼中的” 即我所说的仅代表个人观点，可能和部分 <strong>严格概念</strong> 是有冲突的。</p>
@@ -1567,7 +1667,7 @@
     <link href="http://taobaofed.org/blog/2017/03/09/head-first-typescript/"/>
     <id>http://taobaofed.org/blog/2017/03/09/head-first-typescript/</id>
     <published>2017-03-08T23:17:52.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1_NDSPVXXXXcUXVXXXXXXXXXX-900-500.jpg" alt="认识 TypeScript"></p>
 <p>这是一个系列文章，一共会有三篇：</p>
 <ol>
@@ -1701,7 +1801,7 @@
     <link href="http://taobaofed.org/blog/2017/03/03/to-my-future-friend/"/>
     <id>http://taobaofed.org/blog/2017/03/03/to-my-future-friend/</id>
     <published>2017-03-03T01:14:01.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://gtms03.alicdn.com/tfs/TB1PuyRPVXXXXXTXVXXXXXXXXXX-900-500.jpg" alt="致未来的实习生"></p>
 <p>岁月如歌，你的人生即将翻开新的篇章，也许你需要一份展现自我的优秀简历，也许你需要一份属于自己的未来规划，也许你需要一个优秀的导师帮助你成长。淘宝前端团队有很多优秀的 FEDer，他们和你们一样富有激情和梦想，对于过去也有过徘徊和迷茫。优秀的他们用自己的激情和努力完成了学生到专业攻城师的华丽转身，成为淘宝的 FEDer、最新技术的弄潮儿、团队不可或缺的重要成员。来听听他们的经历和建议，以及 Winter 老师带来的面试官视角，希望对同学们有所帮助。</p>
 <h2 id="那一年，我是如何“挤”进淘宝的"><a href="#那一年，我是如何“挤”进淘宝的" class="headerlink" title="那一年，我是如何“挤”进淘宝的"></a>那一年，我是如何“挤”进淘宝的</h2><p><img style="margin: 0;" src="http://gtms02.alicdn.com/tfs/TB1pjeUPVXXXXcgXFXXXXXXXXXX-770-1034.jpg" width="400"></p>
@@ -1816,7 +1916,7 @@
     <link href="http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/"/>
     <id>http://taobaofed.org/blog/2017/03/02/thinking-in-request-animation-frame/</id>
     <published>2017-03-02T05:25:09.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1kEx5PVXXXXXqXXXXXXXXXXXX-900-500.jpg" alt="浅析 requestAnimationFrame"></p>
 <p>相信现在绝大多数人在 JavaScript 中绘制动画已经在使用 requestAnimationFrame 了，关于 requestAnimationFrame 的种种就不多说了，关于这个 API 的资料，详见 <a href="http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。" target="_blank" rel="external">http://www.w3.org/TR/animation-timing/，https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame。</a></p>
 <p>如果我们把时钟往前拨到引入 requestAnimationFrame 之前，如果在 JavaScript 中要实现动画效果，怎么办呢？无外乎使用 setTimeout 或 setInterval。那么问题就来了：</p>
@@ -1869,7 +1969,7 @@
     <link href="http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/"/>
     <id>http://taobaofed.org/blog/2017/02/16/a-guide-to-api-design/</id>
     <published>2017-02-16T05:33:13.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tps/TB1qujpLXXXXXaLXFXXXXXXXXXX-900-500.jpg" alt="从达标到卓越 —— API 设计之道"></p>
 <p>新技术层出不穷，长江后浪推前浪，而浪潮褪去后能留下来的，是一些经典的设计思想。</p>
 <p>在前端界，以前有远近闻名的 jQuery，近来有声名鹊起的 Vue.js。这两者叫好又叫座的原因固然有很多，但是其中有一个共同特质不可忽视，那便是它们的 <strong>API 设计</strong> 非常优雅。</p>
@@ -2303,7 +2403,7 @@
     <link href="http://taobaofed.org/blog/2017/02/10/why-rax/"/>
     <id>http://taobaofed.org/blog/2017/02/10/why-rax/</id>
     <published>2017-02-10T10:17:45.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tps/TB1LxebPVXXXXaHXpXXXXXXXXXX-900-500.png" alt="Why Rax?"></p>
 <blockquote>
 <p><a href="https://github.com/alibaba/rax" target="_blank" rel="external">https://github.com/alibaba/rax</a></p>
@@ -2366,7 +2466,7 @@
     <link href="http://taobaofed.org/blog/2017/01/13/rax-in-act/"/>
     <id>http://taobaofed.org/blog/2017/01/13/rax-in-act/</id>
     <published>2017-01-13T03:53:44.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//gw.alicdn.com/tfs/TB1XDuDPXXXXXbRapXXXXXXXXXX-900-500.jpg" alt="淘宝双促中的 Rax"></p>
 <p>引子</p>
 <p>本文开始之前先调整一个概念，陪我们奋战穿促的 Rx 更名为 <a href="http://rax.taobaofed.org/" target="_blank" rel="external">Rax</a>。本文会全部使用新的概念去描述。首先简单介绍一下 Rax 是什么以及在双促中的定位。然后介绍一下大促通用页面渲染逻辑以及模块渲染逻辑。</p>
@@ -2440,7 +2540,7 @@
     <link href="http://taobaofed.org/blog/2017/01/05/writing-readable-code/"/>
     <id>http://taobaofed.org/blog/2017/01/05/writing-readable-code/</id>
     <published>2017-01-05T07:21:11.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB18Nv3OpXXXXXWaXXXXXXXXXXX-900-500.jpg" alt="编写「可读」代码的实践"></p>
 <p>编写<strong>可读</strong>的代码，对于以代码谋生的程序员而言，是一件极为重要的事。从某种角度来说，代码最重要的功能是<strong>能够被阅读</strong>，其次才是<strong>能够被正确执行</strong>。一段无法正确执行的代码，也许会使项目延期几天，但它造成的危害只是暂时和轻微的，毕竟这种代码无法通过测试并影响最终的产品；但是，一段能够正确执行，但缺乏条理、难以阅读的代码，它造成的危害却是深远和广泛的：这种代码会提高产品后续迭代和维护的成本，影响产品的稳定，破坏团队的团结（雾），除非我们花费数倍于编写这段代码的时间和精力，来消除它对项目造成的负面影响。</p>
 <p>在最近的工作和业余生活中，我对「如何写出可读的代码」这个问题颇有一些具体的体会，不妨记录下来吧。</p>
@@ -2558,7 +2658,7 @@
     <link href="http://taobaofed.org/blog/2016/12/20/qconsf-2016/"/>
     <id>http://taobaofed.org/blog/2016/12/20/qconsf-2016/</id>
     <published>2016-12-20T12:10:14.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://gw.alicdn.com/tps/TB1pOFzOVXXXXbhaXXXXXXXXXXX-900-500.jpg" alt="QCon San Francisco 2016 前端参会总结"></p>
 <p>11 月初有幸参加了在美国旧金山举行的 Qcon 会议，会议之余在小伙伴们的各路关系中拜访了一些美国的科技公司。此行受益颇多，这里谈一下自己的所见、所闻以及自己的感受。</p>
 <h2 id="会议内容"><a href="#会议内容" class="headerlink" title="会议内容"></a>会议内容</h2><p>会议内容覆盖了前端、设计、容器、微服务、devops、JAVA 等等，内容非常的丰富，这里选择几个前端相关的场做下分享。</p>
@@ -2719,7 +2819,7 @@
     <link href="http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/"/>
     <id>http://taobaofed.org/blog/2016/12/14/node-subway-season-3-guangzhou/</id>
     <published>2016-12-14T03:19:30.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1BVZQOFXXXXa0XpXXXXXXXXXX-900-500.jpg" alt="「八面玲珑的 Node.js」- Node 地下铁第三期广州站线下沙龙总结"></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>转眼 2016 年就要结束了，距上次地下铁沙龙已经过去了大半年，我们在这冬天来到温暖的广州，跟朋友们相聚一堂，一起学习探讨开发 Node.js 过程中的心得，以及探讨 Node.js 领域内的新动向。</p>
 <p>本次活动受广州地主 UC 前端团队的大力支持，由 UC 提供了会场，博文视点、图灵、稀土掘金提供了本次活动的赞助。</p>
@@ -2771,7 +2871,7 @@
     <link href="http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/"/>
     <id>http://taobaofed.org/blog/2016/12/08/happypack-source-code-analysis/</id>
     <published>2016-12-08T07:54:38.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB15ZeJOFXXXXcYXVXXXXXXXXXX-900-500.jpg" alt="happypack 原理解析"></p>
 <p>说起 <a href="https://www.npmjs.com/package/happypack" target="_blank" rel="external">happypack</a> 可能很多同学还比较陌生，其实 happypack 是 webpack 的一个插件，目的是通过多进程模型，来加速代码构建，目前我们的线上服务器已经上线这个插件功能，并做了一定适配，效果显著。这里有一些大致参考：</p>
 <p><img src="http://gw.alicdn.com/tfs/TB1apiAOFXXXXcnXVXXXXXXXXXX-549-451.png" alt=""></p>
@@ -2967,7 +3067,7 @@
     <link href="http://taobaofed.org/blog/2016/11/17/react-components-communication/"/>
     <id>http://taobaofed.org/blog/2016/11/17/react-components-communication/</id>
     <published>2016-11-17T06:54:48.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1KBJsOpXXXXaeXFXXXXXXXXXX-900-500.jpg" alt="React 组件间通讯"></p>
 <h2 id="React-组件间通讯"><a href="#React-组件间通讯" class="headerlink" title="React 组件间通讯"></a>React 组件间通讯</h2><p>说 React 组件间通讯之前，我们先来讨论一下 React 组件究竟有多少种层级间的关系。假设我们开发的项目是一个纯 React 的项目，那我们项目应该有如下类似的关系：</p>
 <p><img src="http://img.alicdn.com/tfs/TB19qddNVXXXXcbXVXXXXXXXXXX-1712-910.png" alt=""></p>
@@ -3034,7 +3134,7 @@
     <link href="http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/"/>
     <id>http://taobaofed.org/blog/2016/11/10/prevent-prop-access-error-in-js/</id>
     <published>2016-11-10T07:52:27.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1FOzEOXXXXXcjXFXXXXXXXXXX-900-500.jpg" alt="聊一聊 JavaScript 中的错误隔离"></p>
 <p>接口请求失败、接口中部分数据缺失、运营数据不符合预期… 当我们的应用发布上线后，就开始面临这些风险。</p>
 <p>而一旦这些问题导致了 JavaScript 报错（如空指针异常），并且没有被有效地隔离，就有可能引发页面的白屏、无法交互等线上问题。</p>
@@ -3134,7 +3234,7 @@
     <link href="http://taobaofed.org/blog/2016/11/03/es6-advanced/"/>
     <id>http://taobaofed.org/blog/2016/11/03/es6-advanced/</id>
     <published>2016-11-03T05:11:51.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
+    <updated>2017-08-31T07:20:43.000Z</updated>
     <content type="html"><![CDATA[<p><img src="https://img.alicdn.com/tfs/TB1xlp2OXXXXXaXXVXXXXXXXXXX-900-500.jpg" alt="ES6 你可能不知道的事 - 进阶篇"></p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这篇文章主要会针对上篇未涉及到的进阶特性展开；而与<a href="http://taobaofed.org/blog/2016/07/22/es6-basics/">前一篇文章</a>相同，本文主要介绍这些特性的一些容易忽略的部分，希望能对大家正确认识和使用 ES6 有帮助。</p>
 <p>还是那句话，时间和能力有限，针对文章中的问题或不同意见，欢迎随时拍砖、指正！</p>
@@ -3251,110 +3351,6 @@
       <category term="ES6" scheme="http://taobaofed.org/tags/ES6/"/>
     
       <category term="Web开发" scheme="http://taobaofed.org/categories/Web%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[如何 hack Node.js 模块？]]></title>
-    <link href="http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/"/>
-    <id>http://taobaofed.org/blog/2016/10/27/how-to-hack-nodejs-modules/</id>
-    <published>2016-10-27T08:16:05.000Z</published>
-    <updated>2017-07-28T02:19:10.000Z</updated>
-    <content type="html"><![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
-<h2 id="为何要去-hack？"><a href="#为何要去-hack？" class="headerlink" title="为何要去 hack？"></a>为何要去 hack？</h2><p>在业务开发过程中，往往会依赖一些 Node.js 模块，hack 这些 Node.js 模块的主要目的是在不修改工具源码的情况下，篡改一些特定的功能。可能会是出于以下几种情况的考虑：</p>
-<ol>
-<li>总是存在一些特殊的本地需求，不一定能作为工具的通用需求来暴露正常的 API 给更多的用户。</li>
-<li>临时且紧急的需求，提 PR 已经来不及了。</li>
-<li>为什么不直接去改源码？考虑到工具会不定期升级，想使用工具的最新特性，改源码可维护性太差。</li>
-</ol>
-<h2 id="期望"><a href="#期望" class="headerlink" title="期望"></a>期望</h2><p>举个栗子：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  dosomething();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// b.js </span></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="built_in">require</span>(a);</span><br><span class="line"><span class="comment">// c.js </span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">require</span>(b));</span><br></pre></td></tr></table></figure>
-<p>b 是项目 c 依赖的一个工具模块，b 依赖 a。希望只在项目 c 中，b 调用 a 时，a 的函数里能注入一些方法 <code>injectSomething()</code></p>
-<ul>
-<li>hack 之前 c 的输出</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  dosomething();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>期望：hack 之后 c 的输出</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  injectSomething();</span><br><span class="line">  dosomething();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><b>具体案例比如：在做个人自动化工具时，需要 mock 一些工具的手动输入；在本地构建时，需要修改通用的构建流程</b>（后面案例部分会详细说）</p>
-<h2 id="主要方法"><a href="#主要方法" class="headerlink" title="主要方法"></a>主要方法</h2><h3 id="利用模块-cache-篡改模块对象属性"><a href="#利用模块-cache-篡改模块对象属性" class="headerlink" title="利用模块 cache 篡改模块对象属性"></a>利用模块 cache 篡改模块对象属性</h3><p>这是我最早使用的方法，在模块 a 的类型是 object 的时候，可以在自己的项目 c 中提早 require 模块 a，按照你的需求修改一些属性，这样当模块 b 再去 require 模块 a 时，从缓存中取出的模块 a 已经是被修改过的了。</p>
-<p>模块 a、b、c 栗子如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  p</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// b.js</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="built_in">require</span>(a);</span><br><span class="line">a.p();</span><br><span class="line"><span class="comment">// c.js</span></span><br><span class="line"><span class="built_in">require</span>(b);</span><br></pre></td></tr></table></figure></p>
-<p>我想修改 a 的方法 p，在 c 中进行如下修改即可，而无需直接去修改工具 a、b 的源码:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// c.js</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="built_in">require</span>(a);</span><br><span class="line"><span class="keyword">let</span> oldp = a.p; </span><br><span class="line">a.p = <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>)</span>&#123;</span><br><span class="line">   injectSomething();</span><br><span class="line">   oldp.apply(<span class="keyword">this</span>, args);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">require</span>(b);</span><br></pre></td></tr></table></figure>
-<p>缺陷：在某些模块属性是动态加载的情况，不是那么灵敏，而且只能篡改引用对象。但大部分情况下还是能够满足需求的。</p>
-<h3 id="修改require-cache"><a href="#修改require-cache" class="headerlink" title="修改require.cache"></a>修改require.cache</h3><p>在遇到模块暴露的是非对象的情况，就需要直接去修改 require 的 cache 对象了。关于修改 <code>require.cache</code> 的有效性，会在后面的原理部分详细说，先来简单的说下操作：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">//a.js 暴露的非对象,而是函数</span><br><span class="line">module.exports = function()&#123;</span><br><span class="line">   doSomething();</span><br><span class="line">&#125;</span><br><span class="line">//c.js</span><br><span class="line">const aOld = require(a); </span><br><span class="line">let aId = require.resolve(aPath);</span><br><span class="line">require.cache[aId] = function(...args)&#123;</span><br><span class="line">   injectSomething();</span><br><span class="line">   aOld.apply(this, args);</span><br><span class="line">&#125;</span><br><span class="line">require(b);</span><br></pre></td></tr></table></figure>
-<p>缺陷：可能后续调用链路会有人手动去修改 <code>require.cache</code>，例如热加载。</p>
-<h3 id="修改-require"><a href="#修改-require" class="headerlink" title="修改 require"></a>修改 require</h3><p>这种方法是直接去代理 <code>require</code> ，是最稳妥的方法，但是侵入性相对来说比较强。Node.js 文件中的 require 其实是在 Module 的原型方法上，即 <code>Module.prototype.require</code>。后面会详细说，先简单说下操作：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Module = <span class="built_in">require</span>(<span class="string">'module'</span>);</span><br><span class="line"><span class="keyword">const</span> _require = Module.prototype.require;</span><br><span class="line">Module.prototype.require = <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> res = _require.apply(<span class="keyword">this</span>, args);</span><br><span class="line">    <span class="keyword">if</span>(args[<span class="number">0</span>] === <span class="string">'a'</span>) &#123; <span class="comment">// 只修改a模块内容</span></span><br><span class="line">        injectSomething();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>缺陷：对整个 Node.js 进程的 require 操作都具有侵入性。</p>
-<h2 id="相关原理"><a href="#相关原理" class="headerlink" title="相关原理"></a>相关原理</h2><h3 id="node的启动过程"><a href="#node的启动过程" class="headerlink" title="node的启动过程"></a>node的启动过程</h3><p>我们先来看看在运行 <strong><code>node a.js</code></strong> 时发生些什么？<a href="https://github.com/nodejs/node/tree/master" target="_blank" rel="external">node源码</a><br><img src="https://img.alicdn.com/tfs/TB1QtALNVXXXXbCXXXXXXXXXXXX-720-297.png" alt="node_main"></p>
-<p>上图是node运行 <code>a.js</code> 的一个核心流程，Node.js 的启动程序 <code>bootstrap_node.js</code> 是在 <code>node::LoadEnvironment</code> 中被立即执行的，<code>bootstrap_node.js</code> 中的 <code>startup()</code> 是包裹在一个匿名函数里面的，所以在一次执行 <code>node</code> 的行为中 <code>startup()</code> 只会被调用了一次，来保证 <code>bootstrap_node.js</code> 的所执行的所有依赖只会被加载一次。<code>C++</code> 语言部分中：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//node_main.cc 如果在win环境执行wmain()，unix则执行main()，函数最后都执行了node::Start(argc, argv)  </span><br><span class="line">#ifdef _WIN32</span><br><span class="line">  int wmain()</span><br><span class="line">#else</span><br><span class="line">  int main()</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">//node::Start(argc, argv) 提供载入 Node.js 进程的 V8 环境</span><br><span class="line">Environment::AsyncCallbackScope callback_scope(&amp;env);</span><br><span class="line">LoadEnvironment(&amp;env);</span><br><span class="line"></span><br><span class="line">//node::LoadEnvironment(Environment* env) 加载 Node.js 环境</span><br><span class="line">Local&lt;String&gt; script_name = FIXED_ONE_BYTE_STRING(env-&gt;isolate()," bootstrap_node.js");</span><br><span class="line">Local&lt;Value&gt; f_value = ExecuteString(env, MainSource(env), script_name);</span><br></pre></td></tr></table></figure>
-<p>  在 <code>bootstrap_node.js</code> 中，会去执行 Module 的静态方法 <code>runMain</code>，而 <code>runMain</code> 中则去执行了 <code>Module._load</code>，也就是模块加载的过程。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// bootstrap_node.js</span></span><br><span class="line"><span class="keyword">const</span> Module = NativeModule.require(<span class="string">'module'</span>);</span><br><span class="line">……</span><br><span class="line">run(Module.runMain);</span><br><span class="line"><span class="comment">// Module.js</span></span><br><span class="line">Module.runMain = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    Module._load(process.argv[<span class="number">1</span>], <span class="literal">null</span>, <span class="literal">true</span>);</span><br><span class="line">    process._tickCallback();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h3 id="一个进程只存在一个-cache-对象？"><a href="#一个进程只存在一个-cache-对象？" class="headerlink" title="一个进程只存在一个 cache 对象？"></a>一个进程只存在一个 cache 对象？</h3><p>先来看看 <code>module._load</code> 干了什么？<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Module._load = <span class="function"><span class="keyword">function</span>(<span class="params">request, parent, isMain</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> filename = Module._resolveFilename(request, parent, isMain);</span><br><span class="line">  <span class="keyword">var</span> cachedModule = Module._cache[filename]; <span class="comment">// get cache</span></span><br><span class="line">  <span class="keyword">if</span> (cachedModule) &#123;</span><br><span class="line">    <span class="keyword">return</span> cachedModule.exports; </span><br><span class="line">  &#125;</span><br><span class="line">  ……</span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = <span class="keyword">new</span> Module(filename, parent);</span><br><span class="line">  ……</span><br><span class="line">  Module._cache[filename] = <span class="built_in">module</span>; <span class="comment">// set cache</span></span><br><span class="line">  tryModuleLoad(<span class="built_in">module</span>, filename);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>可以看到，在 load 的一个模块时，会先读缓存 <code>Module._cache</code>，如果没有就会去 new 一个 Module 的实例,<br>然后再把实例放到缓存里。由前面的 Node.js 启动过程可以知道， <code>bootstrap_node.js</code> 中的 <code>startup()</code> 只会执行了一次，其中产生的 Module 对象在整个node进程调用链路中只会存在一个，进而 <code>Module._cache</code> 只有一个。</p>
-<h3 id="Module-cache-和-require-cache-的关系"><a href="#Module-cache-和-require-cache-的关系" class="headerlink" title="Module._cache 和 require.cache 的关系"></a><code>Module._cache</code> 和 <code>require.cache</code> 的关系</h3><p>可以看下 <code>Module.prototype._compile</code> 这个方法，这里面会对大家写的 Node.js 文件进行一个包装，注入一些上下文，包括 <code>require</code>:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">require</span> = internalModule.makeRequireFunction.call(<span class="keyword">this</span>);</span><br><span class="line"><span class="keyword">var</span> args = [<span class="keyword">this</span>.exports, <span class="built_in">require</span>, <span class="keyword">this</span>, filename, dirname];</span><br><span class="line"><span class="keyword">var</span> depth = internalModule.requireDepth;</span><br><span class="line"><span class="keyword">var</span> result = compiledWrapper.apply(<span class="keyword">this</span>.exports, args);</span><br></pre></td></tr></table></figure>
-<p>而在 <code>internalModule.makeRequireFunction</code> 中我们会发现</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 makeRequireFunction 中</span></span><br><span class="line"><span class="built_in">require</span>.cache = Module._cache;</span><br></pre></td></tr></table></figure>
-<p>所以，<code>Module._cache</code> 和 <code>require.cache</code> 是一样的，那么我们直接修改 <code>require.cache</code> 的缓存内容，在一个 Node.js 进程里都是有效的。</p>
-<h3 id="require-不同场景的挂载"><a href="#require-不同场景的挂载" class="headerlink" title="require 不同场景的挂载"></a><code>require</code> 不同场景的挂载</h3><p>最开始我以为 require 是挂载在 global 上的，为了图省事，一般用 Node.js repl 来测试：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ node</span><br><span class="line">&gt; global.require</span><br><span class="line">&#123; [Function: require]</span><br><span class="line">  resolve: [Function: resolve],</span><br><span class="line">  main: undefined,</span><br><span class="line">  extensions: &#123; <span class="string">'.js'</span>: [Function], <span class="string">'.json'</span>: [Function], <span class="string">'.node'</span>: [Function] &#125;,</span><br><span class="line">  cache: &#123;&#125; &#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到，repl 下，global.require 是存在的，如果以为可以直接在 Node.js 文件中代理 <code>global.require</code> 那就踩坑了，因为如果在 Node.js 文件中使用会发现：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(global.require);</span><br><span class="line"><span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
-<p>从上文可知，Node.js 文件中的 require 其实是来自于 <code>Module.prototype._compile</code> 中注入的 <code>Module.prototype.require</code>, 而最终的指向其实是 <code>Module._load</code>，并没有挂载到 module 上下文环境中的 global 对象上。</p>
-<p>而 repl 中也是有 module 实例，于是我尝试在 repl 中打印：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ node</span><br><span class="line">&gt; global.require === module.require</span><br><span class="line">  <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-<p>结果有点奇怪，于是我继续探究了下。在 <code>bootstrap_node.js</code> 中找到 repl 的调用文件 <code>repl.js</code></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">require</span> = internalModule.makeRequireFunction.call(<span class="built_in">module</span>);</span><br><span class="line">context.module = <span class="built_in">module</span>;</span><br><span class="line">context.require = <span class="built_in">require</span>;</span><br></pre></td></tr></table></figure>
-<p>得到结论：在 repl 中，<code>module.require</code> 和 <code>global.require</code> 最终的调用方法是一样的，只是函数指向不同而已。</p>
-<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><h3 id="path路径"><a href="#path路径" class="headerlink" title="path路径"></a>path路径</h3><p><code>require.cache</code> 是一个 key、value 的 map，key 看上去是模块所在的绝对路径，然而是不能用绝对路径直接去用的，需要 <code>require.resolve</code> 来解析路径，解析后才是 cache 中正确的 key 格式。</p>
-<p>下面对比下区别：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 模块的绝对路径</span><br><span class="line">/Users/kino/.def/def_modules/.builders/@ali/builder-cake-kpm/node_modules/@ali/builder-cake-kpm/node_modules/@ali/cake-webpack-config/index.js</span><br><span class="line"></span><br><span class="line">// 用 require.resolve 转义后的结果</span><br><span class="line">/Users/kino/.def/def_modules/.builders/@ali/builder-cake-kpm/node_modules/.0.16.23@@ali/cake-webpack-config/index.js</span><br></pre></td></tr></table></figure>
-<h3 id="多进程的情况"><a href="#多进程的情况" class="headerlink" title="多进程的情况"></a>多进程的情况</h3><p>模块间调用的链路比较长，有可能会新建子进程，需要考虑你项目中的入口文件和你需要代理的文件是否在一个进程中，简单的方法就是在入口文件和你需要代理的文件打印 pid：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(process.pid)</span><br></pre></td></tr></table></figure>
-<p>如果一致，那么直接在入口调用前代理即可，否则情况会更复杂点，需要找到相应的进程调用处进行代理。</p>
-<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>DEF 是淘宝前端的集成开发环境，支持前端模块创建、构建打包、发布等一系列流程。 在以下案例中，主要 hack 的 Node.js 项目便是 DEF。</p>
-<h3 id="篡改输入-prompt"><a href="#篡改输入-prompt" class="headerlink" title="篡改输入(prompt)"></a>篡改输入(prompt)</h3><p>场景：使用 DEF 创建模块 or 发布模块时</p>
-<p>原因：想一键完成批量创建 or 批量发布，不想手动输入。</p>
-<p>解决过程：以创建模块为例</p>
-<ul>
-<li><p>首先找到 DEF 的入口文件，即一个 bin 目录下的路径，可以通过这个入口文件不断追溯下去，发现创建模块的 generator 用的是 yeoman-generator 的方法。对 prompt 的方法进行代理，可以将该基础库提前 require，更改掉其 prompt 的方法即可。</p>
-</li>
-<li><p>附上示例代码（示例只篡改 <code>def add</code> 模块的创建类型，其他输入的篡改方法类似）：</p>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"><span class="meta"></span><br><span class="line">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'shelljs/global'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> HOME = process.env.HOME;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> yeomanRouter = <span class="built_in">require</span>(path.join(HOME, <span class="string">'.def/def_modules/.generators/@ali/generator-abs-router/node_modules/@ali/generator-abs-router/node_modules/yeoman-generator'</span>));</span><br><span class="line"></span><br><span class="line">yeomanRouter.generators.Base.prototype.prompt = <span class="function"><span class="keyword">function</span>(<span class="params">list, callback</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> item = list[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">let</span> prop = &#123;&#125;;</span><br><span class="line">  prop[item.name] = <span class="string">'kissy-pc'</span>; <span class="comment">// 让模块类型输入自动为pc</span></span><br><span class="line">  callback(prop);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//require real def path</span></span><br><span class="line"><span class="keyword">const</span> defPath = which(<span class="string">'def'</span>).stdout;</span><br><span class="line"><span class="built_in">require</span>(defPath);</span><br></pre></td></tr></table></figure>
-<h3 id="篡改构建流程（webpackconfig）"><a href="#篡改构建流程（webpackconfig）" class="headerlink" title="篡改构建流程（webpackconfig）"></a>篡改构建流程（webpackconfig）</h3><p>场景：一个淘宝的前端组件，需要在使用def本地调试时提前更改一个文件内容。（淘宝组件的构建会按照组件类型统一构建器，并不是每个组件单独去配置）</p>
-<p>原因：一般来说，这种情况可以选择注释代码大法，本地调试时打开注释，发布前干掉。但这样造成代码很不美观，也容易引起误操作。不妨在本地调试的 reflect 过程中动态更换掉就好了。</p>
-<p>解决过程：</p>
-<ul>
-<li><p>追溯 <code>def dev</code> 调用链路，找到最终reflect的文件, 在这个构建器 <code>@ali/builder-cake-kpm</code> 项目里。所使用的webpack的配置项在 <code>@ali/cake-webpack-config</code> 下。</p>
-</li>
-<li><p>现在就是往 webpack 配置项里动态注入一个 webpack loader 的过程了，我需要的 loader 是一个 preLoader，代码非常简单，我把它放在业务项目的文件里:</p>
-</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">content</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> content.replace(<span class="string">'require\(\'\.\/plugin\'\)'</span>, <span class="string">"require('./localPlugin')"</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>@ali/cake-webpack-config</code> 暴露的是个函数而非对象，所以必须从 require 下手了，最后附上案例的代理过程：</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">'shelljs/global'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> HOME = process.env.HOME;</span><br><span class="line"><span class="keyword">const</span> CWD = process.cwd();</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> cakeWcPath = path.join(HOME, <span class="string">'.def/def_modules/.builders/@ali/builder-cake-kpm/node_modules/@ali/builder-cake-kpm/node_modules/@ali/cake-webpack-config'</span>);</span><br><span class="line"><span class="keyword">const</span> preLoaderPath = path.join(CWD, <span class="string">'debug/plugin_compile.js'</span>); <span class="comment">// 注入的loader路径</span></span><br><span class="line"><span class="keyword">const</span> cakeWebpackConfig = <span class="built_in">require</span>(cakeWcPath);</span><br><span class="line"><span class="keyword">const</span> requireId = <span class="built_in">require</span>.resolve(cakeWcPath);</span><br><span class="line"><span class="built_in">require</span>.cache[requireId].exports = (options) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (options.callback) &#123;</span><br><span class="line">    <span class="keyword">let</span> oldCb = options.callback;</span><br><span class="line">    options.callback = <span class="function"><span class="keyword">function</span>(<span class="params">err, obj</span>) </span>&#123;</span><br><span class="line">      obj.module.preLoaders = [&#123;</span><br><span class="line">        <span class="string">'test'</span>: <span class="regexp">/index\.js$/</span>,</span><br><span class="line">        <span class="string">'loader'</span>: preLoaderPath</span><br><span class="line">      &#125;];</span><br><span class="line">      oldCb(err, obj);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  cakeWebpackConfig(options);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//require real def path</span></span><br><span class="line"><span class="keyword">const</span> defPath = which(<span class="string">'def'</span>).stdout;</span><br><span class="line"><span class="built_in">require</span>(defPath);</span><br></pre></td></tr></table></figure>
-<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>去 hack 一个 Node.js 模块，需要对该 Node.js 模块的调用链路有一定的了解，在很多情况下，不一定是最优的方法，但也不失为一种解决方案。有趣的是，Node.js 源码中其实有一行这样的注释：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hello, and welcome to hacking node.js!</span></span><br><span class="line"><span class="comment">// some descriptions</span></span><br></pre></td></tr></table></figure>
-<p>So, just hacking for fun! </p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><img src="//img.alicdn.com/tfs/TB1SJkrNVXXXXXsXVXXXXXXXXXX-900-500.jpg" alt="如何 hack Node.js 模块？"></p>
-<h2 id="为何要去-hack？"><a href="#为何要去]]>
-    </summary>
-    
-      <category term="hack" scheme="http://taobaofed.org/tags/hack/"/>
-    
-      <category term="Node.js" scheme="http://taobaofed.org/categories/Node-js/"/>
     
   </entry>
   
